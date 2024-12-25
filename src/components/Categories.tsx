@@ -15,12 +15,37 @@ export const Categories = () => {
     },
     {
       title: "Casual Style",
-      image: "https://images.unsplash.com/photo-1721322800607-8c38375eef04",
+      image: "https://images.unsplash.com/photo-1515886657613-9f3515b0c78f",
       link: "#"
     },
     {
       title: "Formal Men",
       image: "https://images.unsplash.com/photo-1466721591366-2d5fba72006d",
+      link: "#"
+    },
+    {
+      title: "Summer Collection",
+      image: "https://images.unsplash.com/photo-1523359346063-d879354c0ea5",
+      link: "#"
+    },
+    {
+      title: "Winter Wear",
+      image: "https://images.unsplash.com/photo-1577744486770-020ab432da65",
+      link: "#"
+    },
+    {
+      title: "Accessories",
+      image: "https://images.unsplash.com/photo-1584917865442-de89df76afd3",
+      link: "#"
+    },
+    {
+      title: "Streetwear",
+      image: "https://images.unsplash.com/photo-1503342217505-b0a15ec3261c",
+      link: "#"
+    },
+    {
+      title: "Athletic Wear",
+      image: "https://images.unsplash.com/photo-1518459031867-a89b944bffe4",
       link: "#"
     }
   ];
@@ -39,7 +64,7 @@ export const Categories = () => {
         >
           <CarouselContent>
             {categories.map((category, index) => (
-              <CarouselItem key={index} className="md:basis-1/3">
+              <CarouselItem key={index} className="md:basis-1/3 sm:basis-1/2">
                 <a
                   href={category.link}
                   className="group relative overflow-hidden rounded-lg aspect-[3/4] hover-scale block"
