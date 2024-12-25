@@ -7,40 +7,44 @@ import {
 } from "@/components/ui/carousel";
 import { Badge } from "@/components/ui/badge";
 
-export const FeaturedProducts = () => {
+export const OfferProducts = () => {
   const products = [
     {
-      name: "Classic White Dress",
+      name: "Summer Dress Collection",
+      price: "$129.99",
+      offerPrice: "$89.99",
+      image: "https://images.unsplash.com/photo-1515886657613-9f3515b0c78f",
+      offerText: "Limited Time Offer"
+    },
+    {
+      name: "Designer Handbag",
       price: "$299.99",
-      image: "https://images.unsplash.com/photo-1493962853295-0fd70327578a",
-      tag: "Best Seller"
+      offerPrice: "$199.99",
+      image: "https://images.unsplash.com/photo-1584917865442-de89df76afd3",
+      offerText: "Special Deal"
     },
     {
-      name: "Navy Blue Suit",
+      name: "Premium Sunglasses",
+      price: "$159.99",
+      offerPrice: "$99.99",
+      image: "https://images.unsplash.com/photo-1577744486770-020ab432da65",
+      offerText: "Flash Sale"
+    },
+    {
+      name: "Luxury Watch",
       price: "$499.99",
-      image: "https://images.unsplash.com/photo-1535268647677-300dbf3d78d1",
-      tag: "New Arrival"
-    },
-    {
-      name: "Silk Evening Gown",
-      price: "$399.99",
-      image: "https://images.unsplash.com/photo-1452960962994-acf4fd70b632",
-      tag: "Trending"
-    },
-    {
-      name: "Casual Blazer",
-      price: "$199.99",
-      image: "https://images.unsplash.com/photo-1518877593221-1f28583780b4",
-      tag: "Popular"
+      offerPrice: "$349.99",
+      image: "https://images.unsplash.com/photo-1523359346063-d879354c0ea5",
+      offerText: "Today Only"
     }
   ];
 
   return (
-    <section className="py-20 bg-muted">
+    <section className="py-20 bg-secondary/20">
       <div className="container mx-auto px-4">
         <div className="flex justify-between items-center mb-8">
-          <h2 className="section-title mb-0">Featured Products</h2>
-          <Badge variant="secondary" className="text-muted-foreground px-4 py-1">New Arrivals</Badge>
+          <h2 className="section-title mb-0">Special Offers</h2>
+          <Badge variant="secondary" className="text-primary px-4 py-1">Limited Time</Badge>
         </div>
         
         <Carousel
@@ -61,15 +65,18 @@ export const FeaturedProducts = () => {
                       className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
                     />
                     <div className="absolute top-4 right-4">
-                      <Badge variant="secondary" className="bg-white/80 backdrop-blur-sm">{product.tag}</Badge>
+                      <Badge variant="destructive" className="bg-primary">{product.offerText}</Badge>
                     </div>
                     <button className="absolute bottom-4 left-4 right-4 btn-primary opacity-0 translate-y-2 group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-300">
-                      Quick View
+                      Shop Now
                     </button>
                   </div>
                   <div className="p-4">
                     <h3 className="font-medium">{product.name}</h3>
-                    <p className="text-primary font-semibold mt-1">{product.price}</p>
+                    <div className="flex gap-2 items-center mt-1">
+                      <span className="text-primary font-semibold">{product.offerPrice}</span>
+                      <span className="text-muted-foreground line-through">{product.price}</span>
+                    </div>
                   </div>
                 </div>
               </CarouselItem>
