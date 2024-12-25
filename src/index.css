@@ -7,10 +7,10 @@
 @layer base {
   :root {
     --background: 0 0% 100%;
-    --foreground: 20 40% 20%;
-    --border: 20 30% 90%;
-    --input: 20 30% 90%;
-    --ring: 20 40% 20%;
+    --foreground: 240 10% 3.9%;
+    --border: 240 5.9% 90%;
+    --input: 240 5.9% 90%;
+    --ring: 240 10% 3.9%;
   }
 
   body {
@@ -20,7 +20,7 @@
 
 @layer components {
   .hero-title {
-    @apply font-serif text-4xl md:text-6xl font-bold leading-tight;
+    @apply font-serif font-bold leading-tight;
   }
   
   .section-title {
@@ -32,15 +32,15 @@
   }
   
   .nav-link {
-    @apply text-foreground/80 hover:text-foreground transition-colors duration-200;
+    @apply text-foreground/80 hover:text-foreground transition-colors duration-200 uppercase text-sm tracking-wide;
   }
   
   .btn-primary {
-    @apply px-6 py-3 bg-primary text-primary-foreground rounded-md transition-all duration-200 hover:bg-primary/90;
+    @apply px-6 py-3 bg-primary text-primary-foreground rounded-full transition-all duration-200 hover:bg-primary/90 font-medium;
   }
   
   .btn-secondary {
-    @apply px-6 py-3 bg-secondary text-secondary-foreground rounded-md transition-all duration-200 hover:bg-secondary/90;
+    @apply px-6 py-3 bg-white text-foreground rounded-full transition-all duration-200 hover:bg-secondary/50 font-medium;
   }
 }
 

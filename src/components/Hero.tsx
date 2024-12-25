@@ -2,23 +2,29 @@ import { ArrowRight } from 'lucide-react';
 
 export const Hero = () => {
   return (
-    <section className="min-h-screen pt-16 flex items-center bg-secondary/20">
+    <section className="min-h-screen pt-16 bg-gradient-to-b from-secondary/30 to-white">
       <div className="container mx-auto px-4">
         <div className="grid md:grid-cols-2 gap-12 items-center">
           <div className="space-y-6 animate-fade-up">
             <span className="inline-block px-4 py-2 bg-primary/10 text-primary rounded-full text-sm font-medium">
-              New Collection 2024
+              Summer Collection 2024
             </span>
-            <h1 className="hero-title">
-              Discover the Art of Dressing Up
+            <h1 className="hero-title text-[2.75rem] md:text-[3.5rem] leading-tight">
+              Discover Your <br />
+              <span className="text-primary">Perfect Style</span>
             </h1>
             <p className="text-lg text-foreground/80 max-w-md">
-              Elevate your style with our curated collection of timeless pieces designed for the modern individual.
+              Shop the latest trends at unbeatable prices. New arrivals every day with free shipping on orders over $49.
             </p>
-            <button className="btn-primary flex items-center gap-2 group">
-              Shop Now
-              <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
-            </button>
+            <div className="flex gap-4">
+              <button className="btn-primary flex items-center gap-2 group bg-primary hover:bg-primary/90">
+                Shop Now
+                <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+              </button>
+              <button className="btn-secondary border border-primary/20 hover:border-primary/40">
+                View Lookbook
+              </button>
+            </div>
           </div>
           
           <div className="relative animate-fade-in">
@@ -27,7 +33,10 @@ export const Hero = () => {
               alt="Fashion Model"
               className="w-full h-[600px] object-cover rounded-lg hover-scale"
             />
-            <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent rounded-lg" />
+            <div className="absolute bottom-0 left-0 right-0 p-6 bg-gradient-to-t from-black/60 to-transparent rounded-b-lg">
+              <p className="text-white text-xl font-medium">Up to 60% Off</p>
+              <p className="text-white/80">Limited time offer</p>
+            </div>
           </div>
         </div>
       </div>

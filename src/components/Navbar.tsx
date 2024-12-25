@@ -1,30 +1,38 @@
 import { useState } from 'react';
-import { Menu, X, ShoppingBag, Search } from 'lucide-react';
+import { Menu, X, ShoppingBag, Search, Heart, User } from 'lucide-react';
 
 export const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
 
   return (
-    <nav className="fixed w-full bg-white/80 backdrop-blur-md z-50 border-b border-border">
+    <nav className="fixed w-full bg-white z-50 shadow-sm">
       <div className="container mx-auto px-4">
         <div className="flex items-center justify-between h-16">
           <div className="flex-shrink-0">
-            <a href="/" className="font-serif text-2xl font-bold">MODENA</a>
+            <a href="/" className="font-serif text-2xl font-bold text-primary">SHEIN</a>
           </div>
           
           <div className="hidden md:flex items-center space-x-8">
-            <a href="#" className="nav-link">Women</a>
-            <a href="#" className="nav-link">Men</a>
-            <a href="#" className="nav-link">Collections</a>
-            <a href="#" className="nav-link">About</a>
+            <a href="#" className="nav-link hover:text-primary">NEW IN</a>
+            <a href="#" className="nav-link hover:text-primary">CLOTHING</a>
+            <a href="#" className="nav-link hover:text-primary">SHOES</a>
+            <a href="#" className="nav-link hover:text-primary">ACCESSORIES</a>
+            <a href="#" className="nav-link hover:text-primary">SALE</a>
           </div>
           
-          <div className="hidden md:flex items-center space-x-4">
-            <button className="p-2 hover:bg-secondary/50 rounded-full">
+          <div className="hidden md:flex items-center space-x-6">
+            <button className="p-2 hover:bg-muted rounded-full">
               <Search className="w-5 h-5" />
             </button>
-            <button className="p-2 hover:bg-secondary/50 rounded-full">
+            <button className="p-2 hover:bg-muted rounded-full">
+              <User className="w-5 h-5" />
+            </button>
+            <button className="p-2 hover:bg-muted rounded-full">
+              <Heart className="w-5 h-5" />
+            </button>
+            <button className="p-2 hover:bg-muted rounded-full relative">
               <ShoppingBag className="w-5 h-5" />
+              <span className="absolute -top-1 -right-1 bg-primary text-white text-xs w-4 h-4 rounded-full flex items-center justify-center">0</span>
             </button>
           </div>
           
@@ -37,14 +45,14 @@ export const Navbar = () => {
         </div>
       </div>
       
-      {/* Mobile menu */}
       {isOpen && (
         <div className="md:hidden bg-white border-t border-border animate-fade-in">
           <div className="px-4 pt-2 pb-4 space-y-2">
-            <a href="#" className="block nav-link py-2">Women</a>
-            <a href="#" className="block nav-link py-2">Men</a>
-            <a href="#" className="block nav-link py-2">Collections</a>
-            <a href="#" className="block nav-link py-2">About</a>
+            <a href="#" className="block nav-link py-2 hover:text-primary">NEW IN</a>
+            <a href="#" className="block nav-link py-2 hover:text-primary">CLOTHING</a>
+            <a href="#" className="block nav-link py-2 hover:text-primary">SHOES</a>
+            <a href="#" className="block nav-link py-2 hover:text-primary">ACCESSORIES</a>
+            <a href="#" className="block nav-link py-2 hover:text-primary">SALE</a>
           </div>
         </div>
       )}
