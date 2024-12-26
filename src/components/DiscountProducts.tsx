@@ -14,28 +14,44 @@ export const DiscountProducts = () => {
       price: "$89.99",
       discountPrice: "$49.99",
       image: "https://images.unsplash.com/photo-1518459031867-a89b944bffe4",
-      discount: "45% OFF"
+      discount: "45% OFF",
+      description: "Comfortable and stylish everyday sneakers",
+      colors: ["White", "Black", "Gray"],
+      stock: 12,
+      endDate: "2024-03-30"
     },
     {
       name: "Denim Collection",
       price: "$129.99",
       discountPrice: "$79.99",
       image: "https://images.unsplash.com/photo-1503342217505-b0a15ec3261c",
-      discount: "38% OFF"
+      discount: "38% OFF",
+      description: "Premium quality stretch denim jeans",
+      colors: ["Blue", "Black", "Light Blue"],
+      stock: 8,
+      endDate: "2024-03-25"
     },
     {
       name: "Winter Jacket",
       price: "$199.99",
       discountPrice: "$129.99",
       image: "https://images.unsplash.com/photo-1577744486770-020ab432da65",
-      discount: "35% OFF"
+      discount: "35% OFF",
+      description: "Warm and water-resistant winter jacket",
+      colors: ["Navy", "Black", "Green"],
+      stock: 5,
+      endDate: "2024-03-20"
     },
     {
       name: "Fashion Accessories",
       price: "$79.99",
       discountPrice: "$39.99",
       image: "https://images.unsplash.com/photo-1584917865442-de89df76afd3",
-      discount: "50% OFF"
+      discount: "50% OFF",
+      description: "Trendy accessories for any outfit",
+      colors: ["Gold", "Silver", "Rose Gold"],
+      stock: 15,
+      endDate: "2024-03-28"
     }
   ];
 
@@ -67,15 +83,33 @@ export const DiscountProducts = () => {
                     <div className="absolute top-4 right-4">
                       <Badge variant="destructive" className="bg-accent text-accent-foreground">{product.discount}</Badge>
                     </div>
-                    <button className="absolute bottom-4 left-4 right-4 btn-primary opacity-0 translate-y-2 group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-300">
-                      Shop Now
-                    </button>
+                    <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                      <div className="absolute bottom-4 left-4 right-4 space-y-2">
+                        <button className="w-full btn-primary">
+                          Shop Now
+                        </button>
+                        <div className="text-white text-center text-sm">
+                          Offer ends {new Date(product.endDate).toLocaleDateString()}
+                        </div>
+                      </div>
+                    </div>
                   </div>
-                  <div className="p-4">
-                    <h3 className="font-medium">{product.name}</h3>
-                    <div className="flex gap-2 items-center mt-1">
-                      <span className="text-accent font-semibold">{product.discountPrice}</span>
-                      <span className="text-muted-foreground line-through">{product.price}</span>
+                  <div className="p-4 space-y-2">
+                    <h3 className="font-medium text-lg">{product.name}</h3>
+                    <p className="text-sm text-muted-foreground line-clamp-2">{product.description}</p>
+                    <div className="flex justify-between items-center">
+                      <div>
+                        <span className="text-accent font-semibold text-lg">{product.discountPrice}</span>
+                        <span className="text-muted-foreground line-through ml-2">{product.price}</span>
+                      </div>
+                      <Badge variant="outline" className="text-xs">
+                        {product.stock} left
+                      </Badge>
+                    </div>
+                    <div className="flex gap-2">
+                      {product.colors.map((color) => (
+                        <Badge key={color} variant="secondary" className="px-2">{color}</Badge>
+                      ))}
                     </div>
                   </div>
                 </div>
