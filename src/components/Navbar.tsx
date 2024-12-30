@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { Menu, X, ShoppingBag, Search, Heart, User } from 'lucide-react';
+import { Link } from 'react-router-dom';
 
 export const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -9,15 +10,15 @@ export const Navbar = () => {
       <div className="container mx-auto px-4">
         <div className="flex items-center justify-between h-16">
           <div className="flex-shrink-0">
-            <a href="/" className="font-serif text-2xl font-bold text-primary">SHEIN</a>
+            <Link to="/" className="font-serif text-2xl font-bold text-primary">SHEIN</Link>
           </div>
           
           <div className="hidden md:flex items-center space-x-8">
-            <a href="#" className="nav-link hover:text-primary">NEW IN</a>
-            <a href="#" className="nav-link hover:text-primary">CLOTHING</a>
-            <a href="#" className="nav-link hover:text-primary">SHOES</a>
-            <a href="#" className="nav-link hover:text-primary">ACCESSORIES</a>
-            <a href="#" className="nav-link hover:text-primary">SALE</a>
+            <Link to="#" className="nav-link hover:text-primary">NEW IN</Link>
+            <Link to="#" className="nav-link hover:text-primary">CLOTHING</Link>
+            <Link to="#" className="nav-link hover:text-primary">SHOES</Link>
+            <Link to="#" className="nav-link hover:text-primary">ACCESSORIES</Link>
+            <Link to="#" className="nav-link hover:text-primary">SALE</Link>
           </div>
           
           <div className="hidden md:flex items-center space-x-6">
@@ -48,11 +49,11 @@ export const Navbar = () => {
       {isOpen && (
         <div className="md:hidden bg-white border-t border-border animate-fade-in">
           <div className="px-4 pt-2 pb-4 space-y-2">
-            <a href="#" className="block nav-link py-2 hover:text-primary">NEW IN</a>
-            <a href="#" className="block nav-link py-2 hover:text-primary">CLOTHING</a>
-            <a href="#" className="block nav-link py-2 hover:text-primary">SHOES</a>
-            <a href="#" className="block nav-link py-2 hover:text-primary">ACCESSORIES</a>
-            <a href="#" className="block nav-link py-2 hover:text-primary">SALE</a>
+            <Link to="#" className="block nav-link py-2 hover:text-primary">NEW IN</Link>
+            <Link to="#" className="block nav-link py-2 hover:text-primary">CLOTHING</Link>
+            <Link to="#" className="block nav-link py-2 hover:text-primary">SHOES</Link>
+            <Link to="#" className="block nav-link py-2 hover:text-primary">ACCESSORIES</Link>
+            <Link to="#" className="block nav-link py-2 hover:text-primary">SALE</Link>
           </div>
         </div>
       )}
