@@ -1,3 +1,4 @@
+import { useNavigate } from "react-router-dom";
 import {
   Carousel,
   CarouselContent,
@@ -7,6 +8,7 @@ import {
 } from "@/components/ui/carousel";
 
 export const Categories = () => {
+  const navigate = useNavigate();
   const categories = [
     {
       title: "Formal Woman",
@@ -50,6 +52,10 @@ export const Categories = () => {
     }
   ];
 
+  const handleCategoryClick = (category: string) => {
+    navigate(`/products?category=${category}`);
+  };
+
   return (
     <section className="py-20 bg-white">
       <div className="container mx-auto px-4">
@@ -65,9 +71,9 @@ export const Categories = () => {
           <CarouselContent>
             {categories.map((category, index) => (
               <CarouselItem key={index} className="md:basis-1/3 sm:basis-1/2">
-                <a
-                  href={category.link}
-                  className="group relative overflow-hidden rounded-lg aspect-[3/4] hover-scale block"
+                <div
+                  onClick={() => handleCategoryClick(category.title)}
+                  className="group relative overflow-hidden rounded-lg aspect-[3/4] hover-scale block cursor-pointer"
                 >
                   <img
                     src={category.image}
@@ -78,7 +84,7 @@ export const Categories = () => {
                   <h3 className="absolute bottom-6 left-6 text-white font-serif text-2xl">
                     {category.title}
                   </h3>
-                </a>
+                </div>
               </CarouselItem>
             ))}
           </CarouselContent>
