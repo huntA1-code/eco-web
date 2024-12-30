@@ -54,7 +54,7 @@ export const Categories = () => {
 
   const handleCategoryClick = (category: string) => {
     console.log("Navigating to:", `/products?category=${category}`);
-    navigate(`/products?category=${category}`, { replace: false });
+    navigate(`/products?category=${category}`);
   };
 
   return (
@@ -72,23 +72,22 @@ export const Categories = () => {
           <CarouselContent>
             {categories.map((category, index) => (
               <CarouselItem key={index} className="md:basis-1/3 sm:basis-1/2">
-                <div
-                  onClick={(e) => {
-                    e.preventDefault();
-                    handleCategoryClick(category.title);
-                  }}
-                  className="group relative overflow-hidden rounded-lg aspect-[3/4] hover-scale block cursor-pointer"
+                <button
+                  onClick={() => handleCategoryClick(category.title)}
+                  className="w-full text-left"
                 >
-                  <img
-                    src={category.image}
-                    alt={category.title}
-                    className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
-                  />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
-                  <h3 className="absolute bottom-6 left-6 text-white font-serif text-2xl">
-                    {category.title}
-                  </h3>
-                </div>
+                  <div className="group relative overflow-hidden rounded-lg aspect-[3/4] hover-scale">
+                    <img
+                      src={category.image}
+                      alt={category.title}
+                      className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
+                    <h3 className="absolute bottom-6 left-6 text-white font-serif text-2xl">
+                      {category.title}
+                    </h3>
+                  </div>
+                </button>
               </CarouselItem>
             ))}
           </CarouselContent>
