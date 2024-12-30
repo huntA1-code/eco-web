@@ -53,7 +53,8 @@ export const Categories = () => {
   ];
 
   const handleCategoryClick = (category: string) => {
-    navigate(`/products?category=${category}`);
+    console.log("Navigating to:", `/products?category=${category}`);
+    navigate(`/products?category=${category}`, { replace: false });
   };
 
   return (
@@ -72,7 +73,10 @@ export const Categories = () => {
             {categories.map((category, index) => (
               <CarouselItem key={index} className="md:basis-1/3 sm:basis-1/2">
                 <div
-                  onClick={() => handleCategoryClick(category.title)}
+                  onClick={(e) => {
+                    e.preventDefault();
+                    handleCategoryClick(category.title);
+                  }}
                   className="group relative overflow-hidden rounded-lg aspect-[3/4] hover-scale block cursor-pointer"
                 >
                   <img
