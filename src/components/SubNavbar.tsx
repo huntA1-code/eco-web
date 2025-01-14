@@ -5,6 +5,7 @@ import { useState, useRef, useEffect } from 'react';
 export const SubNavbar = () => {
   const [canScrollLeft, setCanScrollLeft] = useState(false);
   const [canScrollRight, setCanScrollRight] = useState(false);
+  const [isVisible, setIsVisible] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
   
   const categories = [
@@ -34,7 +35,28 @@ export const SubNavbar = () => {
   useEffect(() => {
     checkScroll();
     window.addEventListener('resize', checkScroll);
-    return () => window.removeEventListener('resize', checkScroll);
+
+    // Show SubNavbar when scrolling down
+    let lastScrollY = window.scrollY;
+    
+    const handleScroll = () => {
+      const currentScrollY = window.scrollY;
+      
+      if (currentScrollY > lastScrollY) {
+        setIsVisible(false); // Hide when scrolling down
+      } else {
+        setIsVisible(true); // Show when scrolling up
+      }
+      
+      lastScrollY = currentScrollY;
+    };
+
+    window.addEventListener('scroll', handleScroll, { passive: true });
+
+    return () => {
+      window.removeEventListener('resize', checkScroll);
+      window.removeEventListener('scroll', handleScroll);
+    };
   }, []);
 
   const scroll = (direction: 'left' | 'right') => {
@@ -50,13 +72,14 @@ export const SubNavbar = () => {
         behavior: 'smooth'
       });
 
-      // Update scroll buttons state after scrolling
       setTimeout(checkScroll, 100);
     }
   };
 
   return (
-    <div className="w-full bg-secondary shadow-sm mt-16">
+    <div className={`w-full bg-secondary shadow-sm mt-16 transition-transform duration-300 ${
+      isVisible ? 'translate-y-0' : '-translate-y-full'
+    }`}>
       <div className="container mx-auto px-4 relative">
         <div className="flex items-center justify-between h-12">
           <button 
