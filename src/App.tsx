@@ -1,17 +1,19 @@
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import { Navbar } from "./components/Navbar";
-import Index from "./pages/Index";
-import Products from "./pages/Products";
+import { Routes, Route } from 'react-router-dom';
+import { Navbar } from './components/Navbar';
+import { SubNavbar } from './components/SubNavbar';
+import Index from './pages/Index';
+import Products from './pages/Products';
 
 function App() {
   return (
-    <Router>
+    <>
       <Navbar />
+      <SubNavbar />
       <Routes>
         <Route path="/" element={<Index />} />
         <Route path="/products" element={<Products />} />
       </Routes>
-    </Router>
+    </>
   );
 }
 

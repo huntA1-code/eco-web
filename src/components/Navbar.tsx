@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Menu, X, ShoppingBag, Search, Heart, User } from 'lucide-react';
+import { ShoppingBag, Search, Heart, User, Menu, X } from 'lucide-react';
 import { Link } from 'react-router-dom';
 
 export const Navbar = () => {
@@ -11,14 +11,6 @@ export const Navbar = () => {
         <div className="flex items-center justify-between h-16">
           <div className="flex-shrink-0">
             <Link to="/" className="font-serif text-2xl font-bold text-primary">SHEIN</Link>
-          </div>
-          
-          <div className="hidden md:flex items-center space-x-8">
-            <Link to="#" className="nav-link hover:text-primary">NEW IN</Link>
-            <Link to="#" className="nav-link hover:text-primary">CLOTHING</Link>
-            <Link to="#" className="nav-link hover:text-primary">SHOES</Link>
-            <Link to="#" className="nav-link hover:text-primary">ACCESSORIES</Link>
-            <Link to="#" className="nav-link hover:text-primary">SALE</Link>
           </div>
           
           <div className="hidden md:flex items-center space-x-6">
