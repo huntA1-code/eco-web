@@ -6,8 +6,12 @@ import {
   CarouselPrevious,
 } from "@/components/ui/carousel";
 import { Badge } from "@/components/ui/badge";
+import { useState } from "react";
+import { QuickView } from "./QuickView";
 
 export const FeaturedProducts = () => {
+  const [selectedProduct, setSelectedProduct] = useState<any>(null);
+  
   const products = [
     {
       name: "Classic White Dress",
@@ -81,7 +85,10 @@ export const FeaturedProducts = () => {
                     </div>
                     <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
                       <div className="absolute bottom-4 left-4 right-4 space-y-2">
-                        <button className="w-full btn-primary">
+                        <button 
+                          className="w-full btn-primary"
+                          onClick={() => setSelectedProduct(product)}
+                        >
                           Quick View
                         </button>
                         <button className="w-full btn-secondary">
@@ -114,6 +121,14 @@ export const FeaturedProducts = () => {
           <CarouselPrevious className="hidden md:flex -left-4" />
           <CarouselNext className="hidden md:flex -right-4" />
         </Carousel>
+
+        {selectedProduct && (
+          <QuickView
+            product={selectedProduct}
+            isOpen={!!selectedProduct}
+            onClose={() => setSelectedProduct(null)}
+          />
+        )}
       </div>
     </section>
   );
