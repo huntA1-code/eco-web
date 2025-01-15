@@ -1,25 +1,67 @@
 import { Filter } from "lucide-react";
 import { Slider } from "@/components/ui/slider";
-import { Checkbox } from "@/components/ui/checkbox";
+import { CategoryTree } from "@/components/CategoryTree";
 import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "@/components/ui/accordion";
+import { CategoryNode, FilterState } from "@/types/filters";
+
+const categoryTree: CategoryNode[] = [
+  {
+    id: "women",
+    name: "Women Apparel",
+    children: [
+      {
+        id: "women-clothing",
+        name: "Women Clothing",
+        children: [
+          {
+            id: "women-bottoms",
+            name: "Women Bottoms",
+            children: [
+              {
+                id: "women-pants",
+                name: "Women Pants"
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  {
+    id: "sports",
+    name: "Sports & Outdoor",
+    children: [
+      {
+        id: "women-activewear",
+        name: "Women Activewear",
+        children: [
+          {
+            id: "women-active-tops",
+            name: "Women Active Tops",
+            children: [
+              {
+                id: "women-sports-tees",
+                name: "Women Sports Tees & Tanks"
+              },
+              {
+                id: "women-sports-sweatshirts",
+                name: "Women Sports Sweatshirts"
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  }
+];
 
 interface ProductFiltersProps {
-  filters: {
-    categories: string[];
-    types: string[];
-    colors: string[];
-    sizes: string[];
-    priceRange: number[];
-    styles: string[];
-    occasions: string[];
-  };
-  selectedFilters: Record<string, any>;
+  selectedFilters: FilterState;
   onFilterChange: (filterType: string, value: any) => void;
   onClearFilter: (filterType: string) => void;
   showMobileFilters: boolean;
@@ -27,7 +69,6 @@ interface ProductFiltersProps {
 }
 
 export const ProductFilters = ({
-  filters,
   selectedFilters,
   onFilterChange,
   onClearFilter,
@@ -53,6 +94,7 @@ export const ProductFilters = ({
           ${showMobileFilters ? 'block' : 'hidden'}
           lg:w-64 bg-background lg:bg-transparent
           z-50 lg:z-0 overflow-auto
+          scrollbar-hide
         `}
       >
         <div className="p-4 lg:p-0">
@@ -66,83 +108,43 @@ export const ProductFilters = ({
             </button>
           </div>
 
-          <div className="space-y-6">
-            {/* Categories */}
-            <div>
-              <h3 className="font-medium mb-3">Categories</h3>
-              <div className="space-y-2">
-                {filters.categories.map(cat => (
-                  <div key={cat} className="flex items-center gap-2">
-                    <Checkbox
-                      id={cat}
-                      checked={selectedFilters.category === cat}
-                      onCheckedChange={() => onFilterChange('category', cat)}
+          <Accordion type="multiple" className="space-y-4">
+            <AccordionItem value="categories">
+              <AccordionTrigger className="text-base font-medium">
+                Categories
+              </AccordionTrigger>
+              <AccordionContent>
+                <div className="pt-2">
+                  {categoryTree.map((node) => (
+                    <CategoryTree
+                      key={node.id}
+                      node={node}
+                      selectedCategory={selectedFilters.category}
+                      onSelect={(categoryId) => onFilterChange('category', categoryId)}
                     />
-                    <label htmlFor={cat} className="text-sm cursor-pointer">
-                      {cat}
-                    </label>
-                  </div>
-                ))}
-              </div>
-            </div>
+                  ))}
+                </div>
+              </AccordionContent>
+            </AccordionItem>
 
-            {/* Colors */}
-            <div>
-              <h3 className="font-medium mb-3">Colors</h3>
-              <div className="flex flex-wrap gap-2">
-                {filters.colors.map(color => (
-                  <div
-                    key={color}
-                    onClick={() => onFilterChange('color', color)}
-                    className={`
-                      w-8 h-8 rounded-full cursor-pointer
-                      border-2 transition-all duration-200
-                      ${selectedFilters.color === color ? 'ring-2 ring-primary ring-offset-2' : ''}
-                    `}
-                    style={{ backgroundColor: color.toLowerCase() }}
-                  />
-                ))}
-              </div>
-            </div>
-
-            {/* Price Range */}
-            <div>
-              <h3 className="font-medium mb-3">Price Range</h3>
-              <Slider
-                defaultValue={[0, 200]}
-                max={200}
-                step={1}
-                onValueChange={(value) => onFilterChange('priceRange', value)}
-              />
-              <div className="flex justify-between mt-2 text-sm text-muted-foreground">
-                <span>${selectedFilters.priceRange?.[0] || 0}</span>
-                <span>${selectedFilters.priceRange?.[1] || 200}</span>
-              </div>
-            </div>
-
-            {/* Sizes */}
-            <div>
-              <h3 className="font-medium mb-3">Sizes</h3>
-              <div className="flex flex-wrap gap-2">
-                {filters.sizes.map(size => (
-                  <div
-                    key={size}
-                    onClick={() => onFilterChange('size', size)}
-                    className={`
-                      px-3 py-1 border rounded-md cursor-pointer
-                      transition-all duration-200
-                      ${selectedFilters.size === size
-                        ? 'bg-primary text-primary-foreground'
-                        : 'hover:bg-secondary'
-                      }
-                    `}
-                  >
-                    {size}
-                  </div>
-                ))}
-              </div>
-            </div>
-          </div>
+            <AccordionItem value="price">
+              <AccordionTrigger className="text-base font-medium">
+                Price Range
+              </AccordionTrigger>
+              <AccordionContent>
+                <Slider
+                  defaultValue={[0, 200]}
+                  max={200}
+                  step={1}
+                  onValueChange={(value) => onFilterChange('priceRange', value)}
+                />
+                <div className="flex justify-between mt-2 text-sm text-muted-foreground">
+                  <span>${selectedFilters.priceRange?.[0] || 0}</span>
+                  <span>${selectedFilters.priceRange?.[1] || 200}</span>
+                </div>
+              </AccordionContent>
+            </AccordionItem>
+          </Accordion>
         </div>
       </div>
     </>
