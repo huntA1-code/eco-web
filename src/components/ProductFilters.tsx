@@ -66,6 +66,15 @@ interface ProductFiltersProps {
   onClearFilter: (filterType: string) => void;
   showMobileFilters: boolean;
   setShowMobileFilters: (show: boolean) => void;
+  filters: {
+    categories: string[];
+    types: string[];
+    colors: string[];
+    sizes: string[];
+    priceRange: number[];
+    styles: string[];
+    occasions: string[];
+  };
 }
 
 export const ProductFilters = ({
@@ -74,6 +83,7 @@ export const ProductFilters = ({
   onClearFilter,
   showMobileFilters,
   setShowMobileFilters,
+  filters,
 }: ProductFiltersProps) => {
   return (
     <>
