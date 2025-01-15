@@ -66,11 +66,11 @@ export const FeaturedProducts = () => {
           }}
           className="w-full"
         >
-          <CarouselContent>
+          <CarouselContent className="-ml-2 md:-ml-4">
             {products.map((product, index) => (
-              <CarouselItem key={index} className="md:basis-1/3 sm:basis-1/2">
+              <CarouselItem key={index} className="pl-2 md:pl-4 basis-6/12 md:basis-4/12 lg:basis-3/12">
                 <div className="card overflow-hidden group animate-fade-up" style={{ animationDelay: `${index * 100}ms` }}>
-                  <div className="relative aspect-[3/4] overflow-hidden">
+                  <div className="relative aspect-square overflow-hidden">
                     <img
                       src={product.image}
                       alt={product.name}
