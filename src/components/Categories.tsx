@@ -69,21 +69,21 @@ export const Categories = () => {
           }}
           className="w-full"
         >
-          <CarouselContent>
+          <CarouselContent className="-ml-2 md:-ml-4">
             {categories.map((category, index) => (
-              <CarouselItem key={index} className="md:basis-1/3 sm:basis-1/2">
+              <CarouselItem key={index} className="pl-2 md:pl-4 basis-6/12 md:basis-4/12 lg:basis-3/12">
                 <button
                   onClick={() => handleCategoryClick(category.title)}
                   className="w-full text-left"
                 >
-                  <div className="group relative overflow-hidden rounded-lg aspect-[3/4] hover-scale">
+                  <div className="group relative overflow-hidden rounded-lg aspect-square hover-scale">
                     <img
                       src={category.image}
                       alt={category.title}
                       className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
                     />
                     <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
-                    <h3 className="absolute bottom-6 left-6 text-white font-serif text-2xl">
+                    <h3 className="absolute bottom-4 left-4 text-white font-serif text-lg">
                       {category.title}
                     </h3>
                   </div>
