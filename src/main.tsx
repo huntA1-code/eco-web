@@ -7,7 +7,7 @@ import './index.css'
 const baseUrl = window.location.origin.replace(/[:\/]+$/, '');
 
 createRoot(document.getElementById("root")!).render(
-  <BrowserRouter basename={baseUrl}>
+  <BrowserRouter>
     <App />
   </BrowserRouter>
 );
