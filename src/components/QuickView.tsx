@@ -62,27 +62,24 @@ export const QuickView = ({ product, isOpen, onClose }: QuickViewProps) => {
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="max-w-4xl">
-        <DialogHeader>
-          <DialogTitle className="text-2xl font-serif">{product.name}</DialogTitle>
-        </DialogHeader>
-        
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mt-4">
-          {/* Left side - Image Gallery */}
-          <div className="space-y-4">
-            <div className="aspect-square overflow-hidden rounded-lg">
+      <DialogContent className="max-w-5xl h-[80vh] overflow-y-auto">
+        <div className="grid grid-cols-12 gap-6">
+          {/* Left side - Main Image with Gallery */}
+          <div className="col-span-7 relative">
+            <div className="aspect-[4/3] rounded-lg overflow-hidden">
               <img
                 src={selectedImage}
                 alt={product.name}
                 className="w-full h-full object-cover"
               />
             </div>
-            <div className="grid grid-cols-4 gap-2">
+            {/* Gallery thumbnails on the right */}
+            <div className="absolute top-0 right-2 h-full flex flex-col gap-2 py-2">
               {productImages.map((img, index) => (
                 <button
                   key={index}
                   onClick={() => setSelectedImage(img)}
-                  className={`aspect-square rounded-md overflow-hidden border-2 transition-all ${
+                  className={`w-16 h-16 rounded-md overflow-hidden border-2 transition-all ${
                     selectedImage === img ? "border-primary" : "border-transparent"
                   }`}
                 >
@@ -97,27 +94,30 @@ export const QuickView = ({ product, isOpen, onClose }: QuickViewProps) => {
           </div>
 
           {/* Right side - Product Details */}
-          <div className="space-y-6">
-            <div>
-              <div className="flex justify-between items-start">
-                <div>
-                  <p className="text-2xl font-semibold">{product.price}</p>
-                  {product.tag && (
-                    <Badge variant="secondary" className="mt-2">
-                      {product.tag}
-                    </Badge>
-                  )}
-                </div>
-                <div className="flex items-center gap-1">
-                  <span className="text-yellow-400">★</span>
-                  <span className="font-medium">{product.rating}</span>
-                  <span className="text-muted-foreground">
-                    ({product.reviews} reviews)
-                  </span>
-                </div>
+          <div className="col-span-5 space-y-4">
+            <DialogHeader>
+              <DialogTitle className="text-2xl font-serif">{product.name}</DialogTitle>
+            </DialogHeader>
+
+            <div className="flex justify-between items-start">
+              <div>
+                <p className="text-2xl font-semibold">{product.price}</p>
+                {product.tag && (
+                  <Badge variant="secondary" className="mt-2">
+                    {product.tag}
+                  </Badge>
+                )}
               </div>
-              <p className="mt-4 text-muted-foreground">{product.description}</p>
+              <div className="flex items-center gap-1">
+                <span className="text-yellow-400">★</span>
+                <span className="font-medium">{product.rating}</span>
+                <span className="text-muted-foreground">
+                  ({product.reviews} reviews)
+                </span>
+              </div>
             </div>
+
+            <p className="text-muted-foreground">{product.description}</p>
 
             <div>
               <h3 className="font-medium mb-3">Select Size</h3>
@@ -154,7 +154,7 @@ export const QuickView = ({ product, isOpen, onClose }: QuickViewProps) => {
               </button>
             </div>
 
-            <div className="border-t pt-6">
+            <div className="border-t pt-4">
               <h3 className="font-medium mb-2">Product Details</h3>
               <ul className="list-disc list-inside space-y-1 text-muted-foreground">
                 <li>Premium quality materials</li>
