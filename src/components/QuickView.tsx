@@ -7,7 +7,7 @@ import {
 import { Badge } from "@/components/ui/badge";
 import { useState } from "react";
 import { Heart, ShoppingBag, ChevronRight } from "lucide-react";
-import { useToast } from "@/components/ui/use-toast";
+import { useToast } from "@/hooks/use-toast";
 import { Link } from "react-router-dom";
 
 interface QuickViewProps {
@@ -46,13 +46,6 @@ export const QuickView = ({ product, isOpen, onClose }: QuickViewProps) => {
     });
   };
 
-  const handleAddToWishlist = () => {
-    toast({
-      title: "Added to wishlist",
-      description: `${product.name} has been added to your wishlist.`,
-    });
-  };
-
   // Generate additional product images for the gallery
   const productImages = [
     product.image,
@@ -63,7 +56,7 @@ export const QuickView = ({ product, isOpen, onClose }: QuickViewProps) => {
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="max-w-4xl h-[90vh] p-6">
+      <DialogContent className="max-w-4xl h-[80vh] p-6">
         <div className="grid grid-cols-12 gap-6 h-full">
           {/* Left side - Gallery Thumbnails */}
           <div className="col-span-1 flex flex-col gap-2">
@@ -86,7 +79,7 @@ export const QuickView = ({ product, isOpen, onClose }: QuickViewProps) => {
 
           {/* Center - Main Image */}
           <div className="col-span-6">
-            <div className="aspect-[3/4] rounded-lg overflow-hidden">
+            <div className="aspect-[4/3] rounded-lg overflow-hidden">
               <img
                 src={selectedImage}
                 alt={product.name}
@@ -96,7 +89,7 @@ export const QuickView = ({ product, isOpen, onClose }: QuickViewProps) => {
           </div>
 
           {/* Right side - Product Details */}
-          <div className="col-span-5 flex flex-col h-full">
+          <div className="col-span-5 flex flex-col">
             <DialogHeader>
               <DialogTitle className="text-2xl font-serif">{product.name}</DialogTitle>
             </DialogHeader>
@@ -148,17 +141,11 @@ export const QuickView = ({ product, isOpen, onClose }: QuickViewProps) => {
                 <ShoppingBag size={18} />
                 Add to Cart
               </button>
-              <button
-                onClick={handleAddToWishlist}
-                className="btn-secondary p-3"
-              >
-                <Heart size={18} />
-              </button>
             </div>
 
             <Link 
               to={`/products/${encodeURIComponent(product.name)}`} 
-              className="mt-auto flex items-center text-primary hover:underline"
+              className="mt-4 flex items-center text-primary hover:underline"
             >
               Show full details <ChevronRight size={16} className="ml-1" />
             </Link>
