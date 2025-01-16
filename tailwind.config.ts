@@ -25,25 +25,46 @@ export default {
         background: "hsl(var(--background))",
         foreground: "hsl(var(--foreground))",
         primary: {
-          DEFAULT: "#D946EF",
+          DEFAULT: "#9b87f5",
+          light: "#b3a4f7",
+          dark: "#7d69f3",
           foreground: "#FFFFFF",
         },
         secondary: {
-          DEFAULT: "#F2FCE2",
-          foreground: "#222222",
+          DEFAULT: "#7E69AB",
+          light: "#9985BD",
+          dark: "#635287",
+          foreground: "#FFFFFF",
         },
         accent: {
-          DEFAULT: "#FEC6A1",
-          foreground: "#222222",
+          DEFAULT: "#D946EF",
+          light: "#E06EF3",
+          dark: "#C131DC",
+          foreground: "#FFFFFF",
         },
-        muted: {
-          DEFAULT: "#F1F0FB",
-          foreground: "#8E9196",
+        neutral: {
+          DEFAULT: "#8E9196",
+          light: "#F1F0FB",
+          dark: "#222222",
+          foreground: "#FFFFFF",
         },
       },
       fontFamily: {
         sans: ["Inter", "sans-serif"],
         serif: ["Playfair Display", "serif"],
+      },
+      spacing: {
+        container: "2rem",
+        section: "4rem",
+      },
+      borderRadius: {
+        DEFAULT: "0.5rem",
+        lg: "0.75rem",
+        xl: "1rem",
+      },
+      animation: {
+        "fade-up": "fade-up 0.5s ease-out",
+        "fade-in": "fade-in 0.5s ease-out",
       },
       keyframes: {
         "fade-up": {
@@ -64,10 +85,6 @@ export default {
             opacity: "1",
           },
         },
-      },
-      animation: {
-        "fade-up": "fade-up 0.5s ease-out",
-        "fade-in": "fade-in 0.5s ease-out",
       },
     },
   },

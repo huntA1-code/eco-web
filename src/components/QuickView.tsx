@@ -6,8 +6,9 @@ import {
 } from "@/components/ui/dialog";
 import { Badge } from "@/components/ui/badge";
 import { useState } from "react";
-import { Heart, ShoppingBag } from "lucide-react";
+import { Heart, ShoppingBag, ChevronRight } from "lucide-react";
 import { useToast } from "@/components/ui/use-toast";
+import { Link } from "react-router-dom";
 
 interface QuickViewProps {
   product: {
@@ -62,44 +63,45 @@ export const QuickView = ({ product, isOpen, onClose }: QuickViewProps) => {
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="max-w-5xl h-[80vh] overflow-y-auto">
-        <div className="grid grid-cols-12 gap-6">
-          {/* Left side - Main Image with Gallery */}
-          <div className="col-span-7 relative">
-            <div className="aspect-[4/3] rounded-lg overflow-hidden">
+      <DialogContent className="max-w-4xl h-[90vh] p-6">
+        <div className="grid grid-cols-12 gap-6 h-full">
+          {/* Left side - Gallery Thumbnails */}
+          <div className="col-span-1 flex flex-col gap-2">
+            {productImages.map((img, index) => (
+              <button
+                key={index}
+                onClick={() => setSelectedImage(img)}
+                className={`w-16 h-16 rounded-md overflow-hidden border-2 transition-all ${
+                  selectedImage === img ? "border-primary" : "border-transparent"
+                }`}
+              >
+                <img
+                  src={img}
+                  alt={`${product.name} view ${index + 1}`}
+                  className="w-full h-full object-cover"
+                />
+              </button>
+            ))}
+          </div>
+
+          {/* Center - Main Image */}
+          <div className="col-span-6">
+            <div className="aspect-[3/4] rounded-lg overflow-hidden">
               <img
                 src={selectedImage}
                 alt={product.name}
                 className="w-full h-full object-cover"
               />
             </div>
-            {/* Gallery thumbnails on the right */}
-            <div className="absolute top-0 right-2 h-full flex flex-col gap-2 py-2">
-              {productImages.map((img, index) => (
-                <button
-                  key={index}
-                  onClick={() => setSelectedImage(img)}
-                  className={`w-16 h-16 rounded-md overflow-hidden border-2 transition-all ${
-                    selectedImage === img ? "border-primary" : "border-transparent"
-                  }`}
-                >
-                  <img
-                    src={img}
-                    alt={`${product.name} view ${index + 1}`}
-                    className="w-full h-full object-cover"
-                  />
-                </button>
-              ))}
-            </div>
           </div>
 
           {/* Right side - Product Details */}
-          <div className="col-span-5 space-y-4">
+          <div className="col-span-5 flex flex-col h-full">
             <DialogHeader>
               <DialogTitle className="text-2xl font-serif">{product.name}</DialogTitle>
             </DialogHeader>
 
-            <div className="flex justify-between items-start">
+            <div className="flex justify-between items-start mt-4">
               <div>
                 <p className="text-2xl font-semibold">{product.price}</p>
                 {product.tag && (
@@ -117,9 +119,9 @@ export const QuickView = ({ product, isOpen, onClose }: QuickViewProps) => {
               </div>
             </div>
 
-            <p className="text-muted-foreground">{product.description}</p>
+            <p className="text-muted-foreground mt-4">{product.description}</p>
 
-            <div>
+            <div className="mt-6">
               <h3 className="font-medium mb-3">Select Size</h3>
               <div className="flex flex-wrap gap-2">
                 {product.sizes.map((size) => (
@@ -138,7 +140,7 @@ export const QuickView = ({ product, isOpen, onClose }: QuickViewProps) => {
               </div>
             </div>
 
-            <div className="flex gap-4">
+            <div className="flex gap-4 mt-6">
               <button
                 onClick={handleAddToCart}
                 className="flex-1 btn-primary flex items-center justify-center gap-2"
@@ -154,15 +156,12 @@ export const QuickView = ({ product, isOpen, onClose }: QuickViewProps) => {
               </button>
             </div>
 
-            <div className="border-t pt-4">
-              <h3 className="font-medium mb-2">Product Details</h3>
-              <ul className="list-disc list-inside space-y-1 text-muted-foreground">
-                <li>Premium quality materials</li>
-                <li>Ethically manufactured</li>
-                <li>Free shipping on orders over $100</li>
-                <li>30-day return policy</li>
-              </ul>
-            </div>
+            <Link 
+              to={`/products/${encodeURIComponent(product.name)}`} 
+              className="mt-auto flex items-center text-primary hover:underline"
+            >
+              Show full details <ChevronRight size={16} className="ml-1" />
+            </Link>
           </div>
         </div>
       </DialogContent>
