@@ -7,7 +7,7 @@ import ProductPage from './pages/ProductPage';
 
 function App() {
   return (
-    <>
+    <div className="min-h-screen">
       <Navbar />
       <SubNavbar />
       <Routes>
@@ -15,7 +15,7 @@ function App() {
         <Route path="/products" element={<Products />} />
         <Route path="/products/:productName" element={<ProductPage />} />
       </Routes>
-    </>
+    </div>
   );
 }
 
