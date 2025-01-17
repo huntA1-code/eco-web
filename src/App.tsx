@@ -4,6 +4,7 @@ import { SubNavbar } from './components/SubNavbar';
 import Index from './pages/Index';
 import Products from './pages/Products';
 import ProductPage from './pages/ProductPage';
+import Cart from './pages/Cart';
 
 function App() {
   return (
@@ -14,6 +15,7 @@ function App() {
         <Route path="/" element={<Index />} />
         <Route path="/products" element={<Products />} />
         <Route path="/products/:productName" element={<ProductPage />} />
+        <Route path="/cart" element={<Cart />} />
       </Routes>
     </div>
   );

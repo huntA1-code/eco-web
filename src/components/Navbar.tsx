@@ -23,10 +23,10 @@ export const Navbar = () => {
             <button className="p-2 hover:bg-muted rounded-full">
               <Heart className="w-5 h-5" />
             </button>
-            <button className="p-2 hover:bg-muted rounded-full relative">
+            <Link to="/cart" className="p-2 hover:bg-muted rounded-full relative">
               <ShoppingBag className="w-5 h-5" />
               <span className="absolute -top-1 -right-1 bg-primary text-white text-xs w-4 h-4 rounded-full flex items-center justify-center">0</span>
-            </button>
+            </Link>
           </div>
           
           <button 
