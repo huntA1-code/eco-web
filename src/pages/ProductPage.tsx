@@ -1,9 +1,10 @@
 import { useParams } from "react-router-dom";
 import { Badge } from "@/components/ui/badge";
-import { Heart, ShoppingBag, Share2, ChevronLeft, ChevronRight, Minus, Plus } from "lucide-react";
+import { Heart, ShoppingBag, Share2, ChevronLeft, ChevronRight, Minus, Plus, Check } from "lucide-react";
 import { useState } from "react";
-import { useToast } from "@/components/ui/use-toast";
+import { useToast } from "@/hooks/use-toast";
 import { AboutStore } from "@/components/AboutStore";
+import { CustomerReviews } from "@/components/CustomerReviews";
 import {
   Carousel,
   CarouselContent,
@@ -85,10 +86,24 @@ export default function ProductPage() {
       return;
     }
 
+    // Add to cart logic
+    const cartItem = {
+      id: Date.now(),
+      name: product.name,
+      size: selectedSize,
+      price: parseFloat(product.price.replace('$', '')),
+      quantity: quantity,
+      image: product.images[0]
+    };
+
+    // Get existing cart items
+    const existingCart = JSON.parse(localStorage.getItem('cart') || '[]');
+    localStorage.setItem('cart', JSON.stringify([...existingCart, cartItem]));
+
     setIsAddedToCart(true);
     toast({
       title: "Added to cart",
-      description: `${product.name} (Size: ${selectedSize}, Quantity: ${quantity}) has been added to your cart.`,
+      description: `${product.name} has been added to your cart.`,
     });
   };
 
@@ -101,7 +116,7 @@ export default function ProductPage() {
             {product.images.map((image, index) => (
               <button
                 key={index}
-                className="w-16 h-16 rounded-lg overflow-hidden border hover:border-primary transition-all"
+                className="w-14 h-14 rounded-lg overflow-hidden border hover:border-primary transition-all"
               >
                 <img
                   src={image}
@@ -113,10 +128,10 @@ export default function ProductPage() {
           </div>
         </div>
 
-        {/* Center - Main Image */}
-        <div className="col-span-6">
+        {/* Center - Main Image and Reviews */}
+        <div className="col-span-6 space-y-8">
           <div 
-            className="relative aspect-[3/4] rounded-xl overflow-hidden group"
+            className="relative aspect-[4/5] rounded-xl overflow-hidden group"
             onMouseEnter={() => setShowControls(true)}
             onMouseLeave={() => setShowControls(false)}
           >
@@ -138,6 +153,9 @@ export default function ProductPage() {
               </div>
             </Carousel>
           </div>
+
+          {/* Reviews Section */}
+          <CustomerReviews reviews={product.reviews} />
         </div>
 
         {/* Right - Product Info */}
@@ -218,8 +236,17 @@ export default function ProductPage() {
               }`}
               disabled={isAddedToCart}
             >
-              <ShoppingBag size={18} />
-              {isAddedToCart ? 'Added to Cart' : 'Add to Cart'}
+              {isAddedToCart ? (
+                <>
+                  <Check size={18} />
+                  Added to Cart
+                </>
+              ) : (
+                <>
+                  <ShoppingBag size={18} />
+                  Add to Cart
+                </>
+              )}
             </button>
             <button className="btn-secondary p-3">
               <Heart size={18} />
@@ -231,38 +258,6 @@ export default function ProductPage() {
 
           <div className="border-t pt-6">
             <AboutStore {...storeData} />
-          </div>
-
-          {/* Reviews Section */}
-          <div className="border-t pt-6">
-            <h3 className="text-xl font-serif font-semibold mb-4">Customer Reviews</h3>
-            <div className="space-y-4">
-              {product.reviews.map((review) => (
-                <div key={review.id} className="p-4 bg-neutral-light rounded-lg">
-                  <div className="flex justify-between items-start mb-2">
-                    <div>
-                      <p className="font-medium">{review.user}</p>
-                      <div className="flex items-center gap-1 text-sm text-neutral">
-                        <div className="flex">
-                          {Array.from({ length: 5 }).map((_, i) => (
-                            <span 
-                              key={i} 
-                              className={i < review.rating ? "text-yellow-400" : "text-gray-300"}
-                            >
-                              ★
-                            </span>
-                          ))}
-                        </div>
-                        <span className="text-neutral">
-                          {new Date(review.date).toLocaleDateString()}
-                        </span>
-                      </div>
-                    </div>
-                  </div>
-                  <p className="text-neutral-dark">{review.comment}</p>
-                </div>
-              ))}
-            </div>
           </div>
         </div>
       </div>
