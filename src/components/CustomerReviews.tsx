@@ -1,6 +1,21 @@
 import React, { useState } from 'react';
 import { Star, ThumbsUp, Upload } from 'lucide-react';
 import { useToast } from "@/hooks/use-toast";
+import { Button } from "@/components/ui/button";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 interface Review {
   id: number;
@@ -17,9 +32,11 @@ interface Review {
 
 interface CustomerReviewsProps {
   reviews: Review[];
+  availableSizes: string[];
+  availableColors: string[];
 }
 
-export const CustomerReviews = ({ reviews: initialReviews }: CustomerReviewsProps) => {
+export const CustomerReviews = ({ reviews: initialReviews, availableSizes, availableColors }: CustomerReviewsProps) => {
   const [reviews, setReviews] = useState(initialReviews);
   const [newReview, setNewReview] = useState({
     rating: 5,
@@ -30,6 +47,7 @@ export const CustomerReviews = ({ reviews: initialReviews }: CustomerReviewsProp
   });
   const { toast } = useToast();
   const [selectedImages, setSelectedImages] = useState<FileList | null>(null);
+  const [isOpen, setIsOpen] = useState(false);
 
   const handleHelpfulClick = (reviewId: number) => {
     setReviews(prevReviews =>
@@ -65,6 +83,7 @@ export const CustomerReviews = ({ reviews: initialReviews }: CustomerReviewsProp
       overallFit: 'True to Size',
     });
     setSelectedImages(null);
+    setIsOpen(false);
     
     toast({
       title: "Review submitted",
@@ -74,7 +93,127 @@ export const CustomerReviews = ({ reviews: initialReviews }: CustomerReviewsProp
 
   return (
     <div className="space-y-6">
-      <h3 className="text-xl font-serif font-semibold">Customer Reviews</h3>
+      <div className="flex justify-between items-center">
+        <h3 className="text-xl font-serif font-semibold">Customer Reviews</h3>
+        <Dialog open={isOpen} onOpenChange={setIsOpen}>
+          <DialogTrigger asChild>
+            <Button variant="outline">Write a Review</Button>
+          </DialogTrigger>
+          <DialogContent className="sm:max-w-[500px]">
+            <DialogHeader>
+              <DialogTitle>Write a Review</DialogTitle>
+            </DialogHeader>
+            <form onSubmit={handleSubmitReview} className="space-y-4">
+              <div>
+                <label className="block text-sm mb-1">Rating</label>
+                <div className="flex gap-1">
+                  {Array.from({ length: 5 }).map((_, idx) => (
+                    <button
+                      key={idx}
+                      type="button"
+                      onClick={() => setNewReview(prev => ({ ...prev, rating: idx + 1 }))}
+                      className={`text-2xl ${
+                        idx < newReview.rating ? "text-yellow-400" : "text-gray-300"
+                      }`}
+                    >
+                      ★
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              <div>
+                <label className="block text-sm mb-1">Your Review</label>
+                <textarea
+                  value={newReview.comment}
+                  onChange={(e) => setNewReview(prev => ({ ...prev, comment: e.target.value }))}
+                  className="w-full p-2 border rounded"
+                  rows={4}
+                  required
+                />
+              </div>
+
+              <div className="grid grid-cols-3 gap-4">
+                <div>
+                  <label className="block text-sm mb-1">Size</label>
+                  <Select 
+                    value={newReview.size} 
+                    onValueChange={(value) => setNewReview(prev => ({ ...prev, size: value }))}
+                  >
+                    <SelectTrigger>
+                      <SelectValue placeholder="Select size" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {availableSizes.map((size) => (
+                        <SelectItem key={size} value={size}>
+                          {size}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+                
+                <div>
+                  <label className="block text-sm mb-1">Color</label>
+                  <Select 
+                    value={newReview.color} 
+                    onValueChange={(value) => setNewReview(prev => ({ ...prev, color: value }))}
+                  >
+                    <SelectTrigger>
+                      <SelectValue placeholder="Select color" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {availableColors.map((color) => (
+                        <SelectItem key={color} value={color}>
+                          {color}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+                
+                <div>
+                  <label className="block text-sm mb-1">Fit</label>
+                  <Select 
+                    value={newReview.overallFit} 
+                    onValueChange={(value) => setNewReview(prev => ({ ...prev, overallFit: value }))}
+                  >
+                    <SelectTrigger>
+                      <SelectValue placeholder="Select fit" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="True to Size">True to Size</SelectItem>
+                      <SelectItem value="Runs Small">Runs Small</SelectItem>
+                      <SelectItem value="Runs Large">Runs Large</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+              </div>
+
+              <div>
+                <label className="block text-sm mb-1">Images</label>
+                <div className="border-2 border-dashed rounded p-4 text-center">
+                  <input
+                    type="file"
+                    multiple
+                    onChange={(e) => setSelectedImages(e.target.files)}
+                    className="hidden"
+                    id="image-upload"
+                  />
+                  <label htmlFor="image-upload" className="cursor-pointer flex items-center justify-center gap-2">
+                    <Upload size={20} />
+                    <span>Upload Images</span>
+                  </label>
+                </div>
+              </div>
+
+              <Button type="submit" className="w-full">
+                Submit Review
+              </Button>
+            </form>
+          </DialogContent>
+        </Dialog>
+      </div>
       
       {/* Reviews List */}
       <div className="space-y-4">
@@ -131,98 +270,6 @@ export const CustomerReviews = ({ reviews: initialReviews }: CustomerReviewsProp
           </div>
         ))}
       </div>
-
-      {/* Add Review Form */}
-      <form onSubmit={handleSubmitReview} className="space-y-4 bg-white p-4 rounded-lg">
-        <h4 className="font-medium">Write a Review</h4>
-        
-        <div>
-          <label className="block text-sm mb-1">Rating</label>
-          <div className="flex gap-1">
-            {Array.from({ length: 5 }).map((_, idx) => (
-              <button
-                key={idx}
-                type="button"
-                onClick={() => setNewReview(prev => ({ ...prev, rating: idx + 1 }))}
-                className={`text-2xl ${
-                  idx < newReview.rating ? "text-yellow-400" : "text-gray-300"
-                }`}
-              >
-                ★
-              </button>
-            ))}
-          </div>
-        </div>
-
-        <div>
-          <label className="block text-sm mb-1">Your Review</label>
-          <textarea
-            value={newReview.comment}
-            onChange={(e) => setNewReview(prev => ({ ...prev, comment: e.target.value }))}
-            className="w-full p-2 border rounded"
-            rows={4}
-          />
-        </div>
-
-        <div className="grid grid-cols-3 gap-4">
-          <div>
-            <label className="block text-sm mb-1">Size</label>
-            <input
-              type="text"
-              value={newReview.size}
-              onChange={(e) => setNewReview(prev => ({ ...prev, size: e.target.value }))}
-              className="w-full p-2 border rounded"
-            />
-          </div>
-          
-          <div>
-            <label className="block text-sm mb-1">Color</label>
-            <input
-              type="text"
-              value={newReview.color}
-              onChange={(e) => setNewReview(prev => ({ ...prev, color: e.target.value }))}
-              className="w-full p-2 border rounded"
-            />
-          </div>
-          
-          <div>
-            <label className="block text-sm mb-1">Fit</label>
-            <select
-              value={newReview.overallFit}
-              onChange={(e) => setNewReview(prev => ({ ...prev, overallFit: e.target.value }))}
-              className="w-full p-2 border rounded"
-            >
-              <option>True to Size</option>
-              <option>Runs Small</option>
-              <option>Runs Large</option>
-            </select>
-          </div>
-        </div>
-
-        <div>
-          <label className="block text-sm mb-1">Images</label>
-          <div className="border-2 border-dashed rounded p-4 text-center">
-            <input
-              type="file"
-              multiple
-              onChange={(e) => setSelectedImages(e.target.files)}
-              className="hidden"
-              id="image-upload"
-            />
-            <label htmlFor="image-upload" className="cursor-pointer flex items-center justify-center gap-2">
-              <Upload size={20} />
-              <span>Upload Images</span>
-            </label>
-          </div>
-        </div>
-
-        <button
-          type="submit"
-          className="w-full bg-primary text-white py-2 rounded hover:bg-primary-dark"
-        >
-          Submit Review
-        </button>
-      </form>
     </div>
   );
 };

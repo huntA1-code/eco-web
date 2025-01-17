@@ -163,7 +163,11 @@ export default function ProductPage() {
           </div>
 
           {/* Reviews Section */}
-          <CustomerReviews reviews={product.reviews} />
+          <CustomerReviews 
+            reviews={product.reviews} 
+            availableSizes={product.sizes}
+            availableColors={product.colors}
+          />
         </div>
 
         {/* Right - Product Info */}
