@@ -55,14 +55,22 @@ export default function ProductPage() {
         user: "Sarah M.",
         rating: 5,
         comment: "Absolutely love this product! The quality is outstanding.",
-        date: "2024-02-15"
+        date: "2024-02-15",
+        helpfulCount: 8,
+        overallFit: "True to Size",
+        size: "M",
+        color: "Black"
       },
       {
         id: 2,
         user: "John D.",
         rating: 4,
         comment: "Great fit and comfortable. Would buy again.",
-        date: "2024-02-10"
+        date: "2024-02-10",
+        helpfulCount: 3,
+        overallFit: "Runs Small",
+        size: "L",
+        color: "Navy"
       }
     ],
     reviewCount: 128
