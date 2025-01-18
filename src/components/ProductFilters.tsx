@@ -1,4 +1,4 @@
-import { Filter } from "lucide-react";
+import { Filter, ChevronDown, ChevronUp } from "lucide-react";
 import { Slider } from "@/components/ui/slider";
 import { CategoryTree } from "@/components/CategoryTree";
 import {
@@ -7,6 +7,7 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
+import { Checkbox } from "@/components/ui/checkbox";
 import { CategoryNode, FilterState } from "@/types/filters";
 
 const categoryTree: CategoryNode[] = [
@@ -74,6 +75,7 @@ interface ProductFiltersProps {
     priceRange: number[];
     styles: string[];
     occasions: string[];
+    brands: string[]; // Added brands to filters
   };
 }
 
@@ -119,6 +121,33 @@ export const ProductFilters = ({
           </div>
 
           <Accordion type="multiple" className="space-y-4">
+            {/* Brand Filter */}
+            <AccordionItem value="brands">
+              <AccordionTrigger className="text-base font-medium">
+                Brands
+              </AccordionTrigger>
+              <AccordionContent>
+                <div className="space-y-2">
+                  {filters.brands.map((brand) => (
+                    <div key={brand} className="flex items-center space-x-2">
+                      <Checkbox
+                        id={`brand-${brand}`}
+                        checked={selectedFilters.brands?.includes(brand)}
+                        onCheckedChange={() => onFilterChange('brands', brand)}
+                      />
+                      <label
+                        htmlFor={`brand-${brand}`}
+                        className="text-sm cursor-pointer"
+                      >
+                        {brand}
+                      </label>
+                    </div>
+                  ))}
+                </div>
+              </AccordionContent>
+            </AccordionItem>
+
+            {/* Categories */}
             <AccordionItem value="categories">
               <AccordionTrigger className="text-base font-medium">
                 Categories
@@ -137,6 +166,7 @@ export const ProductFilters = ({
               </AccordionContent>
             </AccordionItem>
 
+            {/* Price Range */}
             <AccordionItem value="price">
               <AccordionTrigger className="text-base font-medium">
                 Price Range
