@@ -9,6 +9,10 @@ import {
 } from "@/components/ui/accordion";
 import { Checkbox } from "@/components/ui/checkbox";
 import { CategoryNode, FilterState } from "@/types/filters";
+import { useState } from "react";
+import { Button } from "./ui/button";
+
+const INITIAL_VISIBLE_BRANDS = 5;
 
 const categoryTree: CategoryNode[] = [
   {
@@ -75,7 +79,7 @@ interface ProductFiltersProps {
     priceRange: number[];
     styles: string[];
     occasions: string[];
-    brands: string[]; // Added brands to filters interface
+    brands: string[];
   };
 }
 
@@ -87,6 +91,17 @@ export const ProductFilters = ({
   setShowMobileFilters,
   filters,
 }: ProductFiltersProps) => {
+  const [showAllBrands, setShowAllBrands] = useState(false);
+  const visibleBrands = showAllBrands ? filters.brands : filters.brands.slice(0, INITIAL_VISIBLE_BRANDS);
+
+  const handleBrandChange = (brand: string) => {
+    const currentBrands = selectedFilters.brands || [];
+    const newBrands = currentBrands.includes(brand)
+      ? currentBrands.filter(b => b !== brand)
+      : [...currentBrands, brand];
+    onFilterChange('brands', newBrands);
+  };
+
   return (
     <>
       {/* Mobile Filter Button */}
@@ -128,12 +143,12 @@ export const ProductFilters = ({
               </AccordionTrigger>
               <AccordionContent>
                 <div className="space-y-2">
-                  {filters.brands?.map((brand) => (
+                  {visibleBrands.map((brand) => (
                     <div key={brand} className="flex items-center space-x-2">
                       <Checkbox
                         id={`brand-${brand}`}
                         checked={selectedFilters.brands?.includes(brand)}
-                        onCheckedChange={() => onFilterChange('brands', brand)}
+                        onCheckedChange={() => handleBrandChange(brand)}
                       />
                       <label
                         htmlFor={`brand-${brand}`}
@@ -143,6 +158,15 @@ export const ProductFilters = ({
                       </label>
                     </div>
                   ))}
+                  {filters.brands.length > INITIAL_VISIBLE_BRANDS && (
+                    <Button
+                      variant="ghost"
+                      className="w-full mt-2 text-sm"
+                      onClick={() => setShowAllBrands(!showAllBrands)}
+                    >
+                      {showAllBrands ? 'Show Less' : `Show More (${filters.brands.length - INITIAL_VISIBLE_BRANDS})`}
+                    </Button>
+                  )}
                 </div>
               </AccordionContent>
             </AccordionItem>

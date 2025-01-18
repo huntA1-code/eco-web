@@ -9,6 +9,6 @@ export interface FilterState {
   color?: string;
   size?: string;
   priceRange?: number[];
-  brands?: string[]; // Changed from brand to brands to match the filter usage
+  brands?: string[]; // Changed to array to support multiple selections
   type?: string;
 }

@@ -1,4 +1,4 @@
-import { Heart } from "lucide-react";
+import { Heart, ShoppingCart } from "lucide-react";
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import { QuickView } from "./QuickView";
@@ -7,7 +7,7 @@ interface ProductCardProps {
   product: {
     id: number;
     name: string;
-    brand: string; // Added brand property
+    brand: string;
     price: number;
     image: string;
     colors: string[];
@@ -42,9 +42,12 @@ export const ProductCard = ({ product }: ProductCardProps) => {
             className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
           />
           <div className={`absolute inset-0 bg-black/40 transition-opacity duration-300 ${isHovered ? 'opacity-100' : 'opacity-0'}`}>
-            <div className="absolute bottom-4 right-4">
+            <div className="absolute bottom-4 right-4 flex gap-2">
               <button className="btn-secondary p-2">
                 <Heart size={18} />
+              </button>
+              <button className="btn-secondary p-2">
+                <ShoppingCart size={18} />
               </button>
             </div>
           </div>
@@ -69,22 +72,24 @@ export const ProductCard = ({ product }: ProductCardProps) => {
               />
             ))}
           </div>
-          <div className="flex items-center gap-2 mt-2">
-            <div className="flex">
-              {[...Array(5)].map((_, i) => (
-                <span
-                  key={i}
-                  className={`text-xs ${
-                    i < product.rating ? 'text-yellow-400' : 'text-gray-300'
-                  }`}
-                >
-                  ★
-                </span>
-              ))}
+          <div className="flex items-center justify-between mt-2">
+            <div className="flex items-center gap-2">
+              <div className="flex">
+                {[...Array(5)].map((_, i) => (
+                  <span
+                    key={i}
+                    className={`text-xs ${
+                      i < product.rating ? 'text-yellow-400' : 'text-gray-300'
+                    }`}
+                  >
+                    ★
+                  </span>
+                ))}
+              </div>
+              <span className="text-xs text-muted-foreground">
+                ({product.reviews})
+              </span>
             </div>
-            <span className="text-xs text-muted-foreground">
-              ({product.reviews})
-            </span>
           </div>
         </div>
       </Link>
