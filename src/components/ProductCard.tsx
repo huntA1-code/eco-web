@@ -54,7 +54,7 @@ export const ProductCard = ({ product }: ProductCardProps) => {
         </div>
         <div className="p-4">
           <Link 
-            to={`/brands/${encodeURIComponent(product.brand)}`}
+            to={`/store`}
             className="text-sm text-primary hover:underline"
           >
             {product.brand}
@@ -89,6 +89,7 @@ export const ProductCard = ({ product }: ProductCardProps) => {
               <span className="text-xs text-muted-foreground">
                 ({product.reviews})
               </span>
+              <ShoppingCart size={16} className="ml-2 text-gray-500" />
             </div>
           </div>
         </div>
