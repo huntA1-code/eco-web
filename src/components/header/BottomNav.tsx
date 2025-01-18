@@ -1,4 +1,4 @@
-import { Fire, Search } from 'lucide-react';
+import { Flame, Search } from 'lucide-react';
 
 export const BottomNav = () => {
   return (
@@ -11,7 +11,7 @@ export const BottomNav = () => {
           </div>
           <div className="flex items-center gap-4">
             <div className="flex items-center gap-2 text-sm">
-              <Fire size={16} className="text-orange-500" />
+              <Flame size={16} className="text-orange-500" />
               <span>Men Casual Athletic Shoes</span>
             </div>
             <div className="relative">
