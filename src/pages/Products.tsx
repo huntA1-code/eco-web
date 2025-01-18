@@ -30,12 +30,14 @@ const Products = () => {
     priceRange: [0, 200],
     styles: ["Bohemian", "Classic", "Streetwear", "Minimalist", "Vintage"],
     occasions: ["Daily", "Work", "Party", "Beach", "Sports"],
+    brands: ["Nike", "Adidas", "Puma", "Reebok", "Under Armour", "New Balance"], // Added brands array
   };
 
   const products = [
     {
       id: 1,
       name: "Floral Summer Dress",
+      brand: "Nike", // Added brand
       price: 49.99,
       image: "https://images.unsplash.com/photo-1515886657613-9f3515b0c78f",
       colors: ["Pink", "Blue"],
@@ -48,6 +50,7 @@ const Products = () => {
     {
       id: 2,
       name: "Classic White Shirt",
+      brand: "Adidas", // Added brand
       price: 29.99,
       image: "https://images.unsplash.com/photo-1503342217505-b0a15ec3261c",
       colors: ["White"],
@@ -60,6 +63,7 @@ const Products = () => {
     {
       id: 3,
       name: "Leather Jacket",
+      brand: "Puma", // Added brand
       price: 89.99,
       image: "https://images.unsplash.com/photo-1582562124811-c09040d0a901",
       colors: ["Black", "Brown"],
@@ -72,6 +76,7 @@ const Products = () => {
     {
       id: 4,
       name: "Denim Jeans",
+      brand: "Reebok", // Added brand
       price: 59.99,
       image: "https://images.unsplash.com/photo-1466721591366-2d5fba72006d",
       colors: ["Blue", "Black"],
@@ -84,6 +89,7 @@ const Products = () => {
     {
       id: 5,
       name: "Silk Evening Gown",
+      brand: "Under Armour", // Added brand
       price: 199.99,
       image: "https://images.unsplash.com/photo-1515886657613-9f3515b0c78f",
       colors: ["Red", "Black", "Navy"],
@@ -96,6 +102,7 @@ const Products = () => {
     {
       id: 6,
       name: "Casual T-Shirt",
+      brand: "New Balance", // Added brand
       price: 19.99,
       image: "https://images.unsplash.com/photo-1503342217505-b0a15ec3261c",
       colors: ["White", "Gray", "Black"],
@@ -108,6 +115,7 @@ const Products = () => {
     {
       id: 7,
       name: "Winter Coat",
+      brand: "Nike", // Added brand
       price: 129.99,
       image: "https://images.unsplash.com/photo-1582562124811-c09040d0a901",
       colors: ["Black", "Gray", "Navy"],
@@ -120,6 +128,7 @@ const Products = () => {
     {
       id: 8,
       name: "Pleated Skirt",
+      brand: "Adidas", // Added brand
       price: 39.99,
       image: "https://images.unsplash.com/photo-1466721591366-2d5fba72006d",
       colors: ["Black", "Navy", "Beige"],
@@ -132,6 +141,7 @@ const Products = () => {
     {
       id: 9,
       name: "Summer Maxi Dress",
+      brand: "Puma", // Added brand
       price: 69.99,
       image: "https://images.unsplash.com/photo-1515886657613-9f3515b0c78f",
       colors: ["Yellow", "Green", "Blue"],
@@ -144,6 +154,7 @@ const Products = () => {
     {
       id: 10,
       name: "Silk Blouse",
+      brand: "Reebok", // Added brand
       price: 79.99,
       image: "https://images.unsplash.com/photo-1503342217505-b0a15ec3261c",
       colors: ["White", "Pink", "Blue"],
@@ -156,6 +167,7 @@ const Products = () => {
     {
       id: 11,
       name: "Denim Jacket",
+      brand: "Under Armour", // Added brand
       price: 69.99,
       image: "https://images.unsplash.com/photo-1582562124811-c09040d0a901",
       colors: ["Blue", "Black"],
@@ -168,6 +180,7 @@ const Products = () => {
     {
       id: 12,
       name: "Cargo Pants",
+      brand: "New Balance", // Added brand
       price: 49.99,
       image: "https://images.unsplash.com/photo-1466721591366-2d5fba72006d",
       colors: ["Khaki", "Olive", "Black"],
@@ -180,6 +193,7 @@ const Products = () => {
     {
       id: 13,
       name: "Cocktail Dress",
+      brand: "Nike", // Added brand
       price: 119.99,
       image: "https://images.unsplash.com/photo-1515886657613-9f3515b0c78f",
       colors: ["Black", "Red", "Navy"],
@@ -192,6 +206,7 @@ const Products = () => {
     {
       id: 14,
       name: "Crop Top",
+      brand: "Adidas", // Added brand
       price: 24.99,
       image: "https://images.unsplash.com/photo-1503342217505-b0a15ec3261c",
       colors: ["White", "Black", "Pink"],
@@ -204,6 +219,7 @@ const Products = () => {
     {
       id: 15,
       name: "Raincoat",
+      brand: "Puma", // Added brand
       price: 79.99,
       image: "https://images.unsplash.com/photo-1582562124811-c09040d0a901",
       colors: ["Yellow", "Blue", "Black"],
@@ -213,10 +229,10 @@ const Products = () => {
       rating: 4.5,
       reviews: 134,
     },
-    // Continue with more products up to 50...
     {
       id: 50,
       name: "Designer Evening Gown",
+      brand: "New Balance", // Added brand
       price: 299.99,
       image: "https://images.unsplash.com/photo-1515886657613-9f3515b0c78f",
       colors: ["Gold", "Silver", "Black"],

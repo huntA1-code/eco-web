@@ -1,4 +1,4 @@
-import { Filter, ChevronDown, ChevronUp } from "lucide-react";
+import { Filter } from "lucide-react";
 import { Slider } from "@/components/ui/slider";
 import { CategoryTree } from "@/components/CategoryTree";
 import {
@@ -75,7 +75,7 @@ interface ProductFiltersProps {
     priceRange: number[];
     styles: string[];
     occasions: string[];
-    brands: string[]; // Added brands to filters
+    brands: string[]; // Added brands to filters interface
   };
 }
 
@@ -128,7 +128,7 @@ export const ProductFilters = ({
               </AccordionTrigger>
               <AccordionContent>
                 <div className="space-y-2">
-                  {filters.brands.map((brand) => (
+                  {filters.brands?.map((brand) => (
                     <div key={brand} className="flex items-center space-x-2">
                       <Checkbox
                         id={`brand-${brand}`}
