@@ -16,25 +16,22 @@ const Store = () => {
   const [selectedFilters, setSelectedFilters] = useState<Record<string, any>>({});
   const [showMobileFilters, setShowMobileFilters] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
-  const productsPerPage = 12;
+  const productsPerPage = 20; // Changed to 20 products per page
 
-  // Sample products data (similar to Products page)
-  const products = [
-    {
-      id: 1,
-      name: "Sport Running Shoes",
-      brand: "Nike",
-      price: 129.99,
-      image: "https://images.unsplash.com/photo-1542291026-7eec264c27ff",
-      colors: ["Black", "White", "Red"],
-      sizes: ["US 7", "US 8", "US 9", "US 10"],
-      description: "Premium running shoes with advanced cushioning technology.",
-      category: "Footwear",
-      rating: 4.5,
-      reviews: 128
-    },
-    // ... Add more sample products as needed
-  ];
+  // Sample products data with more items
+  const products = Array.from({ length: 100 }, (_, index) => ({
+    id: index + 1,
+    name: `Sport Running Shoes ${index + 1}`,
+    brand: ["Nike", "Adidas", "Puma", "Under Armour"][Math.floor(Math.random() * 4)],
+    price: 99.99 + Math.floor(Math.random() * 100),
+    image: "https://images.unsplash.com/photo-1542291026-7eec264c27ff",
+    colors: ["Black", "White", "Red"],
+    sizes: ["US 7", "US 8", "US 9", "US 10"],
+    description: "Premium running shoes with advanced cushioning technology.",
+    category: "Footwear",
+    rating: 4 + Math.random(),
+    reviews: 50 + Math.floor(Math.random() * 200)
+  }));
 
   const handleFilterChange = (filterType: string, value: any) => {
     setSelectedFilters(prev => ({
@@ -59,8 +56,8 @@ const Store = () => {
   return (
     <div className="min-h-screen bg-background">
       <Header />
-      <main className="max-w-7xl mx-auto px-4 py-8">
-        <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
+      <main className="max-w-[1400px] mx-auto px-4 py-8">
+        <div className="grid grid-cols-1 lg:grid-cols-5 gap-8">
           <aside className="lg:col-span-1">
             <ProductFilters
               selectedFilters={selectedFilters}
@@ -80,42 +77,44 @@ const Store = () => {
               }}
             />
           </aside>
-          <div className="lg:col-span-3">
-            <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
+          <div className="lg:col-span-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-4">
               {currentProducts.map(product => (
                 <ProductCard key={product.id} product={product} />
               ))}
             </div>
 
             {totalPages > 1 && (
-              <Pagination className="mt-8">
-                <PaginationContent>
-                  <PaginationItem>
-                    <PaginationPrevious
-                      onClick={() => setCurrentPage(prev => Math.max(1, prev - 1))}
-                      className={currentPage === 1 ? 'pointer-events-none opacity-50' : ''}
-                    />
-                  </PaginationItem>
-                  
-                  {[...Array(totalPages)].map((_, i) => (
-                    <PaginationItem key={i + 1}>
-                      <PaginationLink
-                        onClick={() => setCurrentPage(i + 1)}
-                        isActive={currentPage === i + 1}
-                      >
-                        {i + 1}
-                      </PaginationLink>
+              <div className="mt-8 flex justify-center">
+                <Pagination>
+                  <PaginationContent>
+                    <PaginationItem>
+                      <PaginationPrevious
+                        onClick={() => setCurrentPage(prev => Math.max(1, prev - 1))}
+                        className={currentPage === 1 ? 'pointer-events-none opacity-50' : ''}
+                      />
                     </PaginationItem>
-                  ))}
-                  
-                  <PaginationItem>
-                    <PaginationNext
-                      onClick={() => setCurrentPage(prev => Math.min(totalPages, prev + 1))}
-                      className={currentPage === totalPages ? 'pointer-events-none opacity-50' : ''}
-                    />
-                  </PaginationItem>
-                </PaginationContent>
-              </Pagination>
+                    
+                    {[...Array(totalPages)].map((_, i) => (
+                      <PaginationItem key={i + 1}>
+                        <PaginationLink
+                          onClick={() => setCurrentPage(i + 1)}
+                          isActive={currentPage === i + 1}
+                        >
+                          {i + 1}
+                        </PaginationLink>
+                      </PaginationItem>
+                    ))}
+                    
+                    <PaginationItem>
+                      <PaginationNext
+                        onClick={() => setCurrentPage(prev => Math.min(totalPages, prev + 1))}
+                        className={currentPage === totalPages ? 'pointer-events-none opacity-50' : ''}
+                      />
+                    </PaginationItem>
+                  </PaginationContent>
+                </Pagination>
+              </div>
             )}
           </div>
         </div>
