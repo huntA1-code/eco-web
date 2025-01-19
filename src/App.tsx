@@ -1,25 +1,27 @@
-import { Routes, Route } from 'react-router-dom';
-import { Navbar } from './components/Navbar';
-import { SubNavbar } from './components/SubNavbar';
-import Index from './pages/Index';
-import Products from './pages/Products';
-import Store from './pages/Store';
-import ProductPage from './pages/ProductPage';
-import Cart from './pages/Cart';
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import Index from "./pages/Index";
+import Products from "./pages/Products";
+import ProductPage from "./pages/ProductPage";
+import Cart from "./pages/Cart";
+import Store from "./pages/Store";
+import Dashboard from "./pages/Dashboard";
+import Overview from "./pages/dashboard/Overview";
 
 function App() {
   return (
-    <div className="min-h-screen">
-      <Navbar />
-      <SubNavbar />
+    <Router>
       <Routes>
         <Route path="/" element={<Index />} />
         <Route path="/products" element={<Products />} />
-        <Route path="/store" element={<Store />} />
-        <Route path="/products/:productName" element={<ProductPage />} />
+        <Route path="/product/:id" element={<ProductPage />} />
         <Route path="/cart" element={<Cart />} />
+        <Route path="/store" element={<Store />} />
+        <Route path="/dashboard" element={<Dashboard />}>
+          <Route index element={<Overview />} />
+          {/* Other dashboard routes will be added here */}
+        </Route>
       </Routes>
-    </div>
+    </Router>
   );
 }
 
