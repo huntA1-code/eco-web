@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { Link, Outlet } from "react-router-dom";
 import {
   LayoutDashboard,
@@ -12,12 +12,28 @@ import {
   Image,
   BarChart,
   Settings,
+  ChevronDown,
 } from "lucide-react";
+
+const productSubMenu = [
+  { label: "View Products", path: "/dashboard/products/view" },
+  { label: "Add Product", path: "/dashboard/products/add" },
+  { label: "Categories", path: "/dashboard/products/categories" },
+  { label: "Brands", path: "/dashboard/products/brands" },
+  { label: "Colors", path: "/dashboard/products/colors" },
+  { label: "Sizes", path: "/dashboard/products/sizes" },
+  { label: "Attributes", path: "/dashboard/products/attributes" },
+];
 
 const sidebarLinks = [
   { icon: LayoutDashboard, label: "Overview", path: "/dashboard" },
   { icon: Users, label: "Users", path: "/dashboard/users" },
-  { icon: ShoppingBag, label: "Products", path: "/dashboard/products" },
+  {
+    icon: ShoppingBag,
+    label: "Products",
+    path: "/dashboard/products",
+    submenu: productSubMenu,
+  },
   { icon: ClipboardList, label: "Orders", path: "/dashboard/orders" },
   { icon: Store, label: "Stores", path: "/dashboard/stores" },
   { icon: CreditCard, label: "Payments", path: "/dashboard/payments" },
@@ -29,6 +45,12 @@ const sidebarLinks = [
 ];
 
 const Dashboard = () => {
+  const [openSubmenu, setOpenSubmenu] = useState<string | null>(null);
+
+  const toggleSubmenu = (label: string) => {
+    setOpenSubmenu(openSubmenu === label ? null : label);
+  };
+
   return (
     <div className="flex h-screen bg-gray-100">
       {/* Sidebar */}
@@ -38,14 +60,47 @@ const Dashboard = () => {
         </div>
         <nav className="p-4">
           {sidebarLinks.map((link) => (
-            <Link
-              key={link.path}
-              to={link.path}
-              className="flex items-center gap-3 px-4 py-2 text-gray-700 rounded-lg hover:bg-gray-100 transition-colors"
-            >
-              <link.icon className="w-5 h-5" />
-              <span>{link.label}</span>
-            </Link>
+            <div key={link.path} className="mb-1">
+              {link.submenu ? (
+                <div>
+                  <button
+                    onClick={() => toggleSubmenu(link.label)}
+                    className="w-full flex items-center justify-between gap-3 px-4 py-2 text-gray-700 rounded-lg hover:bg-gray-100 transition-colors"
+                  >
+                    <div className="flex items-center gap-3">
+                      <link.icon className="w-5 h-5" />
+                      <span>{link.label}</span>
+                    </div>
+                    <ChevronDown
+                      className={`w-4 h-4 transition-transform ${
+                        openSubmenu === link.label ? "rotate-180" : ""
+                      }`}
+                    />
+                  </button>
+                  {openSubmenu === link.label && (
+                    <div className="ml-9 mt-1 space-y-1">
+                      {link.submenu.map((subItem) => (
+                        <Link
+                          key={subItem.path}
+                          to={subItem.path}
+                          className="block px-4 py-2 text-sm text-gray-600 rounded-lg hover:bg-gray-100 transition-colors"
+                        >
+                          {subItem.label}
+                        </Link>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              ) : (
+                <Link
+                  to={link.path}
+                  className="flex items-center gap-3 px-4 py-2 text-gray-700 rounded-lg hover:bg-gray-100 transition-colors"
+                >
+                  <link.icon className="w-5 h-5" />
+                  <span>{link.label}</span>
+                </Link>
+              )}
+            </div>
           ))}
         </nav>
       </aside>

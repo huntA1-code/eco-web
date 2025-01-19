@@ -6,6 +6,7 @@ import Cart from "./pages/Cart";
 import Store from "./pages/Store";
 import Dashboard from "./pages/Dashboard";
 import Overview from "./pages/dashboard/Overview";
+import ViewProducts from "./pages/dashboard/products/ViewProducts";
 
 function App() {
   return (
@@ -17,7 +18,8 @@ function App() {
       <Route path="/store" element={<Store />} />
       <Route path="/dashboard" element={<Dashboard />}>
         <Route index element={<Overview />} />
-        {/* Other dashboard routes will be added here */}
+        <Route path="products/view" element={<ViewProducts />} />
+        {/* Add other product management routes here */}
       </Route>
     </Routes>
   );
