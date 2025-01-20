@@ -44,6 +44,11 @@ export interface ProductVariation {
   qty_in_stock: number;
 }
 
+export interface ProductImage {
+  file: File;
+  description: string;
+}
+
 export interface ProductItem {
   color_id: string;
   name_details: string;
@@ -54,11 +59,6 @@ export interface ProductItem {
   images: ProductImage[];
 }
 
-export interface ProductImage {
-  file: File;
-  description: string;
-}
-
 export interface ProductFormData {
   category_id: string;
   brand_id: string;
@@ -67,6 +67,7 @@ export interface ProductFormData {
   care_instructions: string;
   about: string;
   is_featured: boolean;
+  discount_id?: string;
   attribute_options: string[];
   product_items: ProductItem[];
 }

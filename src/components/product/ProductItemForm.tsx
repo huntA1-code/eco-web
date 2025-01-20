@@ -61,15 +61,13 @@ export const ProductItemForm = ({
     setSizeOptions(category?.options || []);
   };
 
-  const handleImageUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleImageUpload = (event: React.ChangeEvent<HTMLInputElement>, setValue: any) => {
     const files = event.target.files;
     if (files) {
       const newImages = Array.from(files).map((file) => ({
         file,
         description: "",
       }));
-      
-      const { setValue } = control;
       setValue(`product_items.${index}.images`, newImages);
     }
   };
@@ -281,7 +279,7 @@ export const ProductItemForm = ({
                     type="file"
                     multiple
                     accept="image/*"
-                    onChange={handleImageUpload}
+                    onChange={(e) => handleImageUpload(e, control.setValue)}
                     className="cursor-pointer"
                   />
                 </FormControl>
@@ -290,14 +288,14 @@ export const ProductItemForm = ({
             )}
           />
         </div>
-        {field.value?.images?.map((image: any, imageIndex: number) => (
+        {control._formValues.product_items[index]?.images?.map((image: any, imageIndex: number) => (
           <div key={imageIndex} className="mt-2 flex items-center gap-2">
             <span>{image.file.name}</span>
             <Input
               placeholder="Image description"
               value={image.description}
               onChange={(e) => {
-                const newImages = [...field.value.images];
+                const newImages = [...control._formValues.product_items[index].images];
                 newImages[imageIndex].description = e.target.value;
                 control.setValue(`product_items.${index}.images`, newImages);
               }}
