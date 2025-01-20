@@ -7,6 +7,7 @@ import Store from "./pages/Store";
 import Dashboard from "./pages/Dashboard";
 import Overview from "./pages/dashboard/Overview";
 import ViewProducts from "./pages/dashboard/products/ViewProducts";
+import AddProduct from "./pages/dashboard/products/AddProduct";
 
 function App() {
   return (
@@ -19,6 +20,7 @@ function App() {
       <Route path="/dashboard" element={<Dashboard />}>
         <Route index element={<Overview />} />
         <Route path="products/view" element={<ViewProducts />} />
+        <Route path="products/add" element={<AddProduct />} />
         {/* Add other product management routes here */}
       </Route>
     </Routes>
