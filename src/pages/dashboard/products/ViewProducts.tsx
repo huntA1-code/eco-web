@@ -1,5 +1,5 @@
 import React from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import {
   Table,
   TableBody,
@@ -10,9 +10,22 @@ import {
 } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
 import { Edit, Plus, Trash2 } from "lucide-react";
+import { useToast } from "@/components/ui/use-toast";
+
+// Mock data type
+interface Product {
+  id: number;
+  name: string;
+  description: string;
+  sale_price: number;
+  qty_in_stock: number;
+  is_featured: boolean;
+  category: string;
+  image: string;
+}
 
 // Mock data - replace with actual data fetching
-const products = [
+const products: Product[] = [
   {
     id: 1,
     name: "Classic T-Shirt",
@@ -36,9 +49,20 @@ const products = [
 ];
 
 const ViewProducts = () => {
+  const navigate = useNavigate();
+  const { toast } = useToast();
+
   const handleDelete = (id: number) => {
-    console.log("Delete product:", id);
-    // Implement delete functionality
+    console.log("Deleting product:", id);
+    // Implement delete functionality here
+    toast({
+      title: "Product deleted",
+      description: "The product has been successfully deleted.",
+    });
+  };
+
+  const handleEdit = (id: number) => {
+    navigate(`/dashboard/products/edit/${id}`);
   };
 
   return (
@@ -100,11 +124,13 @@ const ViewProducts = () => {
                 <TableCell>{product.category}</TableCell>
                 <TableCell className="text-right">
                   <div className="flex items-center justify-end gap-2">
-                    <Link to={`/dashboard/products/edit/${product.id}`}>
-                      <Button variant="ghost" size="icon">
-                        <Edit className="h-4 w-4" />
-                      </Button>
-                    </Link>
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      onClick={() => handleEdit(product.id)}
+                    >
+                      <Edit className="h-4 w-4" />
+                    </Button>
                     <Button
                       variant="ghost"
                       size="icon"

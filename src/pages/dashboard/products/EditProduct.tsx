@@ -1,5 +1,5 @@
-import React from "react";
-import { useNavigate } from "react-router-dom";
+import React, { useEffect } from "react";
+import { useParams, useNavigate } from "react-router-dom";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
@@ -29,11 +29,30 @@ const productSchema = z.object({
   productCode: z.string().min(1, "Product code is required"),
 });
 
-const AddProduct = () => {
+type ProductFormValues = z.infer<typeof productSchema>;
+
+// Mock function to fetch product data
+const fetchProduct = async (id: string) => {
+  // Replace with actual API call
+  console.log("Fetching product:", id);
+  return {
+    name: "Classic T-Shirt",
+    description: "Comfortable cotton t-shirt",
+    careInstructions: "Machine wash cold",
+    about: "Premium quality cotton t-shirt",
+    isFeatured: true,
+    originalPrice: 39.99,
+    salePrice: 29.99,
+    productCode: "TSH001",
+  };
+};
+
+const EditProduct = () => {
+  const { id } = useParams();
   const navigate = useNavigate();
   const { toast } = useToast();
 
-  const form = useForm<z.infer<typeof productSchema>>({
+  const form = useForm<ProductFormValues>({
     resolver: zodResolver(productSchema),
     defaultValues: {
       name: "",
@@ -47,20 +66,40 @@ const AddProduct = () => {
     },
   });
 
-  const onSubmit = async (values: z.infer<typeof productSchema>) => {
+  useEffect(() => {
+    const loadProduct = async () => {
+      if (id) {
+        try {
+          const productData = await fetchProduct(id);
+          form.reset(productData);
+        } catch (error) {
+          console.error("Error loading product:", error);
+          toast({
+            title: "Error",
+            description: "Failed to load product data",
+            variant: "destructive",
+          });
+        }
+      }
+    };
+
+    loadProduct();
+  }, [id, form, toast]);
+
+  const onSubmit = async (values: ProductFormValues) => {
     try {
-      console.log("Creating product:", values);
-      // Implement product creation logic here
+      console.log("Updating product:", id, values);
+      // Implement update logic here
       toast({
         title: "Success",
-        description: "Product created successfully",
+        description: "Product updated successfully",
       });
       navigate("/dashboard/products/view");
     } catch (error) {
-      console.error("Error creating product:", error);
+      console.error("Error updating product:", error);
       toast({
         title: "Error",
-        description: "Failed to create product",
+        description: "Failed to update product",
         variant: "destructive",
       });
     }
@@ -69,8 +108,8 @@ const AddProduct = () => {
   return (
     <div className="space-y-6">
       <div>
-        <h2 className="text-2xl font-bold">Add New Product</h2>
-        <p className="text-muted-foreground">Create a new product listing</p>
+        <h2 className="text-2xl font-bold">Edit Product</h2>
+        <p className="text-muted-foreground">Update product information</p>
       </div>
 
       <Form {...form}>
@@ -226,7 +265,7 @@ const AddProduct = () => {
             >
               Cancel
             </Button>
-            <Button type="submit">Create Product</Button>
+            <Button type="submit">Update Product</Button>
           </div>
         </form>
       </Form>
@@ -234,4 +273,4 @@ const AddProduct = () => {
   );
 };
 
-export default AddProduct;
+export default EditProduct;
