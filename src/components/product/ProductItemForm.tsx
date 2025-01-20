@@ -61,14 +61,14 @@ export const ProductItemForm = ({
     setSizeOptions(category?.options || []);
   };
 
-  const handleImageUpload = (event: React.ChangeEvent<HTMLInputElement>, setValue: any) => {
+  const handleImageUpload = (event: React.ChangeEvent<HTMLInputElement>, field: any) => {
     const files = event.target.files;
     if (files) {
       const newImages = Array.from(files).map((file) => ({
         file,
         description: "",
       }));
-      setValue(`product_items.${index}.images`, newImages);
+      field.onChange(newImages);
     }
   };
 
@@ -279,7 +279,7 @@ export const ProductItemForm = ({
                     type="file"
                     multiple
                     accept="image/*"
-                    onChange={(e) => handleImageUpload(e, control.setValue)}
+                    onChange={(e) => handleImageUpload(e, field)}
                     className="cursor-pointer"
                   />
                 </FormControl>
@@ -288,20 +288,28 @@ export const ProductItemForm = ({
             )}
           />
         </div>
-        {control._formValues.product_items[index]?.images?.map((image: any, imageIndex: number) => (
-          <div key={imageIndex} className="mt-2 flex items-center gap-2">
-            <span>{image.file.name}</span>
-            <Input
-              placeholder="Image description"
-              value={image.description}
-              onChange={(e) => {
-                const newImages = [...control._formValues.product_items[index].images];
-                newImages[imageIndex].description = e.target.value;
-                control.setValue(`product_items.${index}.images`, newImages);
-              }}
-            />
-          </div>
-        ))}
+        <FormField
+          control={control}
+          name={`product_items.${index}.images`}
+          render={({ field }) => (
+            <div>
+              {field.value?.map((image: any, imageIndex: number) => (
+                <div key={imageIndex} className="mt-2 flex items-center gap-2">
+                  <span>{image.file.name}</span>
+                  <Input
+                    placeholder="Image description"
+                    value={image.description}
+                    onChange={(e) => {
+                      const newImages = [...field.value];
+                      newImages[imageIndex].description = e.target.value;
+                      field.onChange(newImages);
+                    }}
+                  />
+                </div>
+              ))}
+            </div>
+          )}
+        />
       </div>
     </div>
   );
