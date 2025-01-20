@@ -15,11 +15,24 @@ import {
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Switch } from "@/components/ui/switch";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { useToast } from "@/hooks/use-toast";
 import { CategorySelect } from "@/components/product/CategorySelect";
-import { AttributeSelect } from "@/components/product/AttributeSelect";
+import { AttributeMultiSelect } from "@/components/product/AttributeMultiSelect";
 import { ProductItemForm } from "@/components/product/ProductItemForm";
 import { ProductFormData } from "@/types/product";
+
+// Mock discounts data - replace with API call
+const mockDiscounts = [
+  { id: "1", name: "Summer Sale 20% OFF", rate: 20 },
+  { id: "2", name: "Flash Sale 30% OFF", rate: 30 },
+];
 
 const productSchema = z.object({
   category_id: z.string().min(1, "Category is required"),
@@ -29,6 +42,7 @@ const productSchema = z.object({
   care_instructions: z.string(),
   about: z.string(),
   is_featured: z.boolean().default(false),
+  discount_id: z.string().optional(),
   attribute_options: z.array(z.string()),
   product_items: z.array(
     z.object({
@@ -65,6 +79,7 @@ const AddProduct = () => {
       care_instructions: "",
       about: "",
       is_featured: false,
+      discount_id: "",
       attribute_options: [],
       product_items: [],
     },
@@ -115,6 +130,31 @@ const AddProduct = () => {
                   <FormControl>
                     <Input placeholder="Enter product name" {...field} />
                   </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            <FormField
+              control={form.control}
+              name="discount_id"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Discount</FormLabel>
+                  <Select onValueChange={field.onChange} value={field.value}>
+                    <FormControl>
+                      <SelectTrigger>
+                        <SelectValue placeholder="Select discount" />
+                      </SelectTrigger>
+                    </FormControl>
+                    <SelectContent>
+                      {mockDiscounts.map((discount) => (
+                        <SelectItem key={discount.id} value={discount.id}>
+                          {discount.name} ({discount.rate}% OFF)
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
                   <FormMessage />
                 </FormItem>
               )}
@@ -199,7 +239,7 @@ const AddProduct = () => {
           <div className="space-y-4">
             <div>
               <h3 className="text-lg font-medium">Attributes</h3>
-              <AttributeSelect
+              <AttributeMultiSelect
                 control={form.control}
                 name="attribute_options"
               />

@@ -61,6 +61,19 @@ export const ProductItemForm = ({
     setSizeOptions(category?.options || []);
   };
 
+  const handleImageUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const files = event.target.files;
+    if (files) {
+      const newImages = Array.from(files).map((file) => ({
+        file,
+        description: "",
+      }));
+      
+      const { setValue } = control;
+      setValue(`product_items.${index}.images`, newImages);
+    }
+  };
+
   return (
     <div className="border rounded-lg p-4 space-y-4">
       <div className="flex justify-between items-center">
@@ -258,8 +271,39 @@ export const ProductItemForm = ({
       <div>
         <FormLabel>Images</FormLabel>
         <div className="grid grid-cols-2 gap-4">
-          {/* Image upload component will go here */}
+          <FormField
+            control={control}
+            name={`product_items.${index}.images`}
+            render={({ field }) => (
+              <FormItem>
+                <FormControl>
+                  <Input
+                    type="file"
+                    multiple
+                    accept="image/*"
+                    onChange={handleImageUpload}
+                    className="cursor-pointer"
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
         </div>
+        {field.value?.images?.map((image: any, imageIndex: number) => (
+          <div key={imageIndex} className="mt-2 flex items-center gap-2">
+            <span>{image.file.name}</span>
+            <Input
+              placeholder="Image description"
+              value={image.description}
+              onChange={(e) => {
+                const newImages = [...field.value.images];
+                newImages[imageIndex].description = e.target.value;
+                control.setValue(`product_items.${index}.images`, newImages);
+              }}
+            />
+          </div>
+        ))}
       </div>
     </div>
   );
