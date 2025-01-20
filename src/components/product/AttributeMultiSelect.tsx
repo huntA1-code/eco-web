@@ -16,6 +16,7 @@ import {
 import { Badge } from "@/components/ui/badge";
 import { X } from "lucide-react";
 import { AttributeType, AttributeOption } from "@/types/product";
+import { useFormContext } from "react-hook-form";
 
 // Mock data - replace with API call
 const mockAttributeTypes: AttributeType[] = [
@@ -39,6 +40,7 @@ export const AttributeMultiSelect = ({ control, name }: AttributeMultiSelectProp
   const [selectedType, setSelectedType] = useState<string>("");
   const [options, setOptions] = useState<AttributeOption[]>([]);
   const [selectedOptions, setSelectedOptions] = useState<AttributeOption[]>([]);
+  const { setValue, getValues } = useFormContext();
 
   useEffect(() => {
     // Fetch attribute types from API
@@ -58,7 +60,7 @@ export const AttributeMultiSelect = ({ control, name }: AttributeMultiSelectProp
       const newSelectedOptions = [...selectedOptions, option];
       setSelectedOptions(newSelectedOptions);
       const optionIds = newSelectedOptions.map((o) => o.id);
-      control.setValue(name, optionIds);
+      setValue(name, optionIds);
     }
   };
 
@@ -66,7 +68,7 @@ export const AttributeMultiSelect = ({ control, name }: AttributeMultiSelectProp
     const newSelectedOptions = selectedOptions.filter((o) => o.id !== optionId);
     setSelectedOptions(newSelectedOptions);
     const optionIds = newSelectedOptions.map((o) => o.id);
-    control.setValue(name, optionIds);
+    setValue(name, optionIds);
   };
 
   return (
