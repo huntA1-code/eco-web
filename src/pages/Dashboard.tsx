@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Link, Outlet } from "react-router-dom";
+import { Link, Outlet, useLocation } from "react-router-dom";
 import {
   LayoutDashboard,
   Users,
@@ -46,9 +46,15 @@ const sidebarLinks = [
 
 const Dashboard = () => {
   const [openSubmenu, setOpenSubmenu] = useState<string | null>(null);
+  const location = useLocation();
 
   const toggleSubmenu = (label: string) => {
     setOpenSubmenu(openSubmenu === label ? null : label);
+  };
+
+  // Check if current path matches any submenu item
+  const isSubmenuItemActive = (submenuItems: typeof productSubMenu) => {
+    return submenuItems.some((item) => location.pathname === item.path);
   };
 
   return (
@@ -65,7 +71,11 @@ const Dashboard = () => {
                 <div>
                   <button
                     onClick={() => toggleSubmenu(link.label)}
-                    className="w-full flex items-center justify-between gap-3 px-4 py-2 text-gray-700 rounded-lg hover:bg-gray-100 transition-colors"
+                    className={`w-full flex items-center justify-between gap-3 px-4 py-2 rounded-lg transition-colors ${
+                      isSubmenuItemActive(link.submenu)
+                        ? "bg-primary text-primary-foreground"
+                        : "text-gray-700 hover:bg-gray-100"
+                    }`}
                   >
                     <div className="flex items-center gap-3">
                       <link.icon className="w-5 h-5" />
@@ -77,24 +87,36 @@ const Dashboard = () => {
                       }`}
                     />
                   </button>
-                  {openSubmenu === link.label && (
-                    <div className="ml-9 mt-1 space-y-1">
-                      {link.submenu.map((subItem) => (
-                        <Link
-                          key={subItem.path}
-                          to={subItem.path}
-                          className="block px-4 py-2 text-sm text-gray-600 rounded-lg hover:bg-gray-100 transition-colors"
-                        >
-                          {subItem.label}
-                        </Link>
-                      ))}
-                    </div>
-                  )}
+                  <div
+                    className={`mt-1 space-y-1 ${
+                      openSubmenu === link.label || isSubmenuItemActive(link.submenu)
+                        ? "block"
+                        : "hidden"
+                    }`}
+                  >
+                    {link.submenu.map((subItem) => (
+                      <Link
+                        key={subItem.path}
+                        to={subItem.path}
+                        className={`block ml-9 px-4 py-2 text-sm rounded-lg transition-colors ${
+                          location.pathname === subItem.path
+                            ? "bg-primary/10 text-primary font-medium"
+                            : "text-gray-600 hover:bg-gray-100"
+                        }`}
+                      >
+                        {subItem.label}
+                      </Link>
+                    ))}
+                  </div>
                 </div>
               ) : (
                 <Link
                   to={link.path}
-                  className="flex items-center gap-3 px-4 py-2 text-gray-700 rounded-lg hover:bg-gray-100 transition-colors"
+                  className={`flex items-center gap-3 px-4 py-2 rounded-lg transition-colors ${
+                    location.pathname === link.path
+                      ? "bg-primary text-primary-foreground"
+                      : "text-gray-700 hover:bg-gray-100"
+                  }`}
                 >
                   <link.icon className="w-5 h-5" />
                   <span>{link.label}</span>

@@ -1,4 +1,5 @@
 import React from "react";
+import { Link } from "react-router-dom";
 import {
   Table,
   TableBody,
@@ -8,7 +9,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
-import { Edit, Trash2 } from "lucide-react";
+import { Edit, Plus, Trash2 } from "lucide-react";
 
 // Mock data - replace with actual data fetching
 const products = [
@@ -22,15 +23,39 @@ const products = [
     category: "Clothing",
     image: "https://images.unsplash.com/photo-1521572163474-6864f9cf17ab",
   },
-  // Add more mock products...
+  {
+    id: 2,
+    name: "Denim Jeans",
+    description: "Classic blue denim jeans",
+    sale_price: 59.99,
+    qty_in_stock: 75,
+    is_featured: false,
+    category: "Clothing",
+    image: "https://images.unsplash.com/photo-1542272604-787c3835535d",
+  },
 ];
 
 const ViewProducts = () => {
+  const handleDelete = (id: number) => {
+    console.log("Delete product:", id);
+    // Implement delete functionality
+  };
+
   return (
     <div className="space-y-6">
       <div className="flex justify-between items-center">
-        <h2 className="text-3xl font-bold">Products</h2>
-        <Button>Add New Product</Button>
+        <div>
+          <h2 className="text-3xl font-bold tracking-tight">Products</h2>
+          <p className="text-muted-foreground">
+            Manage your product inventory here.
+          </p>
+        </div>
+        <Link to="/dashboard/products/add">
+          <Button>
+            <Plus className="mr-2 h-4 w-4" />
+            Add New Product
+          </Button>
+        </Link>
       </div>
 
       <div className="rounded-md border">
@@ -44,7 +69,7 @@ const ViewProducts = () => {
               <TableHead>Stock</TableHead>
               <TableHead>Featured</TableHead>
               <TableHead>Category</TableHead>
-              <TableHead>Actions</TableHead>
+              <TableHead className="text-right">Actions</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
@@ -73,12 +98,18 @@ const ViewProducts = () => {
                   )}
                 </TableCell>
                 <TableCell>{product.category}</TableCell>
-                <TableCell>
-                  <div className="flex items-center gap-2">
-                    <Button variant="ghost" size="icon">
-                      <Edit className="h-4 w-4" />
-                    </Button>
-                    <Button variant="ghost" size="icon">
+                <TableCell className="text-right">
+                  <div className="flex items-center justify-end gap-2">
+                    <Link to={`/dashboard/products/edit/${product.id}`}>
+                      <Button variant="ghost" size="icon">
+                        <Edit className="h-4 w-4" />
+                      </Button>
+                    </Link>
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      onClick={() => handleDelete(product.id)}
+                    >
                       <Trash2 className="h-4 w-4" />
                     </Button>
                   </div>
