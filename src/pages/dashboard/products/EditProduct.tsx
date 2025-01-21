@@ -1,7 +1,7 @@
 import React, { useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useForm } from "react-hook-form";
+import { useForm, useFieldArray } from "react-hook-form";
 import * as z from "zod";
 import { Button } from "@/components/ui/button";
 import {
@@ -17,76 +17,95 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Switch } from "@/components/ui/switch";
 import { useToast } from "@/components/ui/use-toast";
+import { CategorySelect } from "@/components/product/CategorySelect";
+import { AttributeMultiSelect } from "@/components/product/AttributeMultiSelect";
+import { ProductItemForm } from "@/components/product/ProductItemForm";
+import { ProductFormData } from "@/types/product";
 
 const productSchema = z.object({
-  name: z.string().min(1, "Name is required").max(100),
+  category_id: z.string().min(1, "Category is required"),
+  brand_id: z.string().min(1, "Brand is required"),
+  name: z.string().min(1, "Name is required"),
   description: z.string().min(1, "Description is required"),
-  careInstructions: z.string(),
+  care_instructions: z.string(),
   about: z.string(),
-  isFeatured: z.boolean().default(false),
-  originalPrice: z.number().min(0, "Price must be positive"),
-  salePrice: z.number().min(0, "Price must be positive"),
-  productCode: z.string().min(1, "Product code is required"),
+  is_featured: z.boolean().default(false),
+  discount_id: z.string().optional(),
+  attribute_options: z.array(z.string()),
+  product_items: z.array(
+    z.object({
+      color_id: z.string().min(1, "Color is required"),
+      name_details: z.string().min(1, "Name details are required"),
+      original_price: z.number().min(0, "Price must be positive"),
+      sale_price: z.number().min(0, "Price must be positive"),
+      product_code: z.string().min(1, "Product code is required"),
+      variations: z.array(
+        z.object({
+          size_id: z.string().min(1, "Size is required"),
+          qty_in_stock: z.number().min(0, "Quantity must be positive"),
+        })
+      ),
+      images: z.array(
+        z.object({
+          file: z.instanceof(File),
+          description: z.string(),
+        })
+      ),
+    })
+  ),
 });
-
-type ProductFormValues = z.infer<typeof productSchema>;
-
-// Mock function to fetch product data
-const fetchProduct = async (id: string) => {
-  // Replace with actual API call
-  console.log("Fetching product:", id);
-  return {
-    name: "Classic T-Shirt",
-    description: "Comfortable cotton t-shirt",
-    careInstructions: "Machine wash cold",
-    about: "Premium quality cotton t-shirt",
-    isFeatured: true,
-    originalPrice: 39.99,
-    salePrice: 29.99,
-    productCode: "TSH001",
-  };
-};
 
 const EditProduct = () => {
   const { id } = useParams();
   const navigate = useNavigate();
   const { toast } = useToast();
 
-  const form = useForm<ProductFormValues>({
+  const form = useForm<ProductFormData>({
     resolver: zodResolver(productSchema),
     defaultValues: {
       name: "",
       description: "",
-      careInstructions: "",
+      care_instructions: "",
       about: "",
-      isFeatured: false,
-      originalPrice: 0,
-      salePrice: 0,
-      productCode: "",
+      is_featured: false,
+      attribute_options: [],
+      product_items: [],
     },
   });
 
+  const { fields, append, remove } = useFieldArray({
+    control: form.control,
+    name: "product_items",
+  });
+
   useEffect(() => {
-    const loadProduct = async () => {
-      if (id) {
-        try {
-          const productData = await fetchProduct(id);
+    const loadProduct = () => {
+      try {
+        const savedProduct = localStorage.getItem('editProductData');
+        if (savedProduct) {
+          const productData = JSON.parse(savedProduct);
+          console.log("Loading product data:", productData);
           form.reset(productData);
-        } catch (error) {
-          console.error("Error loading product:", error);
-          toast({
-            title: "Error",
-            description: "Failed to load product data",
-            variant: "destructive",
-          });
         }
+      } catch (error) {
+        console.error("Error loading product data:", error);
+        toast({
+          title: "Error",
+          description: "Failed to load product data",
+          variant: "destructive",
+        });
       }
     };
 
     loadProduct();
-  }, [id, form, toast]);
 
-  const onSubmit = async (values: ProductFormValues) => {
+    // Cleanup
+    return () => {
+      localStorage.removeItem('editProductData');
+    };
+  }, [form, toast]);
+
+  const onSubmit = async (values: ProductFormData) => {
     try {
       console.log("Updating product:", id, values);
       // Implement update logic here
@@ -115,6 +134,8 @@ const EditProduct = () => {
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
           <div className="grid gap-6 md:grid-cols-2">
+            <CategorySelect control={form.control} name="category_id" />
+
             <FormField
               control={form.control}
               name="name"
@@ -123,58 +144,6 @@ const EditProduct = () => {
                   <FormLabel>Product Name</FormLabel>
                   <FormControl>
                     <Input placeholder="Enter product name" {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-
-            <FormField
-              control={form.control}
-              name="productCode"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Product Code</FormLabel>
-                  <FormControl>
-                    <Input placeholder="Enter product code" {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-
-            <FormField
-              control={form.control}
-              name="originalPrice"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Original Price</FormLabel>
-                  <FormControl>
-                    <Input
-                      type="number"
-                      placeholder="0.00"
-                      {...field}
-                      onChange={(e) => field.onChange(Number(e.target.value))}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-
-            <FormField
-              control={form.control}
-              name="salePrice"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Sale Price</FormLabel>
-                  <FormControl>
-                    <Input
-                      type="number"
-                      placeholder="0.00"
-                      {...field}
-                      onChange={(e) => field.onChange(Number(e.target.value))}
-                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -202,7 +171,7 @@ const EditProduct = () => {
 
           <FormField
             control={form.control}
-            name="careInstructions"
+            name="care_instructions"
             render={({ field }) => (
               <FormItem>
                 <FormLabel>Care Instructions</FormLabel>
@@ -238,7 +207,7 @@ const EditProduct = () => {
 
           <FormField
             control={form.control}
-            name="isFeatured"
+            name="is_featured"
             render={({ field }) => (
               <FormItem className="flex flex-row items-center justify-between rounded-lg border p-4">
                 <div className="space-y-0.5">
@@ -256,6 +225,47 @@ const EditProduct = () => {
               </FormItem>
             )}
           />
+
+          <div className="space-y-4">
+            <div>
+              <h3 className="text-lg font-medium">Attributes</h3>
+              <AttributeMultiSelect
+                control={form.control}
+                name="attribute_options"
+              />
+            </div>
+          </div>
+
+          <div className="space-y-4">
+            <div className="flex justify-between items-center">
+              <h3 className="text-lg font-medium">Product Variations</h3>
+              <Button
+                type="button"
+                onClick={() =>
+                  append({
+                    color_id: "",
+                    name_details: "",
+                    original_price: 0,
+                    sale_price: 0,
+                    product_code: "",
+                    variations: [],
+                    images: [],
+                  })
+                }
+              >
+                Add Variation
+              </Button>
+            </div>
+
+            {fields.map((field, index) => (
+              <ProductItemForm
+                key={field.id}
+                control={form.control}
+                index={index}
+                onRemove={() => remove(index)}
+              />
+            ))}
+          </div>
 
           <div className="flex justify-end gap-4">
             <Button

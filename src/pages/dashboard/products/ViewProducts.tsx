@@ -1,5 +1,4 @@
-import React from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import {
   Table,
   TableBody,
@@ -55,7 +54,6 @@ const ViewProducts = () => {
 
   const handleDelete = (id: number) => {
     console.log("Deleting product:", id);
-    // Implement delete functionality here
     toast({
       title: "Product deleted",
       description: "The product has been successfully deleted.",
@@ -64,7 +62,7 @@ const ViewProducts = () => {
 
   const handleEdit = async (id: number) => {
     try {
-      console.log("Fetching product details for ID:", id);
+      console.log("Fetching complete product details for ID:", id);
       
       // Mock API call - replace with actual API call
       const response = await fetchProductDetails(id);
@@ -89,7 +87,7 @@ const ViewProducts = () => {
     // Simulate API call delay
     await new Promise(resolve => setTimeout(resolve, 500));
     
-    // Mock response - replace with actual API data
+    // Mock response with complete product information
     return {
       category_id: "1",
       brand_id: "1",
@@ -119,6 +117,24 @@ const ViewProducts = () => {
           ],
           images: [],
         },
+        {
+          color_id: "2",
+          name_details: "White Classic T-Shirt",
+          original_price: 39.99,
+          sale_price: 29.99,
+          product_code: "TSH001-WHT",
+          variations: [
+            {
+              size_id: "1",
+              qty_in_stock: 40,
+            },
+            {
+              size_id: "2",
+              qty_in_stock: 25,
+            },
+          ],
+          images: [],
+        }
       ],
     };
   };
