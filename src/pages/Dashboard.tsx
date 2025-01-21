@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Link, Outlet, useLocation } from "react-router-dom";
+import { Link, Outlet, useLocation, useNavigate } from "react-router-dom";
 import {
   LayoutDashboard,
   Users,
@@ -47,6 +47,7 @@ const sidebarLinks = [
 const Dashboard = () => {
   const [openSubmenu, setOpenSubmenu] = useState<string | null>(null);
   const location = useLocation();
+  const navigate = useNavigate();
 
   const toggleSubmenu = (label: string) => {
     setOpenSubmenu(openSubmenu === label ? null : label);
@@ -55,6 +56,11 @@ const Dashboard = () => {
   // Check if current path matches any submenu item
   const isSubmenuItemActive = (submenuItems: typeof productSubMenu) => {
     return submenuItems.some((item) => location.pathname === item.path);
+  };
+
+  const handleNavigation = (path: string) => {
+    console.log("Navigating to:", path);
+    navigate(path);
   };
 
   return (
@@ -95,24 +101,24 @@ const Dashboard = () => {
                     }`}
                   >
                     {link.submenu.map((subItem) => (
-                      <Link
+                      <button
                         key={subItem.path}
-                        to={subItem.path}
-                        className={`block ml-9 px-4 py-2 text-sm rounded-lg transition-colors ${
+                        onClick={() => handleNavigation(subItem.path)}
+                        className={`w-full text-left ml-9 px-4 py-2 text-sm rounded-lg transition-colors ${
                           location.pathname === subItem.path
                             ? "bg-primary/10 text-primary font-medium"
                             : "text-gray-600 hover:bg-gray-100"
                         }`}
                       >
                         {subItem.label}
-                      </Link>
+                      </button>
                     ))}
                   </div>
                 </div>
               ) : (
-                <Link
-                  to={link.path}
-                  className={`flex items-center gap-3 px-4 py-2 rounded-lg transition-colors ${
+                <button
+                  onClick={() => handleNavigation(link.path)}
+                  className={`w-full flex items-center gap-3 px-4 py-2 rounded-lg transition-colors ${
                     location.pathname === link.path
                       ? "bg-primary text-primary-foreground"
                       : "text-gray-700 hover:bg-gray-100"
@@ -120,7 +126,7 @@ const Dashboard = () => {
                 >
                   <link.icon className="w-5 h-5" />
                   <span>{link.label}</span>
-                </Link>
+                </button>
               )}
             </div>
           ))}
