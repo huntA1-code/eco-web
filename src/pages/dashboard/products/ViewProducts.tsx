@@ -11,6 +11,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { Edit, Plus, Trash2 } from "lucide-react";
 import { useToast } from "@/components/ui/use-toast";
+import { ProductFormData } from "@/types/product";
 
 // Mock data type
 interface Product {
@@ -24,7 +25,7 @@ interface Product {
   image: string;
 }
 
-// Mock data - replace with actual data fetching
+// Mock data - replace with API call
 const products: Product[] = [
   {
     id: 1,
@@ -61,8 +62,65 @@ const ViewProducts = () => {
     });
   };
 
-  const handleEdit = (id: number) => {
-    navigate(`/dashboard/products/edit/${id}`);
+  const handleEdit = async (id: number) => {
+    try {
+      console.log("Fetching product details for ID:", id);
+      
+      // Mock API call - replace with actual API call
+      const response = await fetchProductDetails(id);
+      
+      // Store the full product data in localStorage for the edit page
+      localStorage.setItem('editProductData', JSON.stringify(response));
+      
+      // Navigate to edit page with the product ID
+      navigate(`/dashboard/products/edit/${id}`);
+    } catch (error) {
+      console.error("Error fetching product details:", error);
+      toast({
+        title: "Error",
+        description: "Failed to fetch product details",
+        variant: "destructive",
+      });
+    }
+  };
+
+  // Mock function to fetch product details - replace with actual API call
+  const fetchProductDetails = async (id: number): Promise<ProductFormData> => {
+    // Simulate API call delay
+    await new Promise(resolve => setTimeout(resolve, 500));
+    
+    // Mock response - replace with actual API data
+    return {
+      category_id: "1",
+      brand_id: "1",
+      name: "Classic T-Shirt",
+      description: "Comfortable cotton t-shirt",
+      care_instructions: "Machine wash cold",
+      about: "Premium quality cotton t-shirt",
+      is_featured: true,
+      discount_id: "1",
+      attribute_options: ["1", "2"],
+      product_items: [
+        {
+          color_id: "1",
+          name_details: "Black Classic T-Shirt",
+          original_price: 39.99,
+          sale_price: 29.99,
+          product_code: "TSH001-BLK",
+          variations: [
+            {
+              size_id: "1",
+              qty_in_stock: 50,
+            },
+            {
+              size_id: "2",
+              qty_in_stock: 30,
+            },
+          ],
+          images: [],
+        },
+      ],
+    };
   };
 
   return (
