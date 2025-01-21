@@ -66,6 +66,7 @@ const ViewProducts = () => {
       
       // Mock API call - replace with actual API call
       const response = await fetchProductDetails(id);
+      console.log("Fetched product details:", response);
       
       // Store the full product data in localStorage for the edit page
       localStorage.setItem('editProductData', JSON.stringify(response));
