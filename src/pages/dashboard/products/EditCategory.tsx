@@ -39,6 +39,11 @@ const mockCategories = [
   { id: "2", name: "Men's Clothing", level: 1, parent_id: "1" },
 ];
 
+const mockSizeCategories = [
+  { id: "1", name: "Adult Sizes" },
+  { id: "2", name: "Children Sizes" },
+];
+
 const EditCategory = () => {
   const { id } = useParams();
   const navigate = useNavigate();
@@ -50,18 +55,21 @@ const EditCategory = () => {
     defaultValues: {
       name: "",
       description: "",
+      parent_id: undefined,
+      size_category_id: undefined,
     },
   });
 
   useEffect(() => {
     const loadCategory = async () => {
       try {
-        // Implement API call to fetch category data
         console.log("Loading category:", id);
-        // Mock data loading
+        // Mock data loading - replace with API call
         form.reset({
           name: "Sample Category",
           description: "Sample description",
+          parent_id: "1",
+          size_category_id: "2",
         });
       } catch (error) {
         console.error("Error loading category:", error);
@@ -139,15 +147,49 @@ const EditCategory = () => {
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Parent Category</FormLabel>
-                  <Select onValueChange={field.onChange} value={field.value}>
+                  <Select 
+                    onValueChange={field.onChange} 
+                    value={field.value || "root"}
+                    defaultValue="root"
+                  >
                     <FormControl>
                       <SelectTrigger>
                         <SelectValue placeholder="Select parent category" />
                       </SelectTrigger>
                     </FormControl>
                     <SelectContent>
-                      <SelectItem value="">None (Root Category)</SelectItem>
+                      <SelectItem value="root">None (Root Category)</SelectItem>
                       {mockCategories.map((category) => (
+                        <SelectItem key={category.id} value={category.id}>
+                          {category.name}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            <FormField
+              control={form.control}
+              name="size_category_id"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Size Category</FormLabel>
+                  <Select 
+                    onValueChange={field.onChange} 
+                    value={field.value || "none"}
+                    defaultValue="none"
+                  >
+                    <FormControl>
+                      <SelectTrigger>
+                        <SelectValue placeholder="Select size category" />
+                      </SelectTrigger>
+                    </FormControl>
+                    <SelectContent>
+                      <SelectItem value="none">No Size Category</SelectItem>
+                      {mockSizeCategories.map((category) => (
                         <SelectItem key={category.id} value={category.id}>
                           {category.name}
                         </SelectItem>
