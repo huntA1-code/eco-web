@@ -1,4 +1,5 @@
-import { useNavigate, Link } from "react-router-dom";
+import React from "react";
+import { Link, useNavigate } from "react-router-dom";
 import {
   Table,
   TableBody,
@@ -9,9 +10,9 @@ import {
 } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
 import { Edit, Plus, Trash2 } from "lucide-react";
-import { useToast } from "@/components/ui/use-toast";
-import { ProductFormData } from "@/types/product";
+import { useToast } from "@/hooks/use-toast";
 
+// Mock data type
 interface Product {
   id: number;
   name: string;
@@ -23,7 +24,7 @@ interface Product {
   image: string;
 }
 
-// Mock data - replace with API call
+// Mock data - replace with actual data fetching
 const products: Product[] = [
   {
     id: 1,
@@ -53,79 +54,15 @@ const ViewProducts = () => {
 
   const handleDelete = (id: number) => {
     console.log("Deleting product:", id);
+    // Implement delete functionality here
     toast({
       title: "Product deleted",
       description: "The product has been successfully deleted.",
     });
   };
 
-  const handleEdit = async (id: number) => {
-    try {
-      console.log("Fetching complete product details for ID:", id);
-      
-      // Mock API call - replace with actual API call
-      const response = await fetchProductDetails(id);
-      console.log("Fetched product details:", response);
-      
-      // Store the full product data in localStorage for the edit page
-      localStorage.setItem('editProductData', JSON.stringify({
-        ...response,
-        // Convert File objects to null since they can't be stored in localStorage
-        product_items: response.product_items.map(item => ({
-          ...item,
-          images: [] // Reset images since we can't store File objects
-        }))
-      }));
-      
-      // Navigate to edit page with the product ID
-      navigate(`/dashboard/products/edit/${id}`);
-    } catch (error) {
-      console.error("Error fetching product details:", error);
-      toast({
-        title: "Error",
-        description: "Failed to fetch product details",
-        variant: "destructive",
-      });
-    }
-  };
-
-  // Mock function to fetch product details - replace with actual API call
-  const fetchProductDetails = async (id: number): Promise<ProductFormData> => {
-    // Simulate API call delay
-    await new Promise(resolve => setTimeout(resolve, 500));
-    
-    // Mock response with complete product information
-    return {
-      category_id: "1",
-      brand_id: "1",
-      name: products.find(p => p.id === id)?.name || "Classic T-Shirt",
-      description: products.find(p => p.id === id)?.description || "Comfortable cotton t-shirt",
-      care_instructions: "Machine wash cold",
-      about: "Premium quality cotton t-shirt",
-      is_featured: products.find(p => p.id === id)?.is_featured || false,
-      discount_id: "1",
-      attribute_options: ["1", "2"],
-      product_items: [
-        {
-          color_id: "1",
-          name_details: "Black Classic T-Shirt",
-          original_price: products.find(p => p.id === id)?.sale_price || 39.99,
-          sale_price: products.find(p => p.id === id)?.sale_price || 29.99,
-          product_code: "TSH001-BLK",
-          variations: [
-            {
-              size_id: "1",
-              qty_in_stock: 50,
-            },
-            {
-              size_id: "2",
-              qty_in_stock: 30,
-            },
-          ],
-          images: [],
-        }
-      ],
-    };
+  const handleEdit = () => {
+    navigate(`/dashboard/products/edit`);
   };
 
   return (
@@ -190,7 +127,7 @@ const ViewProducts = () => {
                     <Button
                       variant="ghost"
                       size="icon"
-                      onClick={() => handleEdit(product.id)}
+                      onClick={() => handleEdit()}
                     >
                       <Edit className="h-4 w-4" />
                     </Button>
