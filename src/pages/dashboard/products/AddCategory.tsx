@@ -29,6 +29,11 @@ const mockCategories = [
   { id: "2", name: "Men's Clothing", level: 1, parent_id: "1" },
 ];
 
+const mockSizeCategories = [
+  { id: "1", name: "Adult Sizes" },
+  { id: "2", name: "Children Sizes" },
+];
+
 const categorySchema = z.object({
   name: z.string().min(1, "Name is required").max(50),
   description: z.string().max(500).optional(),
@@ -113,15 +118,40 @@ const AddCategory = () => {
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Parent Category</FormLabel>
-                  <Select onValueChange={field.onChange} value={field.value}>
+                  <Select onValueChange={field.onChange} value={field.value || undefined}>
                     <FormControl>
                       <SelectTrigger>
                         <SelectValue placeholder="Select parent category" />
                       </SelectTrigger>
                     </FormControl>
                     <SelectContent>
-                      <SelectItem value="">None (Root Category)</SelectItem>
+                      <SelectItem value="root">None (Root Category)</SelectItem>
                       {mockCategories.map((category) => (
+                        <SelectItem key={category.id} value={category.id}>
+                          {category.name}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            <FormField
+              control={form.control}
+              name="size_category_id"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Size Category</FormLabel>
+                  <Select onValueChange={field.onChange} value={field.value || undefined}>
+                    <FormControl>
+                      <SelectTrigger>
+                        <SelectValue placeholder="Select size category" />
+                      </SelectTrigger>
+                    </FormControl>
+                    <SelectContent>
+                      {mockSizeCategories.map((category) => (
                         <SelectItem key={category.id} value={category.id}>
                           {category.name}
                         </SelectItem>
