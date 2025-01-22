@@ -1,4 +1,5 @@
 import React from "react";
+import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import {
   Table,
@@ -27,13 +28,17 @@ const sizes = [
 ];
 
 const Sizes = () => {
+  const navigate = useNavigate();
+
   return (
     <div className="space-y-6">
       <div className="flex justify-between items-center">
         <h2 className="text-2xl font-bold">Sizes</h2>
         <div className="space-x-4">
           <Button variant="outline">Manage Categories</Button>
-          <Button>Add New Size</Button>
+          <Button onClick={() => navigate("/dashboard/products/sizes/add")}>
+            Add New Size
+          </Button>
         </div>
       </div>
 
