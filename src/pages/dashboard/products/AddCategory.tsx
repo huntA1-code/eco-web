@@ -54,6 +54,8 @@ const AddCategory = () => {
     defaultValues: {
       name: "",
       description: "",
+      parent_id: undefined,
+      size_category_id: undefined,
     },
   });
 
