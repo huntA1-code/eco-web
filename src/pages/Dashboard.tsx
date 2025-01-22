@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Link, Outlet, useLocation, useNavigate } from "react-router-dom";
+import { Outlet, useLocation, useNavigate } from "react-router-dom";
 import {
   LayoutDashboard,
   Users,
@@ -53,7 +53,6 @@ const Dashboard = () => {
     setOpenSubmenu(openSubmenu === label ? null : label);
   };
 
-  // Check if current path matches any submenu item
   const isSubmenuItemActive = (submenuItems: typeof productSubMenu) => {
     return submenuItems.some((item) => location.pathname === item.path);
   };
@@ -64,13 +63,13 @@ const Dashboard = () => {
   };
 
   return (
-    <div className="flex h-screen bg-gray-100">
+    <div className="flex h-screen overflow-hidden bg-gray-100">
       {/* Sidebar */}
-      <aside className="w-64 bg-white shadow-md">
+      <aside className="w-64 flex flex-col bg-white shadow-md">
         <div className="p-4 border-b">
           <h1 className="text-xl font-bold">Admin Dashboard</h1>
         </div>
-        <nav className="p-4">
+        <nav className="flex-1 overflow-y-auto p-4 scrollbar-hide">
           {sidebarLinks.map((link) => (
             <div key={link.path} className="mb-1">
               {link.submenu ? (
@@ -134,7 +133,7 @@ const Dashboard = () => {
       </aside>
 
       {/* Main Content */}
-      <main className="flex-1 overflow-auto">
+      <main className="flex-1 overflow-y-auto">
         <div className="p-8">
           <Outlet />
         </div>
