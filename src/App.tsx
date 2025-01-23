@@ -22,6 +22,11 @@ import AddSize from "./pages/dashboard/products/AddSize";
 import SizeCategories from "./pages/dashboard/products/SizeCategories";
 import AddSizeCategory from "./pages/dashboard/products/AddSizeCategory";
 import Attributes from "./pages/dashboard/products/Attributes";
+import AddAttribute from "./pages/dashboard/products/AddAttribute";
+import EditAttribute from "./pages/dashboard/products/EditAttribute";
+import AttributeTypes from "./pages/dashboard/products/AttributeTypes";
+import AddAttributeType from "./pages/dashboard/products/AddAttributeType";
+import EditAttributeType from "./pages/dashboard/products/EditAttributeType";
 
 function App() {
   const location = useLocation();
