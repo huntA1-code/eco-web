@@ -16,7 +16,11 @@ import Categories from "./pages/dashboard/products/Categories";
 import AddCategory from "./pages/dashboard/products/AddCategory";
 import EditCategory from "./pages/dashboard/products/EditCategory";
 import Brands from "./pages/dashboard/products/Brands";
+import AddBrand from "./pages/dashboard/products/AddBrand";
+import EditBrand from "./pages/dashboard/products/EditBrand";
 import Colors from "./pages/dashboard/products/Colors";
+import AddColor from "./pages/dashboard/products/AddColor";
+import EditColor from "./pages/dashboard/products/EditColor";
 import Sizes from "./pages/dashboard/products/Sizes";
 import AddSize from "./pages/dashboard/products/AddSize";
 import SizeCategories from "./pages/dashboard/products/SizeCategories";
@@ -59,7 +63,11 @@ function App() {
           <Route path="products/categories/add" element={<AddCategory />} />
           <Route path="products/categories/edit/:id" element={<EditCategory />} />
           <Route path="products/brands" element={<Brands />} />
+          <Route path="products/brands/add" element={<AddBrand />} />
+          <Route path="products/brands/edit/:id" element={<EditBrand />} />
           <Route path="products/colors" element={<Colors />} />
+          <Route path="products/colors/add" element={<AddColor />} />
+          <Route path="products/colors/edit/:id" element={<EditColor />} />
           <Route path="products/sizes" element={<Sizes />} />
           <Route path="products/sizes/add" element={<AddSize />} />
           <Route path="products/sizes/categories" element={<SizeCategories />} />

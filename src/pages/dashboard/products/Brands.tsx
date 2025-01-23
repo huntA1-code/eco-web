@@ -9,6 +9,8 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Edit, Trash2 } from "lucide-react";
+import { useNavigate } from "react-router-dom";
+import { toast } from "sonner";
 
 // Mock data - replace with actual data fetching
 const brands = [
@@ -22,11 +24,26 @@ const brands = [
 ];
 
 const Brands = () => {
+  const navigate = useNavigate();
+
+  const handleDelete = async (id: number) => {
+    try {
+      // TODO: Implement API call to delete brand
+      console.log("Deleting brand:", id);
+      toast.success("Brand deleted successfully");
+    } catch (error) {
+      console.error("Error deleting brand:", error);
+      toast.error("Failed to delete brand");
+    }
+  };
+
   return (
     <div className="space-y-6">
       <div className="flex justify-between items-center">
         <h2 className="text-2xl font-bold">Brands</h2>
-        <Button>Add New Brand</Button>
+        <Button onClick={() => navigate("/dashboard/products/brands/add")}>
+          Add New Brand
+        </Button>
       </div>
 
       <div className="rounded-md border">
@@ -47,10 +64,20 @@ const Brands = () => {
                 <TableCell>{brand.store}</TableCell>
                 <TableCell>
                   <div className="flex items-center gap-2">
-                    <Button variant="ghost" size="icon">
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      onClick={() =>
+                        navigate(`/dashboard/products/brands/edit/${brand.id}`)
+                      }
+                    >
                       <Edit className="h-4 w-4" />
                     </Button>
-                    <Button variant="ghost" size="icon">
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      onClick={() => handleDelete(brand.id)}
+                    >
                       <Trash2 className="h-4 w-4" />
                     </Button>
                   </div>
