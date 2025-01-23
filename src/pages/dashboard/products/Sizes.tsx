@@ -1,4 +1,3 @@
-import React from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import {
@@ -11,7 +10,6 @@ import {
 } from "@/components/ui/table";
 import { Edit, Trash2 } from "lucide-react";
 
-// Mock data - replace with actual data fetching
 const sizes = [
   {
     id: 1,
@@ -35,7 +33,12 @@ const Sizes = () => {
       <div className="flex justify-between items-center">
         <h2 className="text-2xl font-bold">Sizes</h2>
         <div className="space-x-4">
-          <Button variant="outline">Manage Categories</Button>
+          <Button 
+            variant="outline" 
+            onClick={() => navigate("/dashboard/products/sizes/categories")}
+          >
+            Manage Categories
+          </Button>
           <Button onClick={() => navigate("/dashboard/products/sizes/add")}>
             Add New Size
           </Button>
@@ -49,7 +52,7 @@ const Sizes = () => {
               <TableHead>Category</TableHead>
               <TableHead>Name</TableHead>
               <TableHead>Sort Order</TableHead>
-              <TableHead>Actions</TableHead>
+              <TableHead className="w-[100px]">Actions</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
