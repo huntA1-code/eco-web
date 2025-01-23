@@ -1,5 +1,5 @@
 import { useForm, useFieldArray } from "react-hook-form";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import {
   Form,
@@ -19,20 +19,23 @@ import {
 } from "@/components/ui/select";
 import { toast } from "sonner";
 import { Plus, Trash2 } from "lucide-react";
+import { useEffect } from "react";
 
 interface AttributeOption {
   name: string;
   sort_order: number;
 }
 
-interface AddAttributeFormValues {
+interface EditAttributeFormValues {
   attribute_type_id: string;
   options: AttributeOption[];
 }
 
-const AddAttribute = () => {
+const EditAttribute = () => {
   const navigate = useNavigate();
-  const form = useForm<AddAttributeFormValues>({
+  const { id } = useParams();
+  
+  const form = useForm<EditAttributeFormValues>({
     defaultValues: {
       attribute_type_id: "",
       options: [{ name: "", sort_order: 0 }],
@@ -44,22 +47,47 @@ const AddAttribute = () => {
     name: "options",
   });
 
-  const onSubmit = async (data: AddAttributeFormValues) => {
+  useEffect(() => {
+    const fetchAttribute = async () => {
+      try {
+        console.log("Fetching attribute data for ID:", id);
+        // TODO: Implement API call
+        // Mock data for now
+        const mockData = {
+          attribute_type_id: "1",
+          options: [
+            { name: "Option 1", sort_order: 1 },
+            { name: "Option 2", sort_order: 2 },
+          ],
+        };
+        form.reset(mockData);
+      } catch (error) {
+        console.error("Error fetching attribute:", error);
+        toast.error("Failed to fetch attribute data");
+      }
+    };
+
+    if (id) {
+      fetchAttribute();
+    }
+  }, [id, form]);
+
+  const onSubmit = async (data: EditAttributeFormValues) => {
     try {
-      console.log("Submitting attribute data:", data);
+      console.log("Updating attribute data:", data);
       // TODO: Implement API call
-      toast.success("Attribute created successfully");
+      toast.success("Attribute updated successfully");
       navigate("/dashboard/products/attributes");
     } catch (error) {
-      console.error("Error creating attribute:", error);
-      toast.error("Failed to create attribute");
+      console.error("Error updating attribute:", error);
+      toast.error("Failed to update attribute");
     }
   };
 
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
-        <h2 className="text-2xl font-bold">Add New Attribute</h2>
+        <h2 className="text-2xl font-bold">Edit Attribute</h2>
         <Button
           variant="outline"
           onClick={() => navigate("/dashboard/products/attributes")}
@@ -157,7 +185,7 @@ const AddAttribute = () => {
               ))}
             </div>
 
-            <Button type="submit">Create Attribute</Button>
+            <Button type="submit">Update Attribute</Button>
           </form>
         </Form>
       </div>
@@ -165,4 +193,4 @@ const AddAttribute = () => {
   );
 };
 
-export default AddAttribute;
+export default EditAttribute;
