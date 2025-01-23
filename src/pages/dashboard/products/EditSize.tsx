@@ -1,5 +1,5 @@
 import { useForm, useFieldArray } from "react-hook-form";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import {
   Form,
@@ -18,6 +18,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { toast } from "sonner";
+import { useEffect } from "react";
 
 // Mock data - replace with API call
 const mockSizeCategories = [
@@ -30,14 +31,16 @@ interface SizeOption {
   sort_order: number;
 }
 
-interface AddSizeFormValues {
+interface EditSizeFormValues {
   size_category_id: string;
   size_options: SizeOption[];
 }
 
-const AddSize = () => {
+const EditSize = () => {
   const navigate = useNavigate();
-  const form = useForm<AddSizeFormValues>({
+  const { id } = useParams();
+
+  const form = useForm<EditSizeFormValues>({
     defaultValues: {
       size_category_id: "",
       size_options: [{ name: "", sort_order: 0 }],
@@ -49,32 +52,46 @@ const AddSize = () => {
     name: "size_options",
   });
 
-  const onSubmit = async (data: AddSizeFormValues) => {
+  useEffect(() => {
+    // TODO: Fetch existing size data and set form values
+    const fetchSizeData = async () => {
+      try {
+        // Mock data - replace with API call
+        const mockData = {
+          size_category_id: "1",
+          size_options: [
+            { name: "S", sort_order: 1 },
+            { name: "M", sort_order: 2 },
+          ],
+        };
+        form.reset(mockData);
+      } catch (error) {
+        console.error("Error fetching size data:", error);
+        toast.error("Failed to fetch size data");
+      }
+    };
+
+    if (id) {
+      fetchSizeData();
+    }
+  }, [id, form]);
+
+  const onSubmit = async (data: EditSizeFormValues) => {
     try {
-      console.log("Submitting size data:", data);
-      // Example of the API request body structure:
-      // {
-      //   size_category_id: "1",
-      //   size_options: [
-      //     { name: "S", sort_order: 1 },
-      //     { name: "M", sort_order: 2 },
-      //     { name: "L", sort_order: 3 }
-      //   ]
-      // }
-      
-      // TODO: Implement API call to create sizes
-      toast.success("Sizes created successfully");
+      console.log("Updating size data:", data);
+      // TODO: Implement API call to update sizes
+      toast.success("Sizes updated successfully");
       navigate("/dashboard/products/sizes");
     } catch (error) {
-      console.error("Error creating sizes:", error);
-      toast.error("Failed to create sizes");
+      console.error("Error updating sizes:", error);
+      toast.error("Failed to update sizes");
     }
   };
 
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
-        <h2 className="text-2xl font-bold">Add New Sizes</h2>
+        <h2 className="text-2xl font-bold">Edit Sizes</h2>
         <Button
           variant="outline"
           onClick={() => navigate("/dashboard/products/sizes")}
@@ -175,7 +192,7 @@ const AddSize = () => {
               ))}
             </div>
 
-            <Button type="submit">Create Sizes</Button>
+            <Button type="submit">Update Sizes</Button>
           </form>
         </Form>
       </div>
@@ -183,4 +200,4 @@ const AddSize = () => {
   );
 };
 
-export default AddSize;
+export default EditSize;
