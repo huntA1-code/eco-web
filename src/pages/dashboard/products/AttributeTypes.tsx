@@ -12,79 +12,71 @@ import { Edit, Trash2 } from "lucide-react";
 import { toast } from "sonner";
 
 // Mock data - replace with API call
-const attributes = [
+const attributeTypes = [
   {
     id: 1,
-    type: "Material",
-    name: "Cotton",
+    name: "Material",
+    optionsCount: 4,
   },
   {
     id: 2,
-    type: "Material",
-    name: "Polyester",
+    name: "Style",
+    optionsCount: 3,
   },
 ];
 
-const Attributes = () => {
+const AttributeTypes = () => {
   const navigate = useNavigate();
 
   const handleDelete = async (id: number) => {
     try {
-      console.log("Deleting attribute:", id);
+      console.log("Deleting attribute type:", id);
       // TODO: Implement API call
-      toast.success("Attribute deleted successfully");
+      toast.success("Attribute type deleted successfully");
     } catch (error) {
-      console.error("Error deleting attribute:", error);
-      toast.error("Failed to delete attribute");
+      console.error("Error deleting attribute type:", error);
+      toast.error("Failed to delete attribute type");
     }
   };
 
   return (
     <div className="space-y-6">
       <div className="flex justify-between items-center">
-        <h2 className="text-2xl font-bold">Attributes</h2>
-        <div className="space-x-4">
-          <Button 
-            variant="outline"
-            onClick={() => navigate("/dashboard/products/attributes/types")}
-          >
-            Manage Types
-          </Button>
-          <Button
-            onClick={() => navigate("/dashboard/products/attributes/add")}
-          >
-            Add New Attribute
-          </Button>
-        </div>
+        <h2 className="text-2xl font-bold">Attribute Types</h2>
+        <Button
+          onClick={() => navigate("/dashboard/products/attributes/types/add")}
+        >
+          Add New Type
+        </Button>
       </div>
 
       <div className="rounded-md border">
         <Table>
           <TableHeader>
             <TableRow className="border-b">
-              <TableHead className="border-r">Type</TableHead>
               <TableHead className="border-r">Name</TableHead>
+              <TableHead className="border-r">Number of Options</TableHead>
               <TableHead>Actions</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
-            {attributes.map((attribute) => (
-              <TableRow key={attribute.id} className="border-b">
-                <TableCell className="border-r">{attribute.type}</TableCell>
-                <TableCell className="font-medium border-r">{attribute.name}</TableCell>
+            {attributeTypes.map((type) => (
+              <TableRow key={type.id} className="border-b">
+                <TableCell className="font-medium border-r">{type.name}</TableCell>
+                <TableCell className="border-r">{type.optionsCount}</TableCell>
                 <TableCell>
                   <div className="flex items-center gap-2">
-                    <Button 
-                      variant="ghost" 
+                    <Button
+                      variant="ghost"
                       size="icon"
-                      onClick={() => navigate(`/dashboard/products/attributes/edit/${attribute.id}`)}
+                      onClick={() => navigate(`/dashboard/products/attributes/types/edit/${type.id}`)}
                     >
                       <Edit className="h-4 w-4" />
                     </Button>
-                    <Button 
-                      variant="ghost" 
+                    <Button
+                      variant="ghost"
                       size="icon"
-                      onClick={() => handleDelete(attribute.id)}
+                      onClick={() => handleDelete(type.id)}
                     >
                       <Trash2 className="h-4 w-4" />
                     </Button>
@@ -99,4 +91,4 @@ const Attributes = () => {
   );
 };
 
-export default Attributes;
+export default AttributeTypes;

@@ -60,6 +60,11 @@ function App() {
           <Route path="products/sizes/categories" element={<SizeCategories />} />
           <Route path="products/sizes/categories/add" element={<AddSizeCategory />} />
           <Route path="products/attributes" element={<Attributes />} />
+          <Route path="products/attributes/add" element={<AddAttribute />} />
+          <Route path="products/attributes/edit/:id" element={<EditAttribute />} />
+          <Route path="products/attributes/types" element={<AttributeTypes />} />
+          <Route path="products/attributes/types/add" element={<AddAttributeType />} />
+          <Route path="products/attributes/types/edit/:id" element={<EditAttributeType />} />
         </Route>
       </Routes>
     </>
