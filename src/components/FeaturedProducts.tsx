@@ -18,6 +18,7 @@ export const FeaturedProducts = () => {
       price: "$299.99",
       image: "https://images.unsplash.com/photo-1493962853295-0fd70327578a",
       tag: "Best Seller",
+      tagColor: "accent-best",
       description: "Elegant A-line silhouette with delicate lace details",
       sizes: ["XS", "S", "M", "L", "XL"],
       rating: 4.8,
@@ -28,6 +29,7 @@ export const FeaturedProducts = () => {
       price: "$499.99",
       image: "https://images.unsplash.com/photo-1535268647677-300dbf3d78d1",
       tag: "New Arrival",
+      tagColor: "accent-new",
       description: "Tailored fit with premium Italian wool blend",
       sizes: ["S", "M", "L", "XL"],
       rating: 4.9,
@@ -38,6 +40,7 @@ export const FeaturedProducts = () => {
       price: "$399.99",
       image: "https://images.unsplash.com/photo-1452960962994-acf4fd70b632",
       tag: "Trending",
+      tagColor: "accent-trending",
       description: "Luxurious silk with hand-beaded embellishments",
       sizes: ["XS", "S", "M", "L"],
       rating: 4.7,
@@ -48,6 +51,7 @@ export const FeaturedProducts = () => {
       price: "$199.99",
       image: "https://images.unsplash.com/photo-1518877593221-1f28583780b4",
       tag: "Popular",
+      tagColor: "accent",
       description: "Versatile design perfect for any occasion",
       sizes: ["S", "M", "L", "XL"],
       rating: 4.6,
@@ -56,11 +60,11 @@ export const FeaturedProducts = () => {
   ];
 
   return (
-    <section className="py-20 bg-muted">
+    <section className="py-20 bg-secondary">
       <div className="container mx-auto px-4">
         <div className="flex justify-between items-center mb-8">
           <h2 className="section-title mb-0">Featured Products</h2>
-          <Badge variant="secondary" className="text-muted-foreground px-4 py-1">New Arrivals</Badge>
+          <Badge variant="outline" className="bg-accent-new text-white px-4 py-1">New Arrivals</Badge>
         </div>
         
         <Carousel
@@ -81,7 +85,12 @@ export const FeaturedProducts = () => {
                       className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
                     />
                     <div className="absolute top-4 right-4">
-                      <Badge variant="secondary" className="bg-white/80 backdrop-blur-sm">{product.tag}</Badge>
+                      <Badge 
+                        variant="outline" 
+                        className={`bg-${product.tagColor} text-white backdrop-blur-sm`}
+                      >
+                        {product.tag}
+                      </Badge>
                     </div>
                     <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
                       <div className="absolute bottom-4 left-4 right-4 space-y-2">
@@ -97,8 +106,8 @@ export const FeaturedProducts = () => {
                       </div>
                     </div>
                   </div>
-                  <div className="p-4 space-y-2">
-                    <h3 className="font-medium text-lg">{product.name}</h3>
+                  <div className="p-4 space-y-2 bg-white">
+                    <h3 className="font-medium text-lg text-foreground">{product.name}</h3>
                     <p className="text-sm text-muted-foreground line-clamp-2">{product.description}</p>
                     <div className="flex justify-between items-center">
                       <p className="text-primary font-semibold text-lg">{product.price}</p>
