@@ -7,132 +7,200 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
-import { useNavigate } from "react-router-dom";
-import { 
-  Package,
-  Truck,
-  CheckCircle2,
-  Clock,
-  MoreHorizontal,
-  Eye,
-  Edit,
-  Trash
-} from "lucide-react";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Badge } from "@/components/ui/badge";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import {
+  Pagination,
+  PaginationContent,
+  PaginationItem,
+  PaginationLink,
+  PaginationNext,
+  PaginationPrevious,
+} from "@/components/ui/pagination";
+import { ListFilter, MoreHorizontal } from "lucide-react";
+import { useToast } from "@/hooks/use-toast";
 
-// Mock data type based on schema
-type Order = {
+// Types based on your schema
+interface Order {
   id: string;
   user_id: string;
   order_date: string;
   status: "pending" | "shipped" | "delivered";
-  user: {
-    First_name: string;
-    Last_name: string;
-    email: string;
-  };
-  order_items: Array<{
-    id: string;
-    product_item: {
-      id: string;
-      name: string;
-      price: number;
-    };
-    qty: number;
-  }>;
-};
+  order_items: OrderItem[];
+  user: User;
+}
 
-// Mock data
-const mockOrders: Order[] = [
-  {
-    id: "1",
-    user_id: "user1",
-    order_date: "2024-01-24T10:00:00",
-    status: "pending",
-    user: {
-      First_name: "John",
-      Last_name: "Doe",
-      email: "john@example.com"
-    },
-    order_items: [
-      {
-        id: "item1",
-        product_item: {
-          id: "prod1",
-          name: "Product 1",
-          price: 99.99
-        },
-        qty: 2
-      }
-    ]
-  },
-  {
-    id: "2",
-    user_id: "user2",
-    order_date: "2024-01-23T15:30:00",
-    status: "shipped",
-    user: {
-      First_name: "Jane",
-      Last_name: "Smith",
-      email: "jane@example.com"
-    },
-    order_items: [
-      {
-        id: "item2",
-        product_item: {
-          id: "prod2",
-          name: "Product 2",
-          price: 149.99
-        },
-        qty: 1
-      }
-    ]
-  }
-];
+interface OrderItem {
+  id: string;
+  product_item_id: string;
+  qty: number;
+  product_item: {
+    id: string;
+    name: string;
+    price: number;
+  };
+}
+
+interface User {
+  First_name: string;
+  Last_name: string;
+  email: string;
+}
 
 const Orders = () => {
-  const navigate = useNavigate();
-  const [orders] = useState<Order[]>(mockOrders);
+  const { toast } = useToast();
+  const [orders, setOrders] = useState<Order[]>([]);
+  const [filteredOrders, setFilteredOrders] = useState<Order[]>([]);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [statusFilter, setStatusFilter] = useState<string>("");
+  const [currentPage, setCurrentPage] = useState(1);
+  const ordersPerPage = 10;
 
-  const getStatusIcon = (status: Order["status"]) => {
-    switch (status) {
-      case "pending":
-        return <Clock className="w-4 h-4" />;
-      case "shipped":
-        return <Truck className="w-4 h-4" />;
-      case "delivered":
-        return <CheckCircle2 className="w-4 h-4" />;
-      default:
-        return <Package className="w-4 h-4" />;
+  // Mock data - replace with actual API call
+  const mockOrders: Order[] = [
+    {
+      id: "1",
+      user_id: "user1",
+      order_date: "2024-01-24T10:00:00",
+      status: "pending",
+      user: {
+        First_name: "John",
+        Last_name: "Doe",
+        email: "john@example.com"
+      },
+      order_items: [
+        {
+          id: "item1",
+          product_item_id: "prod1",
+          qty: 2,
+          product_item: {
+            id: "prod1",
+            name: "Product 1",
+            price: 99.99
+          }
+        }
+      ]
+    },
+    // Add more mock orders as needed
+  ];
+
+  // Fetch orders from API
+  const fetchOrders = async () => {
+    try {
+      // Replace with actual API call
+      setOrders(mockOrders);
+      setFilteredOrders(mockOrders);
+    } catch (error) {
+      console.error("Error fetching orders:", error);
+      toast({
+        title: "Error",
+        description: "Failed to fetch orders",
+        variant: "destructive",
+      });
     }
   };
 
-  const getStatusBadgeColor = (status: Order["status"]) => {
-    switch (status) {
-      case "pending":
-        return "bg-yellow-500";
-      case "shipped":
-        return "bg-blue-500";
-      case "delivered":
-        return "bg-green-500";
-      default:
-        return "bg-gray-500";
+  // Update order status
+  const updateOrderStatus = async (orderId: string, newStatus: "pending" | "shipped" | "delivered") => {
+    try {
+      // Replace with actual API call
+      const updatedOrders = orders.map(order => 
+        order.id === orderId ? { ...order, status: newStatus } : order
+      );
+      setOrders(updatedOrders);
+      setFilteredOrders(updatedOrders);
+      
+      toast({
+        title: "Success",
+        description: "Order status updated successfully",
+      });
+    } catch (error) {
+      console.error("Error updating order status:", error);
+      toast({
+        title: "Error",
+        description: "Failed to update order status",
+        variant: "destructive",
+      });
     }
   };
+
+  // Filter orders
+  const filterOrders = (query: string, status: string) => {
+    let filtered = orders;
+
+    if (query) {
+      const searchTerm = query.toLowerCase();
+      filtered = filtered.filter(order => 
+        order.user.First_name.toLowerCase().includes(searchTerm) ||
+        order.user.Last_name.toLowerCase().includes(searchTerm) ||
+        order.user.email.toLowerCase().includes(searchTerm)
+      );
+    }
+
+    if (status) {
+      filtered = filtered.filter(order => order.status === status);
+    }
+
+    setFilteredOrders(filtered);
+    setCurrentPage(1);
+  };
+
+  // Pagination
+  const indexOfLastOrder = currentPage * ordersPerPage;
+  const indexOfFirstOrder = indexOfLastOrder - ordersPerPage;
+  const currentOrders = filteredOrders.slice(indexOfFirstOrder, indexOfLastOrder);
+  const totalPages = Math.ceil(filteredOrders.length / ordersPerPage);
 
   return (
-    <div className="container mx-auto py-10">
-      <div className="flex justify-between items-center mb-6">
-        <h2 className="text-2xl font-bold">Orders</h2>
+    <div className="space-y-4">
+      {/* Filters */}
+      <div className="flex flex-wrap items-center gap-4 mb-6">
+        <div className="relative flex-1 min-w-[200px]">
+          <Input
+            placeholder="Search by name or email..."
+            value={searchQuery}
+            onChange={(e) => {
+              setSearchQuery(e.target.value);
+              filterOrders(e.target.value, statusFilter);
+            }}
+            className="pl-9"
+          />
+          <ListFilter className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
+        </div>
+        <Select
+          value={statusFilter}
+          onValueChange={(value) => {
+            setStatusFilter(value);
+            filterOrders(searchQuery, value);
+          }}
+        >
+          <SelectTrigger className="w-[180px]">
+            <SelectValue placeholder="Filter by status" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="">All Status</SelectItem>
+            <SelectItem value="pending">Pending</SelectItem>
+            <SelectItem value="shipped">Shipped</SelectItem>
+            <SelectItem value="delivered">Delivered</SelectItem>
+          </SelectContent>
+        </Select>
       </div>
 
+      {/* Table */}
       <div className="rounded-md border">
         <Table>
           <TableHeader>
@@ -147,33 +215,49 @@ const Orders = () => {
             </TableRow>
           </TableHeader>
           <TableBody>
-            {orders.map((order) => (
+            {currentOrders.map((order) => (
               <TableRow key={order.id}>
-                <TableCell className="font-medium">#{order.id}</TableCell>
+                <TableCell>#{order.id}</TableCell>
                 <TableCell>
                   <div>
                     <p className="font-medium">
                       {order.user.First_name} {order.user.Last_name}
                     </p>
-                    <p className="text-sm text-gray-500">{order.user.email}</p>
+                    <p className="text-sm text-muted-foreground">{order.user.email}</p>
                   </div>
                 </TableCell>
+                <TableCell>{new Date(order.order_date).toLocaleDateString()}</TableCell>
                 <TableCell>
-                  {new Date(order.order_date).toLocaleDateString()}
-                </TableCell>
-                <TableCell>
-                  <Badge 
-                    className={`${getStatusBadgeColor(order.status)} flex gap-2 items-center w-fit`}
+                  <Select
+                    value={order.status}
+                    onValueChange={(value: "pending" | "shipped" | "delivered") => 
+                      updateOrderStatus(order.id, value)
+                    }
                   >
-                    {getStatusIcon(order.status)}
-                    {order.status.charAt(0).toUpperCase() + order.status.slice(1)}
-                  </Badge>
+                    <SelectTrigger className="w-[130px]">
+                      <SelectValue>
+                        <Badge variant={
+                          order.status === "delivered" ? "default" :
+                          order.status === "shipped" ? "secondary" : "outline"
+                        }>
+                          {order.status.charAt(0).toUpperCase() + order.status.slice(1)}
+                        </Badge>
+                      </SelectValue>
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="pending">Pending</SelectItem>
+                      <SelectItem value="shipped">Shipped</SelectItem>
+                      <SelectItem value="delivered">Delivered</SelectItem>
+                    </SelectContent>
+                  </Select>
                 </TableCell>
                 <TableCell>
-                  {order.order_items.reduce((acc, item) => acc + item.qty, 0)}
+                  {order.order_items.reduce((total, item) => total + item.qty, 0)}
                 </TableCell>
                 <TableCell>
-                  ${order.order_items.reduce((acc, item) => acc + (item.product_item.price * item.qty), 0).toFixed(2)}
+                  ${order.order_items.reduce((total, item) => 
+                    total + (item.qty * item.product_item.price), 0
+                  ).toFixed(2)}
                 </TableCell>
                 <TableCell className="text-right">
                   <DropdownMenu>
@@ -183,18 +267,8 @@ const Orders = () => {
                       </Button>
                     </DropdownMenuTrigger>
                     <DropdownMenuContent align="end">
-                      <DropdownMenuItem onClick={() => navigate(`/dashboard/orders/${order.id}`)}>
-                        <Eye className="mr-2 h-4 w-4" />
-                        View details
-                      </DropdownMenuItem>
-                      <DropdownMenuItem onClick={() => navigate(`/dashboard/orders/${order.id}/edit`)}>
-                        <Edit className="mr-2 h-4 w-4" />
-                        Edit order
-                      </DropdownMenuItem>
-                      <DropdownMenuItem className="text-red-600">
-                        <Trash className="mr-2 h-4 w-4" />
-                        Delete order
-                      </DropdownMenuItem>
+                      <DropdownMenuItem>View details</DropdownMenuItem>
+                      <DropdownMenuItem>Edit order</DropdownMenuItem>
                     </DropdownMenuContent>
                   </DropdownMenu>
                 </TableCell>
@@ -203,6 +277,38 @@ const Orders = () => {
           </TableBody>
         </Table>
       </div>
+
+      {/* Pagination */}
+      {totalPages > 1 && (
+        <div className="flex items-center justify-center space-x-2 py-4">
+          <Pagination>
+            <PaginationContent>
+              <PaginationItem>
+                <PaginationPrevious
+                  onClick={() => setCurrentPage(prev => Math.max(1, prev - 1))}
+                  className={currentPage === 1 ? 'pointer-events-none opacity-50' : ''}
+                />
+              </PaginationItem>
+              {[...Array(totalPages)].map((_, i) => (
+                <PaginationItem key={i + 1}>
+                  <PaginationLink
+                    onClick={() => setCurrentPage(i + 1)}
+                    isActive={currentPage === i + 1}
+                  >
+                    {i + 1}
+                  </PaginationLink>
+                </PaginationItem>
+              ))}
+              <PaginationItem>
+                <PaginationNext
+                  onClick={() => setCurrentPage(prev => Math.min(totalPages, prev + 1))}
+                  className={currentPage === totalPages ? 'pointer-events-none opacity-50' : ''}
+                />
+              </PaginationItem>
+            </PaginationContent>
+          </Pagination>
+        </div>
+      )}
     </div>
   );
 };
