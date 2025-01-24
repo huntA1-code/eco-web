@@ -31,17 +31,16 @@ import EditAttribute from "./pages/dashboard/products/EditAttribute";
 import AttributeTypes from "./pages/dashboard/products/AttributeTypes";
 import AddAttributeType from "./pages/dashboard/products/AddAttributeType";
 import EditAttributeType from "./pages/dashboard/products/EditAttributeType";
+import Orders from "./pages/dashboard/orders/Orders";
 
 function App() {
   const location = useLocation();
   
-  // Define paths where SubNavbar should be shown
   const showSubNavbarPaths = ['/', '/products', '/product', '/store'];
   const shouldShowSubNavbar = showSubNavbarPaths.some(path => 
     location.pathname === path || location.pathname.startsWith(path + '/')
   );
 
-  // Don't show Navbar on dashboard pages
   const isDashboardPage = location.pathname.startsWith('/dashboard');
 
   return (
@@ -56,6 +55,7 @@ function App() {
         <Route path="/store" element={<Store />} />
         <Route path="/dashboard" element={<Dashboard />}>
           <Route index element={<Overview />} />
+          <Route path="orders" element={<Orders />} />
           <Route path="products/view" element={<ViewProducts />} />
           <Route path="products/add" element={<AddProduct />} />
           <Route path="products/edit" element={<EditProduct />} />
