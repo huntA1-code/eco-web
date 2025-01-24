@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import {
   Table,
   TableBody,
@@ -8,179 +8,94 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Badge } from "@/components/ui/badge";
-import {
-  Pagination,
-  PaginationContent,
-  PaginationItem,
-  PaginationLink,
-  PaginationNext,
-  PaginationPrevious,
-} from "@/components/ui/pagination";
-import { MoreHorizontal, Search } from "lucide-react";
-import { useToast } from "@/hooks/use-toast";
+import { toast } from "sonner";
 
-// Types based on your schema
-interface OrderItem {
-  id: string;
-  order_id: string;
-  product_item_id: string;
-  qty: number;
-  product_item: {
-    id: string;
-    name: string;
-    price: number;
-  };
-}
+type Status = "pending" | "shipped" | "delivered";
 
 interface Order {
   id: string;
-  user_id: string;
-  order_date: string;
-  status: "pending" | "shipped" | "delivered";
-  order_items: OrderItem[];
   user: {
-    First_name: string;
-    Last_name: string;
+    first_name: string;
+    last_name: string;
     email: string;
   };
+  order_date: string;
+  status: Status;
+  total_items: number;
+  total_amount: number;
 }
 
 const Orders = () => {
-  const { toast } = useToast();
-  const [orders, setOrders] = useState<Order[]>([]);
-  const [filteredOrders, setFilteredOrders] = useState<Order[]>([]);
-  const [searchQuery, setSearchQuery] = useState("");
-  const [statusFilter, setStatusFilter] = useState<string>("all");
-  const [currentPage, setCurrentPage] = useState(1);
-  const ordersPerPage = 10;
-
-  // Mock data - replace with API call
-  const mockOrders: Order[] = [
+  const [orders, setOrders] = useState<Order[]>([
     {
       id: "1",
-      user_id: "user1",
-      order_date: "2024-01-24T10:00:00",
-      status: "pending",
       user: {
-        First_name: "John",
-        Last_name: "Doe",
+        first_name: "John",
+        last_name: "Doe",
         email: "john@example.com"
       },
-      order_items: [
-        {
-          id: "item1",
-          order_id: "1",
-          product_item_id: "prod1",
-          qty: 2,
-          product_item: {
-            id: "prod1",
-            name: "Product 1",
-            price: 99.99
-          }
-        }
-      ]
-    }
-  ];
+      order_date: "2024-03-10",
+      status: "pending",
+      total_items: 3,
+      total_amount: 150.00
+    },
+    // Add more mock orders as needed
+  ]);
 
-  useEffect(() => {
-    fetchOrders();
-  }, []);
+  const [search, setSearch] = useState("");
+  const [statusFilter, setStatusFilter] = useState<string>("all");
 
-  const fetchOrders = async () => {
+  const handleStatusChange = async (orderId: string, newStatus: Status) => {
     try {
-      // Replace with actual API call
-      setOrders(mockOrders);
-      setFilteredOrders(mockOrders);
-    } catch (error) {
-      console.error("Error fetching orders:", error);
-      toast({
-        title: "Error",
-        description: "Failed to fetch orders",
-        variant: "destructive",
-      });
-    }
-  };
-
-  const updateOrderStatus = async (orderId: string, newStatus: "pending" | "shipped" | "delivered") => {
-    try {
-      // Replace with actual API call
-      const updatedOrders = orders.map(order => 
-        order.id === orderId ? { ...order, status: newStatus } : order
-      );
-      setOrders(updatedOrders);
-      setFilteredOrders(updatedOrders);
+      // TODO: Implement API call to update status
+      console.log("Updating status for order:", orderId, "to:", newStatus);
       
-      toast({
-        title: "Success",
-        description: "Order status updated successfully",
-      });
+      // Update local state
+      setOrders(orders.map(order => 
+        order.id === orderId ? { ...order, status: newStatus } : order
+      ));
+      
+      toast.success("Order status updated successfully");
     } catch (error) {
       console.error("Error updating order status:", error);
-      toast({
-        title: "Error",
-        description: "Failed to update order status",
-        variant: "destructive",
-      });
+      toast.error("Failed to update order status");
     }
   };
 
-  const filterOrders = () => {
-    let filtered = orders;
-
-    if (searchQuery) {
-      const query = searchQuery.toLowerCase();
-      filtered = filtered.filter(order => 
-        order.user.First_name.toLowerCase().includes(query) ||
-        order.user.Last_name.toLowerCase().includes(query) ||
-        order.user.email.toLowerCase().includes(query)
-      );
-    }
-
-    if (statusFilter !== "all") {
-      filtered = filtered.filter(order => order.status === statusFilter);
-    }
-
-    setFilteredOrders(filtered);
-    setCurrentPage(1);
-  };
-
-  useEffect(() => {
-    filterOrders();
-  }, [searchQuery, statusFilter, orders]);
-
-  // Pagination
-  const indexOfLastOrder = currentPage * ordersPerPage;
-  const indexOfFirstOrder = indexOfLastOrder - ordersPerPage;
-  const currentOrders = filteredOrders.slice(indexOfFirstOrder, indexOfLastOrder);
-  const totalPages = Math.ceil(filteredOrders.length / ordersPerPage);
+  const filteredOrders = orders.filter(order => {
+    const matchesSearch = (
+      order.user.first_name.toLowerCase().includes(search.toLowerCase()) ||
+      order.user.last_name.toLowerCase().includes(search.toLowerCase()) ||
+      order.user.email.toLowerCase().includes(search.toLowerCase())
+    );
+    
+    const matchesStatus = statusFilter === "all" || order.status === statusFilter;
+    
+    return matchesSearch && matchesStatus;
+  });
 
   return (
     <div className="space-y-4">
-      <div className="flex flex-wrap items-center gap-4 mb-6">
-        <div className="relative flex-1 min-w-[200px]">
-          <Input
-            placeholder="Search by name or email..."
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            className="pl-9"
-          />
-          <Search className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
-        </div>
+      <div className="flex justify-between items-center">
+        <h2 className="text-2xl font-bold">Orders</h2>
+      </div>
+
+      <div className="flex gap-4 mb-4">
+        <Input
+          placeholder="Search by name or email..."
+          value={search}
+          onChange={(e) => setSearch(e.target.value)}
+          className="max-w-sm"
+        />
         <Select
           value={statusFilter}
           onValueChange={setStatusFilter}
@@ -205,36 +120,33 @@ const Orders = () => {
               <TableHead>Customer</TableHead>
               <TableHead>Date</TableHead>
               <TableHead>Status</TableHead>
-              <TableHead>Total Items</TableHead>
-              <TableHead>Total Amount</TableHead>
-              <TableHead className="text-right">Actions</TableHead>
+              <TableHead>Items</TableHead>
+              <TableHead>Total</TableHead>
+              <TableHead>Actions</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
-            {currentOrders.map((order) => (
+            {filteredOrders.map((order) => (
               <TableRow key={order.id}>
-                <TableCell>#{order.id}</TableCell>
+                <TableCell>{order.id}</TableCell>
                 <TableCell>
                   <div>
-                    <p className="font-medium">
-                      {order.user.First_name} {order.user.Last_name}
-                    </p>
-                    <p className="text-sm text-muted-foreground">{order.user.email}</p>
+                    <div>{`${order.user.first_name} ${order.user.last_name}`}</div>
+                    <div className="text-sm text-muted-foreground">{order.user.email}</div>
                   </div>
                 </TableCell>
                 <TableCell>{new Date(order.order_date).toLocaleDateString()}</TableCell>
                 <TableCell>
                   <Select
                     value={order.status}
-                    onValueChange={(value: "pending" | "shipped" | "delivered") => 
-                      updateOrderStatus(order.id, value)
-                    }
+                    onValueChange={(value: Status) => handleStatusChange(order.id, value)}
                   >
                     <SelectTrigger className="w-[130px]">
                       <SelectValue>
                         <Badge variant={
                           order.status === "delivered" ? "default" :
-                          order.status === "shipped" ? "secondary" : "outline"
+                          order.status === "shipped" ? "secondary" :
+                          "outline"
                         }>
                           {order.status.charAt(0).toUpperCase() + order.status.slice(1)}
                         </Badge>
@@ -247,63 +159,18 @@ const Orders = () => {
                     </SelectContent>
                   </Select>
                 </TableCell>
+                <TableCell>{order.total_items}</TableCell>
+                <TableCell>${order.total_amount.toFixed(2)}</TableCell>
                 <TableCell>
-                  {order.order_items.reduce((total, item) => total + item.qty, 0)}
-                </TableCell>
-                <TableCell>
-                  ${order.order_items.reduce((total, item) => 
-                    total + (item.qty * item.product_item.price), 0
-                  ).toFixed(2)}
-                </TableCell>
-                <TableCell className="text-right">
-                  <DropdownMenu>
-                    <DropdownMenuTrigger asChild>
-                      <Button variant="ghost" className="h-8 w-8 p-0">
-                        <MoreHorizontal className="h-4 w-4" />
-                      </Button>
-                    </DropdownMenuTrigger>
-                    <DropdownMenuContent align="end">
-                      <DropdownMenuItem>View details</DropdownMenuItem>
-                      <DropdownMenuItem>Edit order</DropdownMenuItem>
-                    </DropdownMenuContent>
-                  </DropdownMenu>
+                  <Button variant="ghost" size="sm">
+                    View Details
+                  </Button>
                 </TableCell>
               </TableRow>
             ))}
           </TableBody>
         </Table>
       </div>
-
-      {totalPages > 1 && (
-        <div className="flex items-center justify-center space-x-2 py-4">
-          <Pagination>
-            <PaginationContent>
-              <PaginationItem>
-                <PaginationPrevious 
-                  onClick={() => setCurrentPage(prev => Math.max(1, prev - 1))}
-                  className={currentPage === 1 ? 'pointer-events-none opacity-50' : ''}
-                />
-              </PaginationItem>
-              {[...Array(totalPages)].map((_, i) => (
-                <PaginationItem key={i + 1}>
-                  <PaginationLink
-                    onClick={() => setCurrentPage(i + 1)}
-                    isActive={currentPage === i + 1}
-                  >
-                    {i + 1}
-                  </PaginationLink>
-                </PaginationItem>
-              ))}
-              <PaginationItem>
-                <PaginationNext
-                  onClick={() => setCurrentPage(prev => Math.min(totalPages, prev + 1))}
-                  className={currentPage === totalPages ? 'pointer-events-none opacity-50' : ''}
-                />
-              </PaginationItem>
-            </PaginationContent>
-          </Pagination>
-        </div>
-      )}
     </div>
   );
 };
