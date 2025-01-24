@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import {
   Table,
   TableBody,
@@ -13,9 +13,6 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Badge } from "@/components/ui/badge";
 import {
   Select,
   SelectContent,
@@ -23,6 +20,9 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Badge } from "@/components/ui/badge";
 import {
   Pagination,
   PaginationContent,
@@ -31,21 +31,13 @@ import {
   PaginationNext,
   PaginationPrevious,
 } from "@/components/ui/pagination";
-import { ListFilter, MoreHorizontal } from "lucide-react";
+import { MoreHorizontal, Search } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 
 // Types based on your schema
-interface Order {
-  id: string;
-  user_id: string;
-  order_date: string;
-  status: "pending" | "shipped" | "delivered";
-  order_items: OrderItem[];
-  user: User;
-}
-
 interface OrderItem {
   id: string;
+  order_id: string;
   product_item_id: string;
   qty: number;
   product_item: {
@@ -55,10 +47,17 @@ interface OrderItem {
   };
 }
 
-interface User {
-  First_name: string;
-  Last_name: string;
-  email: string;
+interface Order {
+  id: string;
+  user_id: string;
+  order_date: string;
+  status: "pending" | "shipped" | "delivered";
+  order_items: OrderItem[];
+  user: {
+    First_name: string;
+    Last_name: string;
+    email: string;
+  };
 }
 
 const Orders = () => {
@@ -66,11 +65,11 @@ const Orders = () => {
   const [orders, setOrders] = useState<Order[]>([]);
   const [filteredOrders, setFilteredOrders] = useState<Order[]>([]);
   const [searchQuery, setSearchQuery] = useState("");
-  const [statusFilter, setStatusFilter] = useState<string>("");
+  const [statusFilter, setStatusFilter] = useState<string>("all");
   const [currentPage, setCurrentPage] = useState(1);
   const ordersPerPage = 10;
 
-  // Mock data - replace with actual API call
+  // Mock data - replace with API call
   const mockOrders: Order[] = [
     {
       id: "1",
@@ -85,6 +84,7 @@ const Orders = () => {
       order_items: [
         {
           id: "item1",
+          order_id: "1",
           product_item_id: "prod1",
           qty: 2,
           product_item: {
@@ -94,11 +94,13 @@ const Orders = () => {
           }
         }
       ]
-    },
-    // Add more mock orders as needed
+    }
   ];
 
-  // Fetch orders from API
+  useEffect(() => {
+    fetchOrders();
+  }, []);
+
   const fetchOrders = async () => {
     try {
       // Replace with actual API call
@@ -114,7 +116,6 @@ const Orders = () => {
     }
   };
 
-  // Update order status
   const updateOrderStatus = async (orderId: string, newStatus: "pending" | "shipped" | "delivered") => {
     try {
       // Replace with actual API call
@@ -138,26 +139,29 @@ const Orders = () => {
     }
   };
 
-  // Filter orders
-  const filterOrders = (query: string, status: string) => {
+  const filterOrders = () => {
     let filtered = orders;
 
-    if (query) {
-      const searchTerm = query.toLowerCase();
+    if (searchQuery) {
+      const query = searchQuery.toLowerCase();
       filtered = filtered.filter(order => 
-        order.user.First_name.toLowerCase().includes(searchTerm) ||
-        order.user.Last_name.toLowerCase().includes(searchTerm) ||
-        order.user.email.toLowerCase().includes(searchTerm)
+        order.user.First_name.toLowerCase().includes(query) ||
+        order.user.Last_name.toLowerCase().includes(query) ||
+        order.user.email.toLowerCase().includes(query)
       );
     }
 
-    if (status) {
-      filtered = filtered.filter(order => order.status === status);
+    if (statusFilter !== "all") {
+      filtered = filtered.filter(order => order.status === statusFilter);
     }
 
     setFilteredOrders(filtered);
     setCurrentPage(1);
   };
+
+  useEffect(() => {
+    filterOrders();
+  }, [searchQuery, statusFilter, orders]);
 
   // Pagination
   const indexOfLastOrder = currentPage * ordersPerPage;
@@ -167,32 +171,25 @@ const Orders = () => {
 
   return (
     <div className="space-y-4">
-      {/* Filters */}
       <div className="flex flex-wrap items-center gap-4 mb-6">
         <div className="relative flex-1 min-w-[200px]">
           <Input
             placeholder="Search by name or email..."
             value={searchQuery}
-            onChange={(e) => {
-              setSearchQuery(e.target.value);
-              filterOrders(e.target.value, statusFilter);
-            }}
+            onChange={(e) => setSearchQuery(e.target.value)}
             className="pl-9"
           />
-          <ListFilter className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
+          <Search className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
         </div>
         <Select
           value={statusFilter}
-          onValueChange={(value) => {
-            setStatusFilter(value);
-            filterOrders(searchQuery, value);
-          }}
+          onValueChange={setStatusFilter}
         >
           <SelectTrigger className="w-[180px]">
             <SelectValue placeholder="Filter by status" />
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value="">All Status</SelectItem>
+            <SelectItem value="all">All Status</SelectItem>
             <SelectItem value="pending">Pending</SelectItem>
             <SelectItem value="shipped">Shipped</SelectItem>
             <SelectItem value="delivered">Delivered</SelectItem>
@@ -200,7 +197,6 @@ const Orders = () => {
         </Select>
       </div>
 
-      {/* Table */}
       <div className="rounded-md border">
         <Table>
           <TableHeader>
@@ -278,13 +274,12 @@ const Orders = () => {
         </Table>
       </div>
 
-      {/* Pagination */}
       {totalPages > 1 && (
         <div className="flex items-center justify-center space-x-2 py-4">
           <Pagination>
             <PaginationContent>
               <PaginationItem>
-                <PaginationPrevious
+                <PaginationPrevious 
                   onClick={() => setCurrentPage(prev => Math.max(1, prev - 1))}
                   className={currentPage === 1 ? 'pointer-events-none opacity-50' : ''}
                 />
