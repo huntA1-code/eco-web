@@ -3,11 +3,31 @@ import { motion } from 'framer-motion';
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 
-const heroImages = [
-  "https://images.unsplash.com/photo-1581091226825-a6a2a5aee158", // Woman in elegant attire
-  "https://images.unsplash.com/photo-1523712999610-f77fbcfc3843", // Atmospheric fashion shot
-  "https://images.unsplash.com/photo-1500673922987-e212871fec22", // Stylish lighting and composition
-  "https://images.unsplash.com/photo-1582562124811-c09040d0a901"  // Fashion detail shot
+const heroContent = [
+  {
+    image: "https://images.unsplash.com/photo-1581091226825-a6a2a5aee158",
+    title: "Summer Collection",
+    description: "Up to 60% off on selected items",
+    caption: "Elegant summer attire for the modern woman"
+  },
+  {
+    image: "https://images.unsplash.com/photo-1523712999610-f77fbcfc3843",
+    title: "Winter Sale",
+    description: "Get 40% off on winter collection",
+    caption: "Cozy and stylish winter wear"
+  },
+  {
+    image: "https://images.unsplash.com/photo-1500673922987-e212871fec22",
+    title: "Spring Special",
+    description: "New arrivals with 30% discount",
+    caption: "Fresh and vibrant spring styles"
+  },
+  {
+    image: "https://images.unsplash.com/photo-1582562124811-c09040d0a901",
+    title: "Fashion Week",
+    description: "Limited time offer: 25% off",
+    caption: "Exclusive designer collections"
+  }
 ];
 
 export const Hero = () => {
@@ -15,16 +35,16 @@ export const Hero = () => {
 
   useEffect(() => {
     const timer = setInterval(() => {
-      setCurrentImageIndex((prev) => (prev + 1) % heroImages.length);
+      setCurrentImageIndex((prev) => (prev + 1) % heroContent.length);
     }, 5000);
 
     return () => clearInterval(timer);
   }, []);
 
   return (
-    <section className="min-h-screen pt-16 bg-gradient-to-b from-accent/5 to-white/80">
-      <div className="container mx-auto px-4">
-        <div className="grid md:grid-cols-2 gap-12 items-center min-h-[calc(100vh-4rem)]">
+    <section className="h-screen min-h-[1080px] pt-16 bg-gradient-to-b from-accent/5 to-white/80">
+      <div className="container mx-auto px-4 h-full">
+        <div className="grid md:grid-cols-2 gap-12 items-center h-[calc(100vh-4rem)] min-h-[calc(1080px-4rem)]">
           {/* Left Content Column */}
           <motion.div 
             initial={{ opacity: 0, y: 20 }}
@@ -44,7 +64,7 @@ export const Hero = () => {
             </motion.div>
 
             {/* Main Headline */}
-            <h1 className="hero-title text-5xl md:text-6xl xl:text-7xl leading-tight">
+            <h1 className="hero-title text-6xl md:text-7xl xl:text-8xl leading-tight">
               Elevate Your <br />
               <span className="text-transparent bg-clip-text bg-gradient-to-r from-accent-new via-accent to-accent-best">
                 Style Story
@@ -52,7 +72,7 @@ export const Hero = () => {
             </h1>
 
             {/* Supporting Text */}
-            <p className="text-lg md:text-xl text-foreground/80 max-w-md leading-relaxed">
+            <p className="text-xl md:text-2xl text-foreground/80 max-w-md leading-relaxed">
               Discover curated collections that blend timeless elegance with contemporary trends. 
               Enjoy free shipping on orders over $99.
             </p>
@@ -91,11 +111,11 @@ export const Hero = () => {
             initial={{ opacity: 0, scale: 0.95 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: 0.6 }}
-            className="relative aspect-[4/5] w-full"
+            className="relative h-[800px] w-full"
           >
             <div className="absolute inset-0 bg-gradient-to-tr from-accent-new/20 via-transparent to-accent/20 rounded-2xl" />
             <img
-              src={heroImages[currentImageIndex]}
+              src={heroContent[currentImageIndex].image}
               alt="Fashion Model"
               className="w-full h-full object-cover rounded-2xl shadow-xl hover-scale"
               loading="eager"
@@ -108,8 +128,8 @@ export const Hero = () => {
               transition={{ delay: 0.3, duration: 0.6 }}
               className="absolute bottom-6 left-6 right-6 p-6 glass-card rounded-xl backdrop-blur-md"
             >
-              <p className="text-2xl font-semibold mb-2">Summer Sale</p>
-              <p className="text-foreground/80">Up to 60% off on selected items</p>
+              <p className="text-2xl font-semibold mb-2">{heroContent[currentImageIndex].title}</p>
+              <p className="text-foreground/80">{heroContent[currentImageIndex].description}</p>
             </motion.div>
           </motion.div>
         </div>
