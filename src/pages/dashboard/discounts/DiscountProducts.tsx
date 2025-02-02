@@ -44,7 +44,6 @@ const DiscountProducts = () => {
   const handleRemoveProduct = async (productId: string) => {
     try {
       console.log("Removing product from discount:", id, productId);
-      // API call to remove product from discount
       toast({
         title: "Success",
         description: "Product removed from discount",
@@ -62,7 +61,6 @@ const DiscountProducts = () => {
   const handleAddProducts = async () => {
     try {
       console.log("Adding products to discount:", id, selectedProducts);
-      // API call to add products to discount
       toast({
         title: "Success",
         description: "Products added to discount",

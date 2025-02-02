@@ -66,7 +66,6 @@ const EditDiscount = () => {
   const onSubmit = async (values: DiscountFormData) => {
     try {
       console.log("Updating discount:", id, values);
-      // API call to update discount
       toast({
         title: "Success",
         description: "Discount updated successfully",

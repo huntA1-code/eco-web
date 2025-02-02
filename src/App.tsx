@@ -32,6 +32,10 @@ import AttributeTypes from "./pages/dashboard/products/AttributeTypes";
 import AddAttributeType from "./pages/dashboard/products/AddAttributeType";
 import EditAttributeType from "./pages/dashboard/products/EditAttributeType";
 import Orders from "./pages/dashboard/orders/Orders";
+import Discounts from "./pages/dashboard/discounts/Discounts";
+import AddDiscount from "./pages/dashboard/discounts/AddDiscount";
+import EditDiscount from "./pages/dashboard/discounts/EditDiscount";
+import DiscountProducts from "./pages/dashboard/discounts/DiscountProducts";
 
 function App() {
   const location = useLocation();
@@ -78,7 +82,7 @@ function App() {
           <Route path="products/attributes/types" element={<AttributeTypes />} />
           <Route path="products/attributes/types/add" element={<AddAttributeType />} />
           <Route path="products/attributes/types/edit/:id" element={<EditAttributeType />} />
-          {/* Add new discount routes */}
+          {/* Discount routes */}
           <Route path="discounts" element={<Discounts />} />
           <Route path="discounts/add" element={<AddDiscount />} />
           <Route path="discounts/edit/:id" element={<EditDiscount />} />

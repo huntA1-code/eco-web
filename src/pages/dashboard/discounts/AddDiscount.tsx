@@ -39,7 +39,6 @@ const AddDiscount = () => {
   const onSubmit = async (values: DiscountFormData) => {
     try {
       console.log("Creating discount:", values);
-      // API call to create discount
       toast({
         title: "Success",
         description: "Discount created successfully",

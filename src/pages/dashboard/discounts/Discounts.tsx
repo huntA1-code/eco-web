@@ -49,7 +49,6 @@ const Discounts = () => {
 
   const handleDelete = async (id: string) => {
     try {
-      // API call to delete discount
       console.log("Deleting discount:", id);
       toast({
         title: "Success",
