@@ -23,21 +23,21 @@ export default {
         input: "hsl(var(--input))",
         ring: "hsl(var(--ring))",
         background: "#FFFFFF",
-        foreground: "#333333",
+        foreground: "#1A1A1A",
         primary: {
-          DEFAULT: "#0EA5E9",
+          DEFAULT: "#8B5CF6",
           foreground: "white",
         },
         secondary: {
-          DEFAULT: "#F1F1F1",
-          foreground: "#333333",
+          DEFAULT: "#F3F4F6",
+          foreground: "#1A1A1A",
         },
         destructive: {
           DEFAULT: "#FF6B6B",
           foreground: "white",
         },
         muted: {
-          DEFAULT: "#F1F1F1",
+          DEFAULT: "#F3F4F6",
           foreground: "#666666",
         },
         accent: {
@@ -55,6 +55,10 @@ export default {
       },
       fontFamily: {
         sans: ["Inter", "sans-serif"],
+      },
+      backgroundImage: {
+        'gradient-primary': 'linear-gradient(to right, #8B5CF6, #D946EF)',
+        'gradient-secondary': 'linear-gradient(to right, #F97316, #0EA5E9)',
       },
     },
   },

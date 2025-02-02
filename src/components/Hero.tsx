@@ -4,8 +4,10 @@ import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 
 const heroImages = [
-  "/lovable-uploads/12953fea-e1c3-468e-8ac0-1e6850517d9c.png",
-  // Add more image paths when available
+  "https://images.unsplash.com/photo-1581091226825-a6a2a5aee158", // Woman in elegant attire
+  "https://images.unsplash.com/photo-1523712999610-f77fbcfc3843", // Atmospheric fashion shot
+  "https://images.unsplash.com/photo-1500673922987-e212871fec22", // Stylish lighting and composition
+  "https://images.unsplash.com/photo-1582562124811-c09040d0a901"  // Fashion detail shot
 ];
 
 export const Hero = () => {
