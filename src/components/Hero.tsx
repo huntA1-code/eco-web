@@ -42,15 +42,15 @@ export const Hero = () => {
   }, []);
 
   return (
-    <section className="h-screen min-h-[1080px] pt-16 bg-gradient-to-b from-accent/5 to-white/80">
-      <div className="container mx-auto px-4 h-full">
-        <div className="grid md:grid-cols-2 gap-12 items-center h-[calc(100vh-4rem)] min-h-[calc(1080px-4rem)]">
+    <section className="relative min-h-[100dvh] lg:min-h-[1080px] pt-4 bg-gradient-to-b from-accent/5 to-white/80">
+      <div className="container mx-auto px-4 h-full py-8 lg:py-16">
+        <div className="grid md:grid-cols-2 gap-8 lg:gap-12 items-center min-h-[calc(100dvh-2rem)] lg:min-h-[calc(1080px-8rem)]">
           {/* Left Content Column */}
           <motion.div 
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6 }}
-            className="space-y-8"
+            className="space-y-6 lg:space-y-8"
           >
             {/* Special Offer Badge */}
             <motion.div 
@@ -64,7 +64,7 @@ export const Hero = () => {
             </motion.div>
 
             {/* Main Headline */}
-            <h1 className="hero-title text-6xl md:text-7xl xl:text-8xl leading-tight">
+            <h1 className="hero-title text-4xl sm:text-5xl md:text-6xl lg:text-7xl xl:text-8xl leading-tight">
               Elevate Your <br />
               <span className="text-transparent bg-clip-text bg-gradient-to-r from-accent-new via-accent to-accent-best">
                 Style Story
@@ -72,7 +72,7 @@ export const Hero = () => {
             </h1>
 
             {/* Supporting Text */}
-            <p className="text-xl md:text-2xl text-foreground/80 max-w-md leading-relaxed">
+            <p className="text-lg sm:text-xl lg:text-2xl text-foreground/80 max-w-md leading-relaxed">
               Discover curated collections that blend timeless elegance with contemporary trends. 
               Enjoy free shipping on orders over $99.
             </p>
@@ -111,7 +111,7 @@ export const Hero = () => {
             initial={{ opacity: 0, scale: 0.95 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: 0.6 }}
-            className="relative h-[800px] w-full"
+            className="relative h-[400px] sm:h-[500px] md:h-[600px] lg:h-[700px] xl:h-[800px] w-full"
           >
             <div className="absolute inset-0 bg-gradient-to-tr from-accent-new/20 via-transparent to-accent/20 rounded-2xl" />
             <img
