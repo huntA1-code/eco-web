@@ -1,7 +1,9 @@
 import { SalesRevenue } from "@/components/dashboard/SalesRevenue";
 import { OrderManagement } from "@/components/dashboard/OrderManagement";
+import { ProductInsights } from "@/components/dashboard/ProductInsights";
+import { CustomerFeedback } from "@/components/dashboard/CustomerFeedback";
 import { Card, CardContent } from "@/components/ui/card";
-import { ArrowUpRight, ArrowDownRight, DollarSign, ShoppingBag, Star } from "lucide-react";
+import { ArrowUpRight, ArrowDownRight, DollarSign, ShoppingBag, Star, Package } from "lucide-react";
 
 export const Overview = () => {
   console.log("Rendering Overview component");
@@ -23,10 +25,10 @@ export const Overview = () => {
               <p className="text-sm font-medium">Total Sales</p>
               <DollarSign className="h-4 w-4 text-muted-foreground" />
             </div>
-            <div className="text-2xl font-bold">$12,345</div>
+            <div className="text-2xl font-bold">$15,234</div>
             <div className="flex items-center text-xs text-green-500">
               <ArrowUpRight className="h-4 w-4" />
-              <span>+12.5% from last month</span>
+              <span>+15.2% from last month</span>
             </div>
           </CardContent>
         </Card>
@@ -34,13 +36,13 @@ export const Overview = () => {
         <Card className="bg-white">
           <CardContent className="p-6">
             <div className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <p className="text-sm font-medium">Total Orders</p>
-              <ShoppingBag className="h-4 w-4 text-muted-foreground" />
+              <p className="text-sm font-medium">Active Products</p>
+              <Package className="h-4 w-4 text-muted-foreground" />
             </div>
-            <div className="text-2xl font-bold">245</div>
+            <div className="text-2xl font-bold">195</div>
             <div className="flex items-center text-xs text-green-500">
               <ArrowUpRight className="h-4 w-4" />
-              <span>+8.2% from last month</span>
+              <span>+8 new this month</span>
             </div>
           </CardContent>
         </Card>
@@ -48,31 +50,52 @@ export const Overview = () => {
         <Card className="bg-white">
           <CardContent className="p-6">
             <div className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <p className="text-sm font-medium">Shop Rating</p>
+              <p className="text-sm font-medium">Customer Rating</p>
               <Star className="h-4 w-4 text-muted-foreground" />
             </div>
             <div className="text-2xl font-bold">4.8/5.0</div>
-            <p className="text-xs text-muted-foreground">Based on 180 reviews</p>
+            <p className="text-xs text-muted-foreground">Based on 230 reviews</p>
           </CardContent>
         </Card>
 
         <Card className="bg-white">
           <CardContent className="p-6">
             <div className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <p className="text-sm font-medium">Available Balance</p>
-              <DollarSign className="h-4 w-4 text-muted-foreground" />
+              <p className="text-sm font-medium">Pending Orders</p>
+              <ShoppingBag className="h-4 w-4 text-muted-foreground" />
             </div>
-            <div className="text-2xl font-bold">$5,240</div>
-            <p className="text-xs text-muted-foreground">Ready to withdraw</p>
+            <div className="text-2xl font-bold">25</div>
+            <div className="flex items-center text-xs text-orange-500">
+              <ArrowDownRight className="h-4 w-4" />
+              <span>5 need attention</span>
+            </div>
           </CardContent>
         </Card>
       </div>
 
       {/* Sales & Revenue Deep Dive */}
-      <SalesRevenue />
+      <div className="space-y-6">
+        <h3 className="text-xl font-semibold">Sales & Revenue</h3>
+        <SalesRevenue />
+      </div>
 
       {/* Order Management */}
-      <OrderManagement />
+      <div className="space-y-6">
+        <h3 className="text-xl font-semibold">Order Management</h3>
+        <OrderManagement />
+      </div>
+
+      {/* Product Insights */}
+      <div className="space-y-6">
+        <h3 className="text-xl font-semibold">Product & Inventory Insights</h3>
+        <ProductInsights />
+      </div>
+
+      {/* Customer Feedback */}
+      <div className="space-y-6">
+        <h3 className="text-xl font-semibold">Customer Interaction & Feedback</h3>
+        <CustomerFeedback />
+      </div>
     </div>
   );
 };
