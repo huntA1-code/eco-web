@@ -53,6 +53,27 @@
   .btn-secondary {
     @apply px-6 py-3 bg-white text-foreground rounded-full transition-all duration-200 hover:bg-secondary/50 font-medium border-2 border-accent/20 hover:border-accent/40;
   }
+
+  /* New utility classes for consistent component backgrounds */
+  .table-container {
+    @apply bg-white border border-gray-100 rounded-lg shadow-sm;
+  }
+
+  .input-field {
+    @apply bg-white border border-gray-200 focus:border-primary/50;
+  }
+
+  .form-card {
+    @apply bg-white p-6 rounded-lg shadow-sm border border-gray-100;
+  }
+
+  .data-grid {
+    @apply bg-white rounded-lg border border-gray-100 overflow-hidden;
+  }
+
+  .filter-section {
+    @apply bg-gray-50/50 p-4 rounded-lg border border-gray-100;
+  }
 }
 
 .glass-card {
@@ -65,4 +86,48 @@
 
 .hover-scale {
   @apply transition-transform duration-300 hover:scale-[1.02];
+}
+
+/* Table styles */
+.data-table {
+  @apply w-full bg-white;
+}
+
+.data-table th {
+  @apply bg-gray-50/80 text-left px-4 py-3 text-sm font-medium text-gray-600;
+}
+
+.data-table td {
+  @apply px-4 py-3 border-t border-gray-100;
+}
+
+.data-table tr:hover {
+  @apply bg-gray-50/50;
+}
+
+/* Form styles */
+.form-input {
+  @apply bg-white border border-gray-200 rounded-md px-4 py-2 w-full focus:ring-2 focus:ring-primary/20 focus:border-primary/50;
+}
+
+.form-select {
+  @apply bg-white border border-gray-200 rounded-md px-4 py-2 w-full focus:ring-2 focus:ring-primary/20 focus:border-primary/50;
+}
+
+.form-textarea {
+  @apply bg-white border border-gray-200 rounded-md px-4 py-2 w-full focus:ring-2 focus:ring-primary/20 focus:border-primary/50;
+}
+
+/* Card styles */
+.dashboard-card {
+  @apply bg-white rounded-lg border border-gray-100 p-6 shadow-sm;
+}
+
+.stats-card {
+  @apply bg-white rounded-lg border border-gray-100 p-4 shadow-sm hover:shadow-md transition-shadow duration-200;
+}
+
+/* Filter styles */
+.filter-input {
+  @apply bg-white border border-gray-200 rounded-md px-3 py-1.5 text-sm focus:ring-2 focus:ring-primary/20 focus:border-primary/50;
 }
