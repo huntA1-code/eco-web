@@ -57,7 +57,7 @@ function App() {
         <Route path="/product/:id" element={<ProductPage />} />
         <Route path="/cart" element={<Cart />} />
         <Route path="/store" element={<Store />} />
-        <Route path="/dashboard" element={<Dashboard />}>
+        <Route path="/dashboard/*" element={<Dashboard />}>
           <Route index element={<Overview />} />
           <Route path="orders" element={<Orders />} />
           <Route path="products/view" element={<ViewProducts />} />
@@ -82,7 +82,6 @@ function App() {
           <Route path="products/attributes/types" element={<AttributeTypes />} />
           <Route path="products/attributes/types/add" element={<AddAttributeType />} />
           <Route path="products/attributes/types/edit/:id" element={<EditAttributeType />} />
-          {/* Discount routes */}
           <Route path="discounts" element={<Discounts />} />
           <Route path="discounts/add" element={<AddDiscount />} />
           <Route path="discounts/edit/:id" element={<EditDiscount />} />
