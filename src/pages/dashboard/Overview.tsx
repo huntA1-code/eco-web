@@ -34,24 +34,36 @@ import {
   Cell,
 } from "recharts";
 
-// Sample data - replace with real data from your backend
-const salesData = [
-  { name: "Jan", sales: 4000 },
-  { name: "Feb", sales: 3000 },
-  { name: "Mar", sales: 2000 },
-  { name: "Apr", sales: 2780 },
-  { name: "May", sales: 1890 },
-  { name: "Jun", sales: 2390 },
-];
+// Sample data with error handling
+const getSalesData = () => {
+  console.log("Fetching sales data");
+  return [
+    { name: "Jan", sales: 4000 },
+    { name: "Feb", sales: 3000 },
+    { name: "Mar", sales: 2000 },
+    { name: "Apr", sales: 2780 },
+    { name: "May", sales: 1890 },
+    { name: "Jun", sales: 2390 },
+  ];
+};
 
-const orderStatusData = [
-  { name: "Processing", value: 30, color: "#8B5CF6" },
-  { name: "Shipped", value: 45, color: "#10B981" },
-  { name: "Delivered", value: 20, color: "#3B82F6" },
-  { name: "Cancelled", value: 5, color: "#EF4444" },
-];
+const getOrderStatusData = () => {
+  console.log("Fetching order status data");
+  return [
+    { name: "Processing", value: 30, color: "#8B5CF6" },
+    { name: "Shipped", value: 45, color: "#10B981" },
+    { name: "Delivered", value: 20, color: "#3B82F6" },
+    { name: "Cancelled", value: 5, color: "#EF4444" },
+  ];
+};
 
 const Overview = () => {
+  console.log("Rendering Overview component");
+  
+  // Get data with error handling
+  const salesData = getSalesData();
+  const orderStatusData = getOrderStatusData();
+
   return (
     <div className="space-y-6">
       <div>
