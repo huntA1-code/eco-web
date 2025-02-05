@@ -42,15 +42,15 @@ export const Hero = () => {
   }, []);
 
   return (
-    <section className="relative min-h-[100dvh] lg:min-h-[1080px] pt-4 bg-gradient-to-b from-accent/5 to-white/80">
-      <div className="container mx-auto px-4 h-full py-8 lg:py-16">
-        <div className="grid md:grid-cols-2 gap-8 lg:gap-12 items-center min-h-[calc(100dvh-2rem)] lg:min-h-[calc(1080px-8rem)]">
+    <section className="relative min-h-[90dvh] bg-gradient-to-b from-accent/5 to-white/80">
+      <div className="container mx-auto h-full">
+        <div className="grid md:grid-cols-2 gap-6 items-center min-h-[90dvh]">
           {/* Left Content Column */}
           <motion.div 
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6 }}
-            className="space-y-6 lg:space-y-8"
+            className="space-y-4"
           >
             {/* Special Offer Badge */}
             <motion.div 
@@ -64,7 +64,7 @@ export const Hero = () => {
             </motion.div>
 
             {/* Main Headline */}
-            <h1 className="hero-title text-4xl sm:text-5xl md:text-6xl lg:text-7xl xl:text-8xl leading-tight">
+            <h1 className="hero-title text-4xl sm:text-5xl md:text-6xl lg:text-7xl leading-tight">
               Elevate Your <br />
               <span className="text-transparent bg-clip-text bg-gradient-to-r from-accent-new via-accent to-accent-best">
                 Style Story
@@ -72,7 +72,7 @@ export const Hero = () => {
             </h1>
 
             {/* Supporting Text */}
-            <p className="text-lg sm:text-xl lg:text-2xl text-foreground/80 max-w-md leading-relaxed">
+            <p className="text-lg text-foreground/80 max-w-md leading-relaxed">
               Discover curated collections that blend timeless elegance with contemporary trends. 
               Enjoy free shipping on orders over $99.
             </p>
@@ -93,7 +93,7 @@ export const Hero = () => {
             </div>
 
             {/* Trust Badges */}
-            <div className="flex items-center gap-6 pt-4">
+            <div className="flex items-center gap-6">
               <div className="text-center">
                 <p className="font-semibold">Free Shipping</p>
                 <p className="text-sm text-foreground/60">On orders $99+</p>
@@ -111,7 +111,7 @@ export const Hero = () => {
             initial={{ opacity: 0, scale: 0.95 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: 0.6 }}
-            className="relative h-[400px] sm:h-[500px] md:h-[600px] lg:h-[700px] xl:h-[800px] w-full"
+            className="relative h-[300px] sm:h-[350px] md:h-[400px] lg:h-[450px] w-full"
           >
             <div className="absolute inset-0 bg-gradient-to-tr from-accent-new/20 via-transparent to-accent/20 rounded-2xl" />
             <img
@@ -126,10 +126,10 @@ export const Hero = () => {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.3, duration: 0.6 }}
-              className="absolute bottom-6 left-6 right-6 p-6 glass-card rounded-xl backdrop-blur-md"
+              className="absolute bottom-4 left-4 right-4 p-4 glass-card rounded-xl backdrop-blur-md"
             >
-              <p className="text-2xl font-semibold mb-2">{heroContent[currentImageIndex].title}</p>
-              <p className="text-foreground/80">{heroContent[currentImageIndex].description}</p>
+              <p className="text-xl font-semibold mb-1">{heroContent[currentImageIndex].title}</p>
+              <p className="text-foreground/80 text-sm">{heroContent[currentImageIndex].description}</p>
             </motion.div>
           </motion.div>
         </div>
