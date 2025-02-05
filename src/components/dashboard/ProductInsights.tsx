@@ -62,7 +62,7 @@ export const ProductInsights = () => {
                   <div>
                     <p className="font-medium">{product.name}</p>
                     <div className="flex items-center gap-2 mt-1">
-                      <Badge variant={product.stock <= product.threshold / 2 ? "destructive" : "warning"}>
+                      <Badge variant={product.stock <= product.threshold / 2 ? "destructive" : "secondary"}>
                         Stock: {product.stock}
                       </Badge>
                       <span className="text-sm text-muted-foreground">
