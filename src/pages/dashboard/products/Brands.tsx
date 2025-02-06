@@ -46,8 +46,8 @@ const Brands = () => {
         </Button>
       </div>
 
-      <div className="rounded-md border">
-        <Table>
+      <div className="table-container">
+        <Table className="data-table">
           <TableHeader>
             <TableRow>
               <TableHead>Name</TableHead>

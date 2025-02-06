@@ -12,7 +12,6 @@ import { Edit, Trash2 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 
-// Mock data - replace with actual data fetching
 const colors = [
   {
     id: 1,
@@ -49,8 +48,8 @@ const Colors = () => {
         </Button>
       </div>
 
-      <div className="rounded-md border">
-        <Table>
+      <div className="table-container">
+        <Table className="data-table">
           <TableHeader>
             <TableRow>
               <TableHead>Color</TableHead>

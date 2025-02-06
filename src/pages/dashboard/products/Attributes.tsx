@@ -58,8 +58,8 @@ const Attributes = () => {
         </div>
       </div>
 
-      <div className="rounded-md border">
-        <Table>
+      <div className="table-container">
+        <Table className="data-table">
           <TableHeader>
             <TableRow className="border-b">
               <TableHead className="border-r">Type</TableHead>

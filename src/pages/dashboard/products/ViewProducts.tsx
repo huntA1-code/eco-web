@@ -82,8 +82,8 @@ const ViewProducts = () => {
         </Link>
       </div>
 
-      <div className="rounded-md border">
-        <Table>
+      <div className="table-container">
+        <Table className="data-table">
           <TableHeader>
             <TableRow>
               <TableHead>Image</TableHead>

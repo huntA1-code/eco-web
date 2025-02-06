@@ -10,6 +10,7 @@ import {
 } from "@/components/ui/table";
 import { Edit, Trash2 } from "lucide-react";
 
+// Mock data - replace with API call
 const sizes = [
   {
     id: 1,
@@ -45,8 +46,8 @@ const Sizes = () => {
         </div>
       </div>
 
-      <div className="rounded-md border">
-        <Table>
+      <div className="table-container">
+        <Table className="data-table">
           <TableHeader>
             <TableRow>
               <TableHead>Category</TableHead>
