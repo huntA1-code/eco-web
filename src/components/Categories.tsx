@@ -1,3 +1,4 @@
+
 import { useNavigate } from "react-router-dom";
 import {
   Carousel,
@@ -71,7 +72,7 @@ export const Categories = () => {
         >
           <CarouselContent className="-ml-2 md:-ml-4">
             {categories.map((category, index) => (
-              <CarouselItem key={index} className="pl-2 md:pl-4 basis-6/12 md:basis-4/12 lg:basis-3/12">
+              <CarouselItem key={index} className="pl-2 md:pl-4 basis-1/2 md:basis-1/3 lg:basis-1/6">
                 <button
                   onClick={() => handleCategoryClick(category.title)}
                   className="w-full text-left"
