@@ -1,3 +1,4 @@
+
 import { useForm, useFieldArray } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
@@ -28,10 +29,16 @@ import { AttributeMultiSelect } from "@/components/product/AttributeMultiSelect"
 import { ProductItemForm } from "@/components/product/ProductItemForm";
 import { ProductFormData } from "@/types/product";
 
-// Mock discounts data - replace with API call
+// Mock data - replace with API calls
 const mockDiscounts = [
   { id: "1", name: "Summer Sale 20% OFF", rate: 20 },
   { id: "2", name: "Flash Sale 30% OFF", rate: 30 },
+];
+
+const mockBrands = [
+  { id: "1", name: "Nike" },
+  { id: "2", name: "Adidas" },
+  { id: "3", name: "Puma" },
 ];
 
 const productSchema = z.object({
@@ -80,6 +87,7 @@ const AddProduct = () => {
       about: "",
       is_featured: false,
       discount_id: "",
+      brand_id: "",
       attribute_options: [],
       product_items: [],
     },
@@ -110,7 +118,7 @@ const AddProduct = () => {
   };
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 p-6 overflow-auto max-h-[calc(100vh-6rem)]">
       <div>
         <h2 className="text-2xl font-bold">Add New Product</h2>
         <p className="text-muted-foreground">Create a new product listing</p>
@@ -130,6 +138,31 @@ const AddProduct = () => {
                   <FormControl>
                     <Input placeholder="Enter product name" {...field} />
                   </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            <FormField
+              control={form.control}
+              name="brand_id"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Brand</FormLabel>
+                  <Select onValueChange={field.onChange} value={field.value}>
+                    <FormControl>
+                      <SelectTrigger>
+                        <SelectValue placeholder="Select brand" />
+                      </SelectTrigger>
+                    </FormControl>
+                    <SelectContent>
+                      {mockBrands.map((brand) => (
+                        <SelectItem key={brand.id} value={brand.id}>
+                          {brand.name}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
                   <FormMessage />
                 </FormItem>
               )}
