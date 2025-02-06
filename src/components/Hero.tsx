@@ -1,4 +1,5 @@
-import { ArrowRight, ShoppingBag, Star } from 'lucide-react';
+
+import { ArrowRight, ChevronLeft, ChevronRight, ShoppingBag, Star } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
@@ -6,28 +7,22 @@ import { Link } from 'react-router-dom';
 const heroContent = [
   {
     image: "https://images.unsplash.com/photo-1581091226825-a6a2a5aee158",
-    title: "Summer Collection",
-    description: "Up to 60% off on selected items",
-    caption: "Elegant summer attire for the modern woman"
+    title: "Weekly Deals",
+    description: "Up to 70% OFF",
+    caption: "Limited time offer on selected items"
   },
   {
     image: "https://images.unsplash.com/photo-1523712999610-f77fbcfc3843",
-    title: "Winter Sale",
-    description: "Get 40% off on winter collection",
-    caption: "Cozy and stylish winter wear"
+    title: "Trendy Stores",
+    description: "Stay Trendy, Shop Fresh",
+    caption: "New arrivals every week"
   },
   {
     image: "https://images.unsplash.com/photo-1500673922987-e212871fec22",
-    title: "Spring Special",
-    description: "New arrivals with 30% discount",
-    caption: "Fresh and vibrant spring styles"
+    title: "SHEIN CLUB",
+    description: "Save 5% OFF on 100k items",
+    caption: "With a total of 27x shipping vouchers"
   },
-  {
-    image: "https://images.unsplash.com/photo-1582562124811-c09040d0a901",
-    title: "Fashion Week",
-    description: "Limited time offer: 25% off",
-    caption: "Exclusive designer collections"
-  }
 ];
 
 export const Hero = () => {
@@ -41,69 +36,73 @@ export const Hero = () => {
     return () => clearInterval(timer);
   }, []);
 
+  const nextSlide = () => {
+    setCurrentImageIndex((prev) => (prev + 1) % heroContent.length);
+  };
+
+  const prevSlide = () => {
+    setCurrentImageIndex((prev) => (prev - 1 + heroContent.length) % heroContent.length);
+  };
+
   return (
-    <section className="relative min-h-[90dvh] bg-gradient-to-b from-accent/5 to-white/80">
+    <section className="relative min-h-[600px] bg-gradient-to-b from-accent/5 to-white/80">
       <div className="container mx-auto h-full">
-        <div className="grid md:grid-cols-2 gap-6 items-center min-h-[90dvh]">
+        <div className="grid md:grid-cols-12 gap-6 items-center min-h-[600px]">
           {/* Left Content Column */}
           <motion.div 
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6 }}
-            className="space-y-4"
+            className="md:col-span-4 space-y-6 z-10"
           >
-            {/* Special Offer Badge */}
+            {/* QuickShip Banner */}
             <motion.div 
               initial={{ scale: 0.9 }}
               animate={{ scale: 1 }}
               transition={{ duration: 0.3 }}
-              className="inline-flex items-center gap-2 px-4 py-2 bg-accent-new/10 text-accent-new rounded-full text-sm font-medium"
+              className="bg-white/90 backdrop-blur-sm rounded-xl p-4 shadow-lg border border-gray-100"
             >
-              <Star className="w-4 h-4" />
-              <span>New Season Collection 2024</span>
+              <div className="flex items-center gap-3">
+                <ShoppingBag className="w-6 h-6 text-accent-new" />
+                <div>
+                  <h3 className="font-semibold text-lg">QuickShip</h3>
+                  <p className="text-sm text-gray-600">Delivered in 3-5 business days!</p>
+                </div>
+              </div>
             </motion.div>
 
-            {/* Main Headline */}
-            <h1 className="hero-title text-4xl sm:text-5xl md:text-6xl lg:text-7xl leading-tight">
-              Elevate Your <br />
-              <span className="text-transparent bg-clip-text bg-gradient-to-r from-accent-new via-accent to-accent-best">
-                Style Story
-              </span>
-            </h1>
-
-            {/* Supporting Text */}
-            <p className="text-lg text-foreground/80 max-w-md leading-relaxed">
-              Discover curated collections that blend timeless elegance with contemporary trends. 
-              Enjoy free shipping on orders over $99.
-            </p>
-
-            {/* CTA Buttons */}
-            <div className="flex flex-wrap gap-4">
+            {/* Trendy Stores Card */}
+            <motion.div 
+              initial={{ scale: 0.9 }}
+              animate={{ scale: 1 }}
+              transition={{ delay: 0.1, duration: 0.3 }}
+              className="bg-white/90 backdrop-blur-sm rounded-xl p-4 shadow-lg border border-gray-100"
+            >
+              <h3 className="text-xl font-bold mb-2">Trendy Stores</h3>
+              <p className="text-sm text-gray-600 mb-3">Stay trendy, shop fresh styles</p>
               <Link 
                 to="/products" 
-                className="btn-primary group inline-flex items-center gap-2 bg-gradient-to-r from-accent-new to-accent hover:opacity-90"
+                className="text-accent-new hover:text-accent-best transition-colors text-sm font-medium flex items-center gap-1"
               >
-                <ShoppingBag className="w-5 h-5" />
-                Shop Collection
-                <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                Shop Now
+                <ArrowRight className="w-4 h-4" />
               </Link>
-              <button className="btn-secondary border-2 border-accent-new/20 hover:border-accent-new/40">
-                View Lookbook
-              </button>
-            </div>
+            </motion.div>
 
-            {/* Trust Badges */}
-            <div className="flex items-center gap-6">
-              <div className="text-center">
-                <p className="font-semibold">Free Shipping</p>
-                <p className="text-sm text-foreground/60">On orders $99+</p>
+            {/* SHEIN Club Card */}
+            <motion.div 
+              initial={{ scale: 0.9 }}
+              animate={{ scale: 1 }}
+              transition={{ delay: 0.2, duration: 0.3 }}
+              className="bg-gradient-to-r from-accent-new/10 to-accent-best/10 rounded-xl p-4 shadow-lg border border-accent-new/20"
+            >
+              <div className="flex items-center gap-2 mb-2">
+                <Star className="w-5 h-5 text-accent-new" />
+                <h3 className="font-bold text-lg">SHEIN CLUB</h3>
               </div>
-              <div className="h-8 w-px bg-border" />
-              <div className="text-center">
-                <p className="font-semibold">Easy Returns</p>
-                <p className="text-sm text-foreground/60">30 days return</p>
-              </div>
-            </div>
+              <p className="text-sm mb-1">Save 5% OFF on 100k items</p>
+              <p className="text-xs text-gray-600">With a total of 27x shipping vouchers</p>
+            </motion.div>
           </motion.div>
 
           {/* Right Image Column */}
@@ -111,26 +110,67 @@ export const Hero = () => {
             initial={{ opacity: 0, scale: 0.95 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: 0.6 }}
-            className="relative h-[300px] sm:h-[350px] md:h-[400px] lg:h-[450px] w-full"
+            className="md:col-span-8 relative h-[400px] md:h-[500px] w-full"
           >
-            <div className="absolute inset-0 bg-gradient-to-tr from-accent-new/20 via-transparent to-accent/20 rounded-2xl" />
-            <img
-              src={heroContent[currentImageIndex].image}
-              alt="Fashion Model"
-              className="w-full h-full object-cover rounded-2xl shadow-xl hover-scale"
-              loading="eager"
-            />
-            
-            {/* Floating Card */}
-            <motion.div 
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.3, duration: 0.6 }}
-              className="absolute bottom-4 left-4 right-4 p-4 glass-card rounded-xl backdrop-blur-md"
-            >
-              <p className="text-xl font-semibold mb-1">{heroContent[currentImageIndex].title}</p>
-              <p className="text-foreground/80 text-sm">{heroContent[currentImageIndex].description}</p>
-            </motion.div>
+            {/* Main Carousel */}
+            <div className="relative w-full h-full rounded-2xl overflow-hidden">
+              <img
+                src={heroContent[currentImageIndex].image}
+                alt="Fashion"
+                className="w-full h-full object-cover"
+              />
+              
+              {/* Overlay with Gradient */}
+              <div className="absolute inset-0 bg-gradient-to-r from-black/40 to-transparent" />
+              
+              {/* Content */}
+              <div className="absolute bottom-8 left-8 right-8 text-white">
+                <motion.div
+                  key={currentImageIndex}
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.4 }}
+                >
+                  <h2 className="text-4xl md:text-5xl font-bold mb-2">{heroContent[currentImageIndex].description}</h2>
+                  <p className="text-lg text-white/80">{heroContent[currentImageIndex].caption}</p>
+                  
+                  <Link 
+                    to="/products" 
+                    className="inline-flex items-center gap-2 px-6 py-2 bg-white text-accent-new rounded-full mt-4 hover:bg-accent-new hover:text-white transition-colors"
+                  >
+                    Shop Now
+                    <ArrowRight className="w-4 h-4" />
+                  </Link>
+                </motion.div>
+              </div>
+
+              {/* Navigation Buttons */}
+              <button
+                onClick={prevSlide}
+                className="absolute left-4 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-white/20 backdrop-blur-sm hover:bg-white/30 transition-colors flex items-center justify-center text-white"
+              >
+                <ChevronLeft className="w-6 h-6" />
+              </button>
+              <button
+                onClick={nextSlide}
+                className="absolute right-4 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-white/20 backdrop-blur-sm hover:bg-white/30 transition-colors flex items-center justify-center text-white"
+              >
+                <ChevronRight className="w-6 h-6" />
+              </button>
+
+              {/* Dots */}
+              <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex gap-2">
+                {heroContent.map((_, index) => (
+                  <button
+                    key={index}
+                    onClick={() => setCurrentImageIndex(index)}
+                    className={`w-2 h-2 rounded-full transition-all ${
+                      index === currentImageIndex ? 'bg-white w-4' : 'bg-white/50'
+                    }`}
+                  />
+                ))}
+              </div>
+            </div>
           </motion.div>
         </div>
       </div>
