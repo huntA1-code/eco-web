@@ -215,7 +215,7 @@ export const ProductItemForm = ({
             </div>
 
             {fields.map((field, sizeIndex) => (
-              <div key={field.id} className="grid grid-cols-2 gap-4">
+              <div key={field.id} className="grid grid-cols-2 gap-4 relative p-4 border rounded-lg">
                 <FormField
                   control={control}
                   name={`product_items.${index}.variations.${sizeIndex}.size_id`}
@@ -260,6 +260,16 @@ export const ProductItemForm = ({
                     </FormItem>
                   )}
                 />
+
+                <Button
+                  type="button"
+                  variant="destructive"
+                  size="sm"
+                  className="absolute top-2 right-2"
+                  onClick={() => remove(sizeIndex)}
+                >
+                  Remove
+                </Button>
               </div>
             ))}
           </div>
