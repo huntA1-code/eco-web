@@ -21,7 +21,9 @@ export const FeaturedProducts = () => {
       tag: "Best Seller",
       tagColor: "accent-best",
       rating: 4.8,
-      reviews: 128
+      reviews: 128,
+      sizes: ["XS", "S", "M", "L", "XL"],
+      description: "A timeless classic white dress perfect for any occasion."
     },
     {
       name: "Navy Blue Suit",
@@ -30,7 +32,9 @@ export const FeaturedProducts = () => {
       tag: "New Arrival",
       tagColor: "accent-new",
       rating: 4.9,
-      reviews: 86
+      reviews: 86,
+      sizes: ["S", "M", "L", "XL", "XXL"],
+      description: "Elegant navy blue suit crafted from premium materials."
     },
     {
       name: "Silk Evening Gown",
@@ -39,7 +43,9 @@ export const FeaturedProducts = () => {
       tag: "Trending",
       tagColor: "accent-trending",
       rating: 4.7,
-      reviews: 95
+      reviews: 95,
+      sizes: ["XS", "S", "M", "L"],
+      description: "Luxurious silk evening gown for special occasions."
     },
     {
       name: "Casual Blazer",
@@ -48,7 +54,9 @@ export const FeaturedProducts = () => {
       tag: "Popular",
       tagColor: "accent",
       rating: 4.6,
-      reviews: 154
+      reviews: 154,
+      sizes: ["S", "M", "L", "XL"],
+      description: "Versatile casual blazer for both formal and casual settings."
     },
     {
       name: "Designer Handbag",
@@ -57,7 +65,9 @@ export const FeaturedProducts = () => {
       tag: "Luxury",
       tagColor: "accent-new",
       rating: 4.9,
-      reviews: 72
+      reviews: 72,
+      sizes: ["One Size"],
+      description: "Premium designer handbag made from genuine leather."
     }
   ];
 
