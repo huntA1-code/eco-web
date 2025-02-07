@@ -1,3 +1,4 @@
+
 import {
   Carousel,
   CarouselContent,
@@ -15,8 +16,6 @@ export const DiscountProducts = () => {
       discountPrice: "$49.99",
       image: "https://images.unsplash.com/photo-1518459031867-a89b944bffe4",
       discount: "45% OFF",
-      description: "Comfortable and stylish everyday sneakers",
-      colors: ["White", "Black", "Gray"],
       stock: 12,
       endDate: "2024-03-30"
     },
@@ -26,8 +25,6 @@ export const DiscountProducts = () => {
       discountPrice: "$79.99",
       image: "https://images.unsplash.com/photo-1503342217505-b0a15ec3261c",
       discount: "38% OFF",
-      description: "Premium quality stretch denim jeans",
-      colors: ["Blue", "Black", "Light Blue"],
       stock: 8,
       endDate: "2024-03-25"
     },
@@ -37,8 +34,6 @@ export const DiscountProducts = () => {
       discountPrice: "$129.99",
       image: "https://images.unsplash.com/photo-1577744486770-020ab432da65",
       discount: "35% OFF",
-      description: "Warm and water-resistant winter jacket",
-      colors: ["Navy", "Black", "Green"],
       stock: 5,
       endDate: "2024-03-20"
     },
@@ -48,10 +43,17 @@ export const DiscountProducts = () => {
       discountPrice: "$39.99",
       image: "https://images.unsplash.com/photo-1584917865442-de89df76afd3",
       discount: "50% OFF",
-      description: "Trendy accessories for any outfit",
-      colors: ["Gold", "Silver", "Rose Gold"],
       stock: 15,
       endDate: "2024-03-28"
+    },
+    {
+      name: "Designer Scarf",
+      price: "$59.99",
+      discountPrice: "$29.99",
+      image: "https://images.unsplash.com/photo-1601924994987-69e26d50dc26",
+      discount: "50% OFF",
+      stock: 20,
+      endDate: "2024-03-26"
     }
   ];
 
@@ -72,7 +74,7 @@ export const DiscountProducts = () => {
         >
           <CarouselContent className="-ml-2 md:-ml-4">
             {products.map((product, index) => (
-              <CarouselItem key={index} className="pl-2 md:pl-4 basis-6/12 md:basis-4/12 lg:basis-3/12">
+              <CarouselItem key={index} className="pl-2 md:pl-4 basis-full sm:basis-1/2 md:basis-1/3 lg:basis-1/5">
                 <div className="card overflow-hidden group animate-fade-up" style={{ animationDelay: `${index * 100}ms` }}>
                   <div className="relative aspect-square overflow-hidden">
                     <img
@@ -96,7 +98,6 @@ export const DiscountProducts = () => {
                   </div>
                   <div className="p-4 space-y-2">
                     <h3 className="font-medium text-lg">{product.name}</h3>
-                    <p className="text-sm text-muted-foreground line-clamp-2">{product.description}</p>
                     <div className="flex justify-between items-center">
                       <div>
                         <span className="text-accent font-semibold text-lg">{product.discountPrice}</span>
@@ -105,11 +106,6 @@ export const DiscountProducts = () => {
                       <Badge variant="outline" className="text-xs">
                         {product.stock} left
                       </Badge>
-                    </div>
-                    <div className="flex gap-2">
-                      {product.colors.map((color) => (
-                        <Badge key={color} variant="secondary" className="px-2">{color}</Badge>
-                      ))}
                     </div>
                   </div>
                 </div>

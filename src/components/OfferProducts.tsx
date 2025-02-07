@@ -1,3 +1,4 @@
+
 import {
   Carousel,
   CarouselContent,
@@ -15,8 +16,6 @@ export const OfferProducts = () => {
       offerPrice: "$89.99",
       image: "https://images.unsplash.com/photo-1515886657613-9f3515b0c78f",
       offerText: "Limited Time Offer",
-      description: "Light and breezy summer dresses",
-      features: ["Breathable fabric", "UV protection", "Easy care"],
       validUntil: "2024-03-25",
       savings: "$40"
     },
@@ -26,8 +25,6 @@ export const OfferProducts = () => {
       offerPrice: "$199.99",
       image: "https://images.unsplash.com/photo-1584917865442-de89df76afd3",
       offerText: "Special Deal",
-      description: "Genuine leather designer handbag",
-      features: ["Premium leather", "Spacious design", "Gold hardware"],
       validUntil: "2024-03-20",
       savings: "$100"
     },
@@ -37,8 +34,6 @@ export const OfferProducts = () => {
       offerPrice: "$99.99",
       image: "https://images.unsplash.com/photo-1577744486770-020ab432da65",
       offerText: "Flash Sale",
-      description: "UV protected premium sunglasses",
-      features: ["Polarized", "Scratch resistant", "Lightweight"],
       validUntil: "2024-03-28",
       savings: "$60"
     },
@@ -48,10 +43,17 @@ export const OfferProducts = () => {
       offerPrice: "$349.99",
       image: "https://images.unsplash.com/photo-1523359346063-d879354c0ea5",
       offerText: "Today Only",
-      description: "Premium automatic watch",
-      features: ["Swiss movement", "Sapphire crystal", "Water resistant"],
       validUntil: "2024-03-22",
       savings: "$150"
+    },
+    {
+      name: "Leather Boots",
+      price: "$249.99",
+      offerPrice: "$179.99",
+      image: "https://images.unsplash.com/photo-1542280756-74b2f55e73ab",
+      offerText: "Special Price",
+      validUntil: "2024-03-24",
+      savings: "$70"
     }
   ];
 
@@ -72,7 +74,7 @@ export const OfferProducts = () => {
         >
           <CarouselContent className="-ml-2 md:-ml-4">
             {products.map((product, index) => (
-              <CarouselItem key={index} className="pl-2 md:pl-4 basis-6/12 md:basis-4/12 lg:basis-3/12">
+              <CarouselItem key={index} className="pl-2 md:pl-4 basis-full sm:basis-1/2 md:basis-1/3 lg:basis-1/5">
                 <div className="card overflow-hidden group animate-fade-up" style={{ animationDelay: `${index * 100}ms` }}>
                   <div className="relative aspect-square overflow-hidden">
                     <img
@@ -96,7 +98,6 @@ export const OfferProducts = () => {
                   </div>
                   <div className="p-4 space-y-2">
                     <h3 className="font-medium text-lg">{product.name}</h3>
-                    <p className="text-sm text-muted-foreground line-clamp-2">{product.description}</p>
                     <div className="flex justify-between items-center">
                       <div>
                         <span className="text-primary font-semibold text-lg">{product.offerPrice}</span>
@@ -105,11 +106,6 @@ export const OfferProducts = () => {
                       <Badge variant="outline" className="text-xs">
                         Until {new Date(product.validUntil).toLocaleDateString()}
                       </Badge>
-                    </div>
-                    <div className="flex flex-wrap gap-2">
-                      {product.features.map((feature) => (
-                        <Badge key={feature} variant="secondary" className="px-2 text-xs">{feature}</Badge>
-                      ))}
                     </div>
                   </div>
                 </div>
