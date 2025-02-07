@@ -1,3 +1,4 @@
+
 import {
   Dialog,
   DialogContent,
@@ -25,8 +26,20 @@ interface QuickViewProps {
   onClose: () => void;
 }
 
+const COLORS = [
+  { name: 'Purple', hex: '#9b87f5' },
+  { name: 'Orange', hex: '#F97316' },
+  { name: 'Blue', hex: '#0EA5E9' },
+  { name: 'Green', hex: '#F2FCE2' },
+  { name: 'Yellow', hex: '#FEF7CD' },
+  { name: 'Soft Orange', hex: '#FEC6A1' },
+  { name: 'Soft Purple', hex: '#E5DEFF' },
+  { name: 'Soft Pink', hex: '#FFDEE2' }
+];
+
 export const QuickView = ({ product, isOpen, onClose }: QuickViewProps) => {
   const [selectedSize, setSelectedSize] = useState<string>("");
+  const [selectedColor, setSelectedColor] = useState<string>(COLORS[0].hex);
   const { toast } = useToast();
   const [selectedImage, setSelectedImage] = useState(product.image);
 
@@ -79,7 +92,7 @@ export const QuickView = ({ product, isOpen, onClose }: QuickViewProps) => {
 
           {/* Center - Main Image */}
           <div className="col-span-6">
-            <div className="aspect-[4/3] rounded-lg overflow-hidden">
+            <div className="aspect-[4/3] rounded-lg overflow-hidden h-[400px]">
               <img
                 src={selectedImage}
                 alt={product.name}
@@ -113,6 +126,26 @@ export const QuickView = ({ product, isOpen, onClose }: QuickViewProps) => {
             </div>
 
             <p className="text-muted-foreground mt-4">{product.description}</p>
+
+            {/* Color Selection */}
+            <div className="mt-6">
+              <h3 className="font-medium mb-3">Select Color</h3>
+              <div className="flex flex-wrap gap-2">
+                {COLORS.map((color) => (
+                  <button
+                    key={color.hex}
+                    onClick={() => setSelectedColor(color.hex)}
+                    className={`w-8 h-8 rounded-full transition-all ${
+                      selectedColor === color.hex 
+                        ? 'ring-2 ring-offset-2 ring-primary' 
+                        : ''
+                    }`}
+                    style={{ backgroundColor: color.hex }}
+                    title={color.name}
+                  />
+                ))}
+              </div>
+            </div>
 
             <div className="mt-6">
               <h3 className="font-medium mb-3">Select Size</h3>
