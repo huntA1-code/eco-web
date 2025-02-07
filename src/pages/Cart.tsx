@@ -3,6 +3,7 @@ import { Truck, Trash2 } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Checkbox } from '@/components/ui/checkbox';
+import { useNavigate } from 'react-router-dom';
 
 interface CartItem {
   id: number;
@@ -14,6 +15,7 @@ interface CartItem {
 }
 
 const Cart = () => {
+  const navigate = useNavigate();
   const [cartItems, setCartItems] = useState<CartItem[]>([
     {
       id: 1,
@@ -80,9 +82,15 @@ const Cart = () => {
       .reduce((total, item) => total + (item.price * item.quantity), 0);
   };
 
+  const handleCheckout = () => {
+    if (selectedItems.length === 0) {
+      return;
+    }
+    navigate('/place-order');
+  };
+
   return (
     <div className="container mx-auto px-4 py-8 mt-20">
-      {/* Shipping Information */}
       <div className="bg-neutral-light p-4 rounded-lg shadow-sm mb-8 flex items-center gap-3">
         <Truck className="w-6 h-6 text-primary" />
         <div>
@@ -92,9 +100,7 @@ const Cart = () => {
       </div>
 
       <div className="grid lg:grid-cols-3 gap-8">
-        {/* Item List */}
         <div className="lg:col-span-2 space-y-4">
-          {/* All Items Checkbox */}
           <div className="bg-white p-4 rounded-lg shadow-sm">
             <div className="flex items-center gap-2">
               <Checkbox 
@@ -150,7 +156,6 @@ const Cart = () => {
           ))}
         </div>
 
-        {/* Order Summary */}
         <div className="lg:col-span-1">
           <div className="bg-white p-6 rounded-lg shadow-sm sticky top-24">
             <h2 className="text-xl font-semibold mb-6">Order Summary</h2>
@@ -162,7 +167,11 @@ const Cart = () => {
               </div>
             </div>
 
-            <Button className="w-full mb-4">
+            <Button 
+              className="w-full mb-4"
+              onClick={handleCheckout}
+              disabled={selectedItems.length === 0}
+            >
               Checkout Now ({selectedItems.length})
             </Button>
 
@@ -173,7 +182,6 @@ const Cart = () => {
               </div>
             </div>
 
-            {/* Payment Methods */}
             <div className="mt-8 pt-6 border-t">
               <h3 className="text-sm font-medium mb-4">We Accept:</h3>
               <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
