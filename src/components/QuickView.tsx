@@ -92,11 +92,11 @@ export const QuickView = ({ product, isOpen, onClose }: QuickViewProps) => {
 
           {/* Center - Main Image */}
           <div className="col-span-6">
-            <div className="aspect-[4/3] rounded-lg overflow-hidden h-[400px]">
+            <div className="h-[350px] rounded-lg overflow-hidden">
               <img
                 src={selectedImage}
                 alt={product.name}
-                className="w-full h-full object-cover"
+                className="w-full h-full object-contain bg-gray-50"
               />
             </div>
           </div>
