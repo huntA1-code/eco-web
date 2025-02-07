@@ -10,8 +10,8 @@ export const Overview = () => {
   console.log("Rendering Overview component");
   
   return (
-    <div className="space-y-8 p-6 bg-secondary/5 max-w-[1400px] mx-auto">
-      <div className="space-y-2">
+    <div className="space-y-8 p-8 bg-secondary/5 max-w-[1400px] mx-auto min-h-screen">
+      <div className="space-y-3">
         <h2 className="text-3xl font-bold tracking-tight">Vendor Dashboard</h2>
         <p className="text-muted-foreground">
           Welcome back! Here's an overview of your store's performance.

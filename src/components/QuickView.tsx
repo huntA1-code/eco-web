@@ -92,7 +92,7 @@ export const QuickView = ({ product, isOpen, onClose }: QuickViewProps) => {
 
           {/* Center - Main Image */}
           <div className="col-span-6">
-            <div className="h-[350px] rounded-lg overflow-hidden">
+            <div className="h-[400px] rounded-lg overflow-hidden">
               <img
                 src={selectedImage}
                 alt={product.name}
