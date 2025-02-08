@@ -1,3 +1,4 @@
+
 import { Routes, Route } from "react-router-dom";
 import { Navbar } from "./components/Navbar";
 import { SubNavbar } from "./components/SubNavbar";
@@ -10,6 +11,7 @@ import PlaceOrder from "./pages/PlaceOrder";
 import Pay from "./pages/Pay";
 import OrderComplete from "./pages/OrderComplete";
 import Store from "./pages/Store";
+import WishList from "./pages/WishList";
 import Dashboard from "./pages/Dashboard";
 import Overview from "./pages/dashboard/Overview";
 import ViewProducts from "./pages/dashboard/products/ViewProducts";
@@ -59,6 +61,7 @@ function App() {
         <Route path="/products" element={<Products />} />
         <Route path="/product/:id" element={<ProductPage />} />
         <Route path="/cart" element={<Cart />} />
+        <Route path="/wishlist" element={<WishList />} />
         <Route path="/place-order" element={<PlaceOrder />} />
         <Route path="/pay" element={<Pay />} />
         <Route path="/order-complete" element={<OrderComplete />} />
