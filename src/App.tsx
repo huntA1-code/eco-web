@@ -8,6 +8,7 @@ import Products from "./pages/Products";
 import ProductPage from "./pages/ProductPage";
 import Cart from "./pages/Cart";
 import PlaceOrder from "./pages/PlaceOrder";
+import Pay from "./pages/Pay";
 import Store from "./pages/Store";
 import Dashboard from "./pages/Dashboard";
 import Overview from "./pages/dashboard/Overview";
@@ -59,6 +60,7 @@ function App() {
         <Route path="/product/:id" element={<ProductPage />} />
         <Route path="/cart" element={<Cart />} />
         <Route path="/place-order" element={<PlaceOrder />} />
+        <Route path="/pay" element={<Pay />} />
         <Route path="/store" element={<Store />} />
         <Route path="/dashboard/*" element={<Dashboard />}>
           <Route index element={<Overview />} />
