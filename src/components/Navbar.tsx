@@ -1,9 +1,11 @@
+
 import { useState } from 'react';
 import { ShoppingBag, Search, Heart, User, Menu, X } from 'lucide-react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 
 export const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
+  const navigate = useNavigate();
 
   return (
     <nav className="fixed top-0 left-0 right-0 w-full bg-white z-50 shadow-sm">
@@ -20,7 +22,10 @@ export const Navbar = () => {
             <button className="p-2 hover:bg-muted rounded-full">
               <User className="w-5 h-5" />
             </button>
-            <button className="p-2 hover:bg-muted rounded-full">
+            <button 
+              className="p-2 hover:bg-muted rounded-full"
+              onClick={() => navigate('/wishlist')}
+            >
               <Heart className="w-5 h-5" />
             </button>
             <Link to="/cart" className="p-2 hover:bg-muted rounded-full relative">
