@@ -1,3 +1,4 @@
+
 import { Heart, ShoppingCart } from "lucide-react";
 import { useState } from "react";
 import { Link } from "react-router-dom";
@@ -16,6 +17,10 @@ interface ProductCardProps {
     category: string;
     rating: number;
     reviews: number;
+    discount?: { // Added discount type
+      rate: number;
+      type: 'percentage' | 'fixed';
+    };
   };
 }
 
@@ -27,51 +32,71 @@ export const ProductCard = ({ product }: ProductCardProps) => {
     setShowQuickView(false);
   };
 
+  const calculateDiscountedPrice = () => {
+    if (!product.discount) return product.price;
+    
+    return product.discount.type === 'percentage' 
+      ? product.price * (1 - product.discount.rate / 100)
+      : product.price - product.discount.rate;
+  };
+
   return (
     <>
       <Link 
         to={`/products/${encodeURIComponent(product.name)}`}
-        className="block card group animate-fade-up"
+        className="block card group animate-fade-up relative"
         onMouseEnter={() => setIsHovered(true)}
         onMouseLeave={() => setIsHovered(false)}
       >
-        <div className="relative aspect-square overflow-hidden">
+        <div className="relative aspect-[3/4] overflow-hidden">
           <img
             src={product.image}
             alt={product.name}
             className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
           />
+          {product.discount && (
+            <div className="absolute top-3 left-3 bg-[#ea384c] text-white px-2 py-1 rounded-md text-sm font-medium">
+              {product.discount.rate}% OFF
+            </div>
+          )}
           <div className={`absolute inset-0 bg-black/40 transition-opacity duration-300 ${isHovered ? 'opacity-100' : 'opacity-0'}`}>
-            <div className="absolute bottom-2 right-2 flex gap-1">
+            <div className="absolute top-2 right-2">
               <button className="btn-secondary p-1.5">
                 <Heart size={16} />
-              </button>
-              <button className="btn-secondary p-1.5">
-                <ShoppingCart size={16} />
               </button>
             </div>
           </div>
         </div>
-        <div className="p-3">
+
+        <div className="p-4 relative">
           <Link 
             to={`/store`}
             className="text-xs text-primary hover:underline"
           >
             {product.brand}
           </Link>
-          <h3 className="text-sm font-medium mt-0.5 line-clamp-1">{product.name}</h3>
-          <p className="text-primary font-semibold text-sm mt-0.5">${product.price}</p>
-          <div className="flex gap-1 mt-1">
+          <h3 className="text-sm font-medium mt-1 line-clamp-1">{product.name}</h3>
+          <div className="flex items-center gap-2 mt-1.5">
+            <p className="text-primary font-semibold">
+              ${calculateDiscountedPrice().toFixed(2)}
+            </p>
+            {product.discount && (
+              <p className="text-sm text-gray-400 line-through">
+                ${product.price.toFixed(2)}
+              </p>
+            )}
+          </div>
+          <div className="flex gap-1.5 mt-2">
             {product.colors.map(color => (
               <div
                 key={color}
-                className="w-2 h-2 rounded-full border"
+                className="w-4 h-4 rounded-full border shadow-sm"
                 style={{ backgroundColor: color.toLowerCase() }}
                 title={color}
               />
             ))}
           </div>
-          <div className="flex items-center justify-between mt-1">
+          <div className="flex items-center justify-between mt-2">
             <div className="flex items-center gap-1">
               <div className="flex">
                 {[...Array(5)].map((_, i) => (
@@ -89,6 +114,11 @@ export const ProductCard = ({ product }: ProductCardProps) => {
                 ({product.reviews})
               </span>
             </div>
+            <button 
+              className="btn-secondary p-2 hover:bg-primary hover:text-white transition-colors duration-300"
+            >
+              <ShoppingCart size={16} />
+            </button>
           </div>
         </div>
       </Link>
