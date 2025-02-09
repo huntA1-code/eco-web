@@ -1,3 +1,4 @@
+
 import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { 
@@ -139,13 +140,13 @@ export default function WishList() {
   return (
     <div className="flex min-h-screen bg-gray-50 pt-16">
       <motion.aside 
-        className="fixed left-0 top-16 h-[calc(100vh-4rem)] bg-white shadow-lg overflow-hidden z-20 md:relative"
+        className="fixed left-0 top-16 h-[calc(100vh-4rem)] bg-white shadow-lg z-20 md:relative overflow-y-auto"
         initial="expanded"
         variants={sidebarVariants}
       >
-        <div className="p-4 w-60">
+        <div className="p-4 w-60 h-full">
           <h2 className="text-xl font-semibold mb-6">Personal Centre</h2>
-          <nav>
+          <nav className="h-[calc(100%-4rem)] overflow-y-auto">
             {menuItems.map((item) => (
               <div key={item.title} className="mb-2">
                 {item.items ? (
@@ -194,7 +195,7 @@ export default function WishList() {
         </div>
       </motion.aside>
 
-      <main className="flex-1 p-8">
+      <main className="flex-1 p-8 overflow-y-auto h-[calc(100vh-4rem)]">
         <Routes>
           <Route path="recently-viewed" element={<RecentlyViewed />} />
           <Route path="/" element={
