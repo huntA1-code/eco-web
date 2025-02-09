@@ -1,14 +1,31 @@
 
 import { useState } from 'react';
 import { motion } from 'framer-motion';
-import { Heart, ShoppingCart, User, Clock, Store, ChevronRight, ChevronDown } from 'lucide-react';
+import { 
+  Heart, 
+  ShoppingCart, 
+  User, 
+  Clock, 
+  Store, 
+  ChevronRight, 
+  ChevronDown,
+  FileText,
+  CreditCard,
+  Hourglass,
+  Package,
+  ClipboardList,
+  RefreshCw
+} from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Link } from 'react-router-dom';
 
 interface MenuItem {
   title: string;
-  icon: JSX.Element;
-  items?: string[];
+  icon?: JSX.Element;
+  items?: Array<{
+    title: string;
+    icon: JSX.Element;
+  }>;
   path?: string;
 }
 
@@ -21,23 +38,30 @@ export default function WishList() {
   const menuItems: MenuItem[] = [
     {
       title: 'My Account',
-      icon: <User className="w-5 h-5" />,
       path: '/account'
     },
     {
       title: 'My Assets',
-      icon: <ShoppingCart className="w-5 h-5" />,
       path: '/assets'
     },
     {
       title: 'My Orders',
-      icon: <Store className="w-5 h-5" />,
-      items: ['All Orders', 'Unpaid Orders', 'Processing Orders', 'Shipped Orders', 'Review Orders', 'Return Orders']
+      items: [
+        { title: 'All Orders', icon: <FileText className="w-4 h-4" /> },
+        { title: 'Unpaid Orders', icon: <CreditCard className="w-4 h-4" /> },
+        { title: 'Processing Orders', icon: <Hourglass className="w-4 h-4" /> },
+        { title: 'Shipped Orders', icon: <Package className="w-4 h-4" /> },
+        { title: 'Review Orders', icon: <ClipboardList className="w-4 h-4" /> },
+        { title: 'Return Orders', icon: <RefreshCw className="w-4 h-4" /> }
+      ]
     },
     {
       title: 'My Concern',
-      icon: <Heart className="w-5 h-5" />,
-      items: ['Wish List', 'Recently Viewed', 'Follow']
+      items: [
+        { title: 'Wish List', icon: <Heart className="w-4 h-4" /> },
+        { title: 'Recently Viewed', icon: <Clock className="w-4 h-4" /> },
+        { title: 'Follow', icon: <Store className="w-4 h-4" /> }
+      ]
     }
   ];
 
@@ -58,10 +82,10 @@ export default function WishList() {
   };
 
   return (
-    <div className="flex min-h-screen bg-gray-50 pt-16"> {/* Added pt-16 for navbar space */}
+    <div className="flex min-h-screen bg-gray-50 pt-16">
       {/* Sidebar */}
       <motion.aside 
-        className="fixed left-0 top-16 h-[calc(100vh-4rem)] bg-white shadow-lg overflow-hidden z-20 md:relative" // Adjusted top and height
+        className="fixed left-0 top-16 h-[calc(100vh-4rem)] bg-white shadow-lg overflow-hidden z-20 md:relative"
         initial="expanded"
         variants={sidebarVariants}
       >
@@ -76,10 +100,7 @@ export default function WishList() {
                       onClick={() => toggleSection(item.title)}
                       className="flex items-center justify-between w-full p-2 hover:bg-gray-100 rounded-lg transition-colors"
                     >
-                      <div className="flex items-center gap-3">
-                        {item.icon}
-                        <span>{item.title}</span>
-                      </div>
+                      <span>{item.title}</span>
                       {expandedSections[item.title] ? 
                         <ChevronDown className="w-4 h-4" /> : 
                         <ChevronRight className="w-4 h-4" />
@@ -94,11 +115,12 @@ export default function WishList() {
                       >
                         {item.items.map((subItem) => (
                           <Link
-                            key={subItem}
-                            to={subItem === 'Wish List' ? '/wishlist' : '#'}
-                            className="block py-2 px-4 text-sm hover:text-primary transition-colors"
+                            key={subItem.title}
+                            to={subItem.title === 'Wish List' ? '/wishlist' : '#'}
+                            className="flex items-center gap-2 py-2 px-4 text-sm hover:text-primary transition-colors"
                           >
-                            {subItem}
+                            {subItem.icon}
+                            <span>{subItem.title}</span>
                           </Link>
                         ))}
                       </motion.div>
@@ -109,7 +131,6 @@ export default function WishList() {
                     to={item.path || '#'}
                     className="flex items-center gap-3 p-2 hover:bg-gray-100 rounded-lg transition-colors"
                   >
-                    {item.icon}
                     <span>{item.title}</span>
                   </Link>
                 )}
