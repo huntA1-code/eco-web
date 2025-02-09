@@ -20,7 +20,7 @@ const recentlyViewedProducts = [
     reviews: 128,
     discount: {
       rate: 20,
-      type: 'percentage'
+      type: "percentage" as const
     }
   },
   {
@@ -50,7 +50,7 @@ const recentlyViewedProducts = [
     reviews: 89,
     discount: {
       rate: 15,
-      type: 'percentage'
+      type: "percentage" as const
     }
   },
   {
