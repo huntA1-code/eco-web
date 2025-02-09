@@ -1,4 +1,3 @@
-
 import { Routes, Route } from "react-router-dom";
 import { Navbar } from "./components/Navbar";
 import { SubNavbar } from "./components/SubNavbar";
@@ -41,6 +40,7 @@ import Discounts from "./pages/dashboard/discounts/Discounts";
 import AddDiscount from "./pages/dashboard/discounts/AddDiscount";
 import EditDiscount from "./pages/dashboard/discounts/EditDiscount";
 import DiscountProducts from "./pages/dashboard/discounts/DiscountProducts";
+import RecentlyViewed from "./pages/RecentlyViewed";
 
 function App() {
   const location = useLocation();
@@ -62,6 +62,7 @@ function App() {
         <Route path="/product/:id" element={<ProductPage />} />
         <Route path="/cart" element={<Cart />} />
         <Route path="/wishlist" element={<WishList />} />
+        <Route path="/recently-viewed" element={<RecentlyViewed />} />
         <Route path="/place-order" element={<PlaceOrder />} />
         <Route path="/pay" element={<Pay />} />
         <Route path="/order-complete" element={<OrderComplete />} />

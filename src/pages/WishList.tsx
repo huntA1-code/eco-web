@@ -1,4 +1,3 @@
-
 import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { 
@@ -85,6 +84,16 @@ export default function WishList() {
     'My Concern': true
   });
 
+  const handleMenuItemClick = (title: string) => {
+    if (isSignedIn) {
+      if (title === 'Recently Viewed') {
+        navigate('/recently-viewed');
+      } else if (title === 'Wish List') {
+        navigate('/products');
+      }
+    }
+  };
+
   const menuItems: MenuItem[] = [
     {
       title: 'My Account',
@@ -120,12 +129,6 @@ export default function WishList() {
       ...prev,
       [title]: !prev[title]
     }));
-  };
-
-  const handleWishlistClick = () => {
-    if (isSignedIn) {
-      navigate('/products');
-    }
   };
 
   const sidebarVariants = {
@@ -172,7 +175,7 @@ export default function WishList() {
                         {item.items.map((subItem) => (
                           <button
                             key={subItem.title}
-                            onClick={() => subItem.title === 'Wish List' && handleWishlistClick()}
+                            onClick={() => handleMenuItemClick(subItem.title)}
                             className="flex items-center gap-2 py-2 px-4 text-sm hover:text-primary transition-colors w-full text-left"
                           >
                             {subItem.icon}
@@ -341,4 +344,3 @@ export default function WishList() {
     </div>
   );
 }
-
