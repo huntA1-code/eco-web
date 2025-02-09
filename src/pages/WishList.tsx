@@ -17,7 +17,7 @@ import {
   RefreshCw
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 
 interface MenuItem {
   title: string;
@@ -30,6 +30,8 @@ interface MenuItem {
 }
 
 export default function WishList() {
+  const [isSignedIn] = useState(false); // This should be replaced with actual auth state
+  const navigate = useNavigate();
   const [expandedSections, setExpandedSections] = useState<{ [key: string]: boolean }>({
     'My Orders': true,
     'My Concern': true
@@ -70,6 +72,12 @@ export default function WishList() {
       ...prev,
       [title]: !prev[title]
     }));
+  };
+
+  const handleWishlistClick = () => {
+    if (isSignedIn) {
+      navigate('/products');
+    }
   };
 
   const sidebarVariants = {
@@ -114,14 +122,14 @@ export default function WishList() {
                         className="overflow-hidden ml-7"
                       >
                         {item.items.map((subItem) => (
-                          <Link
+                          <button
                             key={subItem.title}
-                            to={subItem.title === 'Wish List' ? '/wishlist' : '#'}
-                            className="flex items-center gap-2 py-2 px-4 text-sm hover:text-primary transition-colors"
+                            onClick={() => subItem.title === 'Wish List' && handleWishlistClick()}
+                            className="flex items-center gap-2 py-2 px-4 text-sm hover:text-primary transition-colors w-full text-left"
                           >
                             {subItem.icon}
                             <span>{subItem.title}</span>
-                          </Link>
+                          </button>
                         ))}
                       </motion.div>
                     )}
@@ -142,52 +150,59 @@ export default function WishList() {
 
       {/* Main Content */}
       <main className="flex-1 p-8">
-        <div className="max-w-4xl mx-auto">
-          <motion.h1 
-            initial={{ opacity: 0, y: -20 }}
-            animate={{ opacity: 1, y: 0 }}
-            className="text-2xl font-bold mb-8 text-center"
-          >
-            MY WISHLIST
-          </motion.h1>
-
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 0.2 }}
-            className="text-center mb-8"
-          >
-            <p className="text-gray-500 mb-4">
-              It is empty here. Personalize your shopping experience with your Wishlist.
-            </p>
-            <Button
-              className="bg-foreground text-white hover:bg-foreground/90 rounded-full px-8"
+        {!isSignedIn ? (
+          <div className="max-w-4xl mx-auto">
+            <motion.h1 
+              initial={{ opacity: 0, y: -20 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="text-2xl font-bold mb-8 text-center"
             >
-              SIGN IN / REGISTER
-            </Button>
-          </motion.div>
+              MY WISHLIST
+            </motion.h1>
 
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 0.4 }}
-            className="bg-white p-8 rounded-lg shadow-sm"
-          >
-            <h2 className="text-2xl font-bold mb-6">Heart It.</h2>
-            <p className="text-gray-600 mb-6">Store everything you love on one page.</p>
-            
-            <div className="space-y-4">
-              <div className="flex items-center gap-3">
-                <Heart className="text-primary w-5 h-5" />
-                <p>Think about it before purchasing it.</p>
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 0.2 }}
+              className="text-center mb-8"
+            >
+              <p className="text-gray-500 mb-4">
+                It is empty here. Personalize your shopping experience with your Wishlist.
+              </p>
+              <Button
+                className="bg-foreground text-white hover:bg-foreground/90 rounded-full px-8"
+              >
+                SIGN IN / REGISTER
+              </Button>
+            </motion.div>
+
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 0.4 }}
+              className="bg-white p-8 rounded-lg shadow-sm"
+            >
+              <h2 className="text-2xl font-bold mb-6">Heart It.</h2>
+              <p className="text-gray-600 mb-6">Store everything you love on one page.</p>
+              
+              <div className="space-y-4">
+                <div className="flex items-center gap-3">
+                  <Heart className="text-primary w-5 h-5" />
+                  <p>Think about it before purchasing it.</p>
+                </div>
+                <div className="flex items-center gap-3">
+                  <Heart className="text-primary w-5 h-5" />
+                  <p>Get notification about out-of-stock items.</p>
+                </div>
               </div>
-              <div className="flex items-center gap-3">
-                <Heart className="text-primary w-5 h-5" />
-                <p>Get notification about out-of-stock items.</p>
-              </div>
-            </div>
-          </motion.div>
-        </div>
+            </motion.div>
+          </div>
+        ) : (
+          <div>
+            {/* Products grid will be implemented here */}
+            <h1>Products Page</h1>
+          </div>
+        )}
       </main>
     </div>
   );
