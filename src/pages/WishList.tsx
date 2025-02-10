@@ -25,6 +25,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import RecentlyViewed from './RecentlyViewed';
+import MyOrders from './dashboard/orders/MyOrders';
 
 interface MenuItem {
   title: string;
@@ -102,12 +103,12 @@ export default function WishList() {
     {
       title: 'My Orders',
       items: [
-        { title: 'All Orders', icon: <FileText className="w-4 h-4" />, path: '/dashboard/orders/my-orders' },
-        { title: 'Unpaid Orders', icon: <CreditCard className="w-4 h-4" /> },
-        { title: 'Processing Orders', icon: <Hourglass className="w-4 h-4" /> },
-        { title: 'Shipped Orders', icon: <Package className="w-4 h-4" /> },
-        { title: 'Review Orders', icon: <ClipboardList className="w-4 h-4" /> },
-        { title: 'Return Orders', icon: <RefreshCw className="w-4 h-4" /> }
+        { title: 'All Orders', icon: <FileText className="w-4 h-4" />, path: '/wishlist/my-orders' },
+        { title: 'Unpaid Orders', icon: <CreditCard className="w-4 h-4" />, path: '/wishlist/unpaid-orders' },
+        { title: 'Processing Orders', icon: <Hourglass className="w-4 h-4" />, path: '/wishlist/processing-orders' },
+        { title: 'Shipped Orders', icon: <Package className="w-4 h-4" />, path: '/wishlist/shipped-orders' },
+        { title: 'Review Orders', icon: <ClipboardList className="w-4 h-4" />, path: '/wishlist/review-orders' },
+        { title: 'Return Orders', icon: <RefreshCw className="w-4 h-4" />, path: '/wishlist/return-orders' }
       ]
     },
     {
@@ -197,6 +198,7 @@ export default function WishList() {
       <main className="flex-1 p-8 overflow-y-auto h-[calc(100vh-4rem)]">
         <Routes>
           <Route path="recently-viewed" element={<RecentlyViewed />} />
+          <Route path="my-orders" element={<MyOrders />} />
           <Route path="/" element={
             <>
               {!isSignedIn ? (
