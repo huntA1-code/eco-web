@@ -26,6 +26,7 @@ import {
 } from "@/components/ui/select";
 import RecentlyViewed from './RecentlyViewed';
 import MyOrders from './dashboard/orders/MyOrders';
+import FollowedStores from './FollowedStores';
 
 interface MenuItem {
   title: string;
@@ -116,7 +117,7 @@ export default function WishList() {
       items: [
         { title: 'Wish List', icon: <Heart className="w-4 h-4" />, path: '/wishlist' },
         { title: 'Recently Viewed', icon: <Clock className="w-4 h-4" />, path: '/wishlist/recently-viewed' },
-        { title: 'Follow', icon: <Store className="w-4 h-4" /> }
+        { title: 'Follow', icon: <Store className="w-4 h-4" />, path: '/wishlist/follow' }
       ]
     }
   ];
@@ -199,6 +200,7 @@ export default function WishList() {
         <Routes>
           <Route path="recently-viewed" element={<RecentlyViewed />} />
           <Route path="my-orders" element={<MyOrders />} />
+          <Route path="follow" element={<FollowedStores />} />
           <Route path="/" element={
             <>
               {!isSignedIn ? (
