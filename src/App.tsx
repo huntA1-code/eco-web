@@ -36,6 +36,7 @@ import AttributeTypes from "./pages/dashboard/products/AttributeTypes";
 import AddAttributeType from "./pages/dashboard/products/AddAttributeType";
 import EditAttributeType from "./pages/dashboard/products/EditAttributeType";
 import Orders from "./pages/dashboard/orders/Orders";
+import MyOrders from "./pages/dashboard/orders/MyOrders";
 import Discounts from "./pages/dashboard/discounts/Discounts";
 import AddDiscount from "./pages/dashboard/discounts/AddDiscount";
 import EditDiscount from "./pages/dashboard/discounts/EditDiscount";
@@ -69,6 +70,7 @@ function App() {
         <Route path="/dashboard/*" element={<Dashboard />}>
           <Route index element={<Overview />} />
           <Route path="orders" element={<Orders />} />
+          <Route path="orders/my-orders" element={<MyOrders />} />
           <Route path="products/view" element={<ViewProducts />} />
           <Route path="products/add" element={<AddProduct />} />
           <Route path="products/edit" element={<EditProduct />} />

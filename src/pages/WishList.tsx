@@ -1,4 +1,3 @@
-
 import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { 
@@ -103,7 +102,7 @@ export default function WishList() {
     {
       title: 'My Orders',
       items: [
-        { title: 'All Orders', icon: <FileText className="w-4 h-4" /> },
+        { title: 'All Orders', icon: <FileText className="w-4 h-4" />, path: '/dashboard/orders/my-orders' },
         { title: 'Unpaid Orders', icon: <CreditCard className="w-4 h-4" /> },
         { title: 'Processing Orders', icon: <Hourglass className="w-4 h-4" /> },
         { title: 'Shipped Orders', icon: <Package className="w-4 h-4" /> },
