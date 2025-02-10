@@ -144,17 +144,17 @@ export default function MyOrders() {
         <div className="bg-white rounded-lg shadow">
           <Table>
             <TableHeader>
-              <TableRow>
+              <TableRow className="border-b border-gray-200">
                 <TableHead>Products</TableHead>
                 <TableHead>Actual Price</TableHead>
                 <TableHead>Commodity operation</TableHead>
-                <TableHead>Status</TableHead>
-                <TableHead>Order operation</TableHead>
+                <TableHead className="text-center">Status</TableHead>
+                <TableHead className="text-center">Order operation</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
               {orders.map((order) => (
-                <TableRow key={order.id} className="border-t">
+                <TableRow key={order.id} className="border-b border-gray-200">
                   <TableCell className="py-6">
                     <div className="space-y-4">
                       <div className="text-sm text-gray-500">
@@ -191,8 +191,8 @@ export default function MyOrders() {
                       Repurchase
                     </Button>
                   </TableCell>
-                  <TableCell>
-                    <div className="space-y-2">
+                  <TableCell className="text-center">
+                    <div className="space-y-2 flex flex-col items-center">
                       <Badge className={getStatusColor(order.status)}>
                         Waiting for Payment
                       </Badge>
@@ -204,8 +204,8 @@ export default function MyOrders() {
                       </button>
                     </div>
                   </TableCell>
-                  <TableCell>
-                    <div className="space-y-2">
+                  <TableCell className="text-center">
+                    <div className="space-y-2 flex flex-col items-center">
                       {order.timeRemaining && (
                         <div className="flex items-center gap-1 text-red-500">
                           <Clock className="w-4 h-4" />
