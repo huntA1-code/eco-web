@@ -26,7 +26,7 @@ interface ProductOptionsProps {
   onSizeSelect: (size: string) => void;
   onColorSelect: (color: Color) => void;
   onAddToCart: () => void;
-  price: number;
+  price?: number;
   originalPrice?: number;
   rating?: number;
   reviews?: number;
@@ -42,7 +42,7 @@ export function ProductOptions({
   onSizeSelect,
   onColorSelect,
   onAddToCart,
-  price,
+  price = 0,
   originalPrice,
   rating,
   reviews,
