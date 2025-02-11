@@ -1,4 +1,3 @@
-
 import { useState } from 'react';
 import {
   Dialog,
@@ -92,34 +91,14 @@ export function ProductModal({ isOpen, onClose, product }: ProductModalProps) {
     setSelectedImage(0);
   };
 
-  const handleLikeClick = async () => {
-    try {
-      const response = await fetch('/api/like-product', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          productId: product.sku,
-          isLiked: !isLiked,
-        }),
-      });
-
-      if (response.ok) {
-        const data = await response.json();
-        setIsLiked(data.isLiked);
-        toast({
-          title: data.isLiked ? "Added to wishlist" : "Removed from wishlist",
-          description: data.isLiked ? "Product has been added to your wishlist" : "Product has been removed from your wishlist",
-        });
-      }
-    } catch (error) {
-      toast({
-        title: "Error",
-        description: "Failed to update wishlist",
-        variant: "destructive",
-      });
-    }
+  const handleLikeClick = () => {
+    setIsLiked(!isLiked);
+    toast({
+      title: !isLiked ? "Added to wishlist" : "Removed from wishlist",
+      description: !isLiked 
+        ? "Product has been added to your wishlist" 
+        : "Product has been removed from your wishlist",
+    });
   };
 
   const handleAddToCart = () => {
