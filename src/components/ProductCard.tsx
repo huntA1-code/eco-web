@@ -1,3 +1,4 @@
+
 import { Heart, ShoppingCart } from "lucide-react";
 import { useState } from "react";
 import { Link } from "react-router-dom";
@@ -17,7 +18,7 @@ interface ProductCardProps {
     category: string;
     rating: number;
     reviews: number;
-    discount?: { // Added discount type
+    discount?: {
       rate: number;
       type: 'percentage' | 'fixed';
     };
@@ -150,7 +151,6 @@ export const ProductCard = ({ product }: ProductCardProps) => {
           images: productImages,
           rating: product.rating,
           reviews: product.reviews,
-          repurchases: 12000,
           sku: `SK${Math.random().toString(36).substr(2, 8)}`,
         }}
       />
