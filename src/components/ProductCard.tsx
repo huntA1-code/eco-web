@@ -1,8 +1,8 @@
-
 import { Heart, ShoppingCart } from "lucide-react";
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import { QuickView } from "./QuickView";
+import { ProductModal } from "./ProductModal";
 
 interface ProductCardProps {
   product: {
@@ -27,6 +27,14 @@ interface ProductCardProps {
 export const ProductCard = ({ product }: ProductCardProps) => {
   const [isHovered, setIsHovered] = useState(false);
   const [showQuickView, setShowQuickView] = useState(false);
+
+  // Generate additional product images for the gallery
+  const productImages = [
+    product.image,
+    "https://images.unsplash.com/photo-1515886657613-9f3515b0c78f",
+    "https://images.unsplash.com/photo-1582562124811-c09040d0a901",
+    "https://images.unsplash.com/photo-1466721591366-2d5fba72006d",
+  ];
 
   const handleQuickViewClose = () => {
     setShowQuickView(false);
@@ -60,9 +68,18 @@ export const ProductCard = ({ product }: ProductCardProps) => {
             </div>
           )}
           <div className={`absolute inset-0 bg-black/40 transition-opacity duration-300 ${isHovered ? 'opacity-100' : 'opacity-0'}`}>
-            <div className="absolute top-2 right-2">
+            <div className="absolute top-2 right-2 flex gap-2">
               <button className="btn-secondary p-1.5">
                 <Heart size={16} />
+              </button>
+              <button 
+                onClick={(e) => {
+                  e.preventDefault();
+                  setShowQuickView(true);
+                }}
+                className="btn-secondary p-2 hover:bg-primary hover:text-white transition-colors duration-300"
+              >
+                Quick View
               </button>
             </div>
           </div>
@@ -123,18 +140,19 @@ export const ProductCard = ({ product }: ProductCardProps) => {
         </div>
       </Link>
 
-      <QuickView
+      <ProductModal
+        isOpen={showQuickView}
+        onClose={() => setShowQuickView(false)}
         product={{
           name: product.name,
-          price: `$${product.price}`,
-          image: product.image,
-          description: product.description,
-          sizes: product.sizes,
+          price: product.price,
+          originalPrice: product.discount ? product.price / (1 - product.discount.rate / 100) : undefined,
+          images: productImages,
           rating: product.rating,
-          reviews: product.reviews
+          reviews: product.reviews,
+          repurchases: 12000,
+          sku: `SK${Math.random().toString(36).substr(2, 8)}`,
         }}
-        isOpen={showQuickView}
-        onClose={handleQuickViewClose}
       />
     </>
   );
