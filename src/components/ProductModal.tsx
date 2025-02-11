@@ -1,18 +1,13 @@
-
 import { useState } from 'react';
 import {
   Dialog,
   DialogContent,
-  DialogHeader,
-  DialogTitle,
 } from "@/components/ui/dialog";
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
-import { Heart, ShoppingBag, ChevronLeft, ChevronRight, Star } from 'lucide-react';
 import { useToast } from "@/hooks/use-toast";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { cn } from '@/lib/utils';
-import { motion } from 'framer-motion';
+import { ImageGallery } from './product/ImageGallery';
+import { ProductHeader } from './product/ProductHeader';
+import { ProductOptions } from './product/ProductOptions';
 
 interface ProductModalProps {
   isOpen: boolean;
@@ -90,8 +85,6 @@ export function ProductModal({ isOpen, onClose, product }: ProductModalProps) {
   const [isLiked, setIsLiked] = useState(false);
   const { toast } = useToast();
 
-  const selectedSizeData = SIZES.find(size => size.label === selectedSize);
-
   const handleColorSelect = (color: typeof COLORS[0]) => {
     setSelectedColor(color.name);
     setCurrentImages(color.images);
@@ -152,207 +145,39 @@ export function ProductModal({ isOpen, onClose, product }: ProductModalProps) {
     setSelectedImage((prev) => (prev - 1 + currentImages.length) % currentImages.length);
   };
 
-  const getQuantityMessage = () => {
-    if (!selectedSizeData) return null;
-    
-    if (selectedSizeData.quantity === 0) {
-      return (
-        <motion.div 
-          className="text-red-500 text-sm font-medium mt-2"
-          animate={{ x: [-2, 2, -2, 0] }}
-          transition={{ duration: 0.5, repeat: Infinity }}
-        >
-          SOLD OUT
-        </motion.div>
-      );
-    }
-    
-    if (selectedSizeData.quantity < 10) {
-      return (
-        <div className="text-red-500 text-sm font-medium mt-2">
-          {selectedSizeData.quantity} items left
-        </div>
-      );
-    }
-    
-    return null;
-  };
-
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="max-w-4xl max-h-[90vh] p-0 overflow-hidden">
         <ScrollArea className="max-h-[90vh]">
           <div className="p-6">
             <div className="grid grid-cols-1 md:grid-cols-12 gap-6">
-              {/* Left - Thumbnails */}
-              <div className="hidden md:block md:col-span-1">
-                <div className="flex flex-col gap-2 sticky top-0">
-                  {currentImages.map((image, index) => (
-                    <button
-                      key={index}
-                      onClick={() => setSelectedImage(index)}
-                      className={`w-14 h-14 rounded-lg overflow-hidden border-2 transition-all ${
-                        selectedImage === index ? 'border-primary' : 'border-transparent'
-                      }`}
-                    >
-                      <img
-                        src={image}
-                        alt={`${product.name} view ${index + 1}`}
-                        className="w-full h-full object-cover"
-                      />
-                    </button>
-                  ))}
-                </div>
+              <div className="col-span-7">
+                <ImageGallery
+                  images={currentImages}
+                  selectedImage={selectedImage}
+                  productName={product.name}
+                  onImageSelect={setSelectedImage}
+                  onNext={nextImage}
+                  onPrevious={previousImage}
+                />
               </div>
-
-              {/* Center - Main Image */}
-              <div className="col-span-1 md:col-span-6">
-                <div className="aspect-[3/4] rounded-lg overflow-hidden bg-gray-100 relative">
-                  <img
-                    src={currentImages[selectedImage]}
-                    alt={product.name}
-                    className="w-full h-full object-cover"
+              <div className="col-span-5">
+                <ProductHeader
+                  name={product.name}
+                  sku={product.sku}
+                  isLiked={isLiked}
+                  onLikeClick={handleLikeClick}
+                />
+                <div className="mt-4">
+                  <ProductOptions
+                    sizes={SIZES}
+                    colors={COLORS}
+                    selectedSize={selectedSize}
+                    selectedColor={selectedColor}
+                    onSizeSelect={setSelectedSize}
+                    onColorSelect={handleColorSelect}
+                    onAddToCart={handleAddToCart}
                   />
-                  <button
-                    onClick={previousImage}
-                    className="absolute left-4 top-1/2 -translate-y-1/2 p-2 rounded-full bg-white/80 shadow-lg hover:bg-white"
-                  >
-                    <ChevronLeft className="w-5 h-5" />
-                  </button>
-                  <button
-                    onClick={nextImage}
-                    className="absolute right-4 top-1/2 -translate-y-1/2 p-2 rounded-full bg-white/80 shadow-lg hover:bg-white"
-                  >
-                    <ChevronRight className="w-5 h-5" />
-                  </button>
-                </div>
-              </div>
-
-              {/* Right - Product Details */}
-              <div className="col-span-1 md:col-span-5">
-                <DialogHeader className="flex flex-row items-start justify-between">
-                  <div>
-                    <DialogTitle className="text-2xl font-serif">{product.name}</DialogTitle>
-                    {product.sku && (
-                      <p className="text-sm text-muted-foreground">SKU: {product.sku}</p>
-                    )}
-                  </div>
-                  <Button
-                    variant="outline"
-                    size="icon"
-                    onClick={handleLikeClick}
-                    className={cn(
-                      "h-14 w-14 rounded-full border-2 transition-all",
-                      isLiked ? "border-primary" : "border-gray-200"
-                    )}
-                  >
-                    <Heart 
-                      className={cn(
-                        "h-6 w-6 transition-colors",
-                        isLiked ? "fill-primary text-primary" : "text-gray-500"
-                      )} 
-                    />
-                  </Button>
-                </DialogHeader>
-
-                <div className="mt-4 space-y-6">
-                  {/* Rating */}
-                  {product.rating && (
-                    <div className="flex items-center gap-2">
-                      <div className="flex">
-                        {[...Array(5)].map((_, i) => (
-                          <Star
-                            key={i}
-                            className={`w-4 h-4 ${
-                              i < Math.floor(product.rating)
-                                ? 'text-yellow-400 fill-current'
-                                : 'text-gray-300'
-                            }`}
-                          />
-                        ))}
-                      </div>
-                      <span className="text-sm text-muted-foreground">
-                        ({product.reviews} Reviews)
-                      </span>
-                    </div>
-                  )}
-
-                  {/* Price */}
-                  <div className="flex items-center gap-3">
-                    <span className="text-2xl font-semibold">£{product.price.toFixed(2)}</span>
-                    {product.originalPrice && (
-                      <span className="text-lg text-muted-foreground line-through">
-                        £{product.originalPrice.toFixed(2)}
-                      </span>
-                    )}
-                    {product.originalPrice && (
-                      <Badge variant="secondary" className="bg-red-100 text-red-700">
-                        Save £{(product.originalPrice - product.price).toFixed(2)}
-                      </Badge>
-                    )}
-                  </div>
-
-                  {/* Color Selection */}
-                  <div>
-                    <h3 className="font-medium mb-2">
-                      Color{selectedColor ? `: ${selectedColor}` : ''}
-                    </h3>
-                    <div className="flex flex-wrap gap-3">
-                      {COLORS.map((color) => (
-                        <div key={color.name} className="relative">
-                          <button
-                            onClick={() => handleColorSelect(color)}
-                            className={`w-10 h-10 rounded-full transition-all ${
-                              selectedColor === color.name
-                                ? 'ring-2 ring-primary ring-offset-2'
-                                : ''
-                            }`}
-                            style={{ backgroundColor: color.hex }}
-                            title={color.name}
-                          />
-                          {color.isHot && (
-                            <Badge className="absolute -top-2 -right-2 bg-red-500">HOT</Badge>
-                          )}
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-
-                  {/* Size Selection */}
-                  <div>
-                    <h3 className="font-medium mb-2">Size</h3>
-                    <div className="grid grid-cols-2 gap-2">
-                      {SIZES.map((size) => (
-                        <button
-                          key={size.label}
-                          onClick={() => setSelectedSize(size.label)}
-                          className={`p-3 rounded border text-sm transition-all ${
-                            selectedSize === size.label
-                              ? 'border-primary bg-primary/5 text-primary'
-                              : 'border-gray-200 hover:border-primary'
-                          } ${size.quantity === 0 ? 'opacity-50 cursor-not-allowed' : ''}`}
-                          disabled={size.quantity === 0}
-                        >
-                          {size.label} ({size.dimensions})
-                        </button>
-                      ))}
-                    </div>
-                  </div>
-
-                  {/* Quantity Message */}
-                  {getQuantityMessage()}
-
-                  {/* Add to Cart */}
-                  <div className="flex gap-3">
-                    <Button
-                      onClick={handleAddToCart}
-                      className="flex-1 h-12"
-                      disabled={selectedSizeData?.quantity === 0}
-                    >
-                      <ShoppingBag className="mr-2 h-5 w-5" />
-                      {selectedSizeData?.quantity === 0 ? 'Sold Out' : 'Add to Cart'}
-                    </Button>
-                  </div>
                 </div>
               </div>
             </div>
