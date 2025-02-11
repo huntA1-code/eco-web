@@ -8,7 +8,7 @@ import {
 } from "@/components/ui/dialog";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Heart, ShoppingBag, ChevronLeft, ChevronRight, Star, Users } from 'lucide-react';
+import { Heart, ShoppingBag, ChevronLeft, ChevronRight, Star } from 'lucide-react';
 import { useToast } from "@/hooks/use-toast";
 import { ScrollArea } from "@/components/ui/scroll-area";
 
@@ -24,7 +24,6 @@ interface ProductModalProps {
     images: string[];
     rating?: number;
     reviews?: number;
-    repurchases?: number;
   };
 }
 
@@ -37,17 +36,62 @@ const SIZES = [
 ];
 
 const COLORS = [
-  { name: 'Hot Pink', hex: '#FF69B4', isHot: true },
-  { name: 'Navy', hex: '#000080', isHot: true },
-  { name: 'Forest Green', hex: '#228B22' },
-  { name: 'Black', hex: '#000000' },
+  { 
+    name: 'Hot Pink', 
+    hex: '#FF69B4', 
+    isHot: true,
+    images: [
+      "https://images.unsplash.com/photo-1515886657613-9f3515b0c78f",
+      "https://images.unsplash.com/photo-1503342217505-b0a15ec3261c",
+      "https://images.unsplash.com/photo-1582562124811-c09040d0a901",
+      "https://images.unsplash.com/photo-1466721591366-2d5fba72006d"
+    ]
+  },
+  { 
+    name: 'Navy', 
+    hex: '#000080', 
+    isHot: true,
+    images: [
+      "https://images.unsplash.com/photo-1582562124811-c09040d0a901",
+      "https://images.unsplash.com/photo-1515886657613-9f3515b0c78f",
+      "https://images.unsplash.com/photo-1503342217505-b0a15ec3261c",
+      "https://images.unsplash.com/photo-1466721591366-2d5fba72006d"
+    ]
+  },
+  { 
+    name: 'Forest Green', 
+    hex: '#228B22',
+    images: [
+      "https://images.unsplash.com/photo-1503342217505-b0a15ec3261c",
+      "https://images.unsplash.com/photo-1515886657613-9f3515b0c78f",
+      "https://images.unsplash.com/photo-1582562124811-c09040d0a901",
+      "https://images.unsplash.com/photo-1466721591366-2d5fba72006d"
+    ]
+  },
+  { 
+    name: 'Black', 
+    hex: '#000000',
+    images: [
+      "https://images.unsplash.com/photo-1466721591366-2d5fba72006d",
+      "https://images.unsplash.com/photo-1515886657613-9f3515b0c78f",
+      "https://images.unsplash.com/photo-1503342217505-b0a15ec3261c",
+      "https://images.unsplash.com/photo-1582562124811-c09040d0a901"
+    ]
+  },
 ];
 
 export function ProductModal({ isOpen, onClose, product }: ProductModalProps) {
   const [selectedImage, setSelectedImage] = useState(0);
   const [selectedSize, setSelectedSize] = useState('');
   const [selectedColor, setSelectedColor] = useState('');
+  const [currentImages, setCurrentImages] = useState(product.images);
   const { toast } = useToast();
+
+  const handleColorSelect = (color: typeof COLORS[0]) => {
+    setSelectedColor(color.name);
+    setCurrentImages(color.images);
+    setSelectedImage(0); // Reset to first image when color changes
+  };
 
   const handleAddToCart = () => {
     if (!selectedSize || !selectedColor) {
@@ -66,11 +110,11 @@ export function ProductModal({ isOpen, onClose, product }: ProductModalProps) {
   };
 
   const nextImage = () => {
-    setSelectedImage((prev) => (prev + 1) % product.images.length);
+    setSelectedImage((prev) => (prev + 1) % currentImages.length);
   };
 
   const previousImage = () => {
-    setSelectedImage((prev) => (prev - 1 + product.images.length) % product.images.length);
+    setSelectedImage((prev) => (prev - 1 + currentImages.length) % currentImages.length);
   };
 
   return (
@@ -82,7 +126,7 @@ export function ProductModal({ isOpen, onClose, product }: ProductModalProps) {
               {/* Left - Thumbnails */}
               <div className="hidden md:block md:col-span-1">
                 <div className="flex flex-col gap-2 sticky top-0">
-                  {product.images.map((image, index) => (
+                  {currentImages.map((image, index) => (
                     <button
                       key={index}
                       onClick={() => setSelectedImage(index)}
@@ -104,7 +148,7 @@ export function ProductModal({ isOpen, onClose, product }: ProductModalProps) {
               <div className="col-span-1 md:col-span-6">
                 <div className="aspect-[3/4] rounded-lg overflow-hidden bg-gray-100 relative">
                   <img
-                    src={product.images[selectedImage]}
+                    src={currentImages[selectedImage]}
                     alt={product.name}
                     className="w-full h-full object-cover"
                   />
@@ -169,22 +213,16 @@ export function ProductModal({ isOpen, onClose, product }: ProductModalProps) {
                     )}
                   </div>
 
-                  {/* SHEIN Club Banner */}
-                  <div className="bg-orange-50 text-orange-800 p-3 rounded-lg">
-                    <p className="text-sm">Save £0.26 with SHEIN Club membership</p>
-                  </div>
-
                   {/* Color Selection */}
                   <div>
-                    <div className="flex items-center justify-between mb-2">
-                      <h3 className="font-medium">Color</h3>
-                      <button className="text-sm text-blue-600">Size Guide</button>
-                    </div>
+                    <h3 className="font-medium mb-2">
+                      Color{selectedColor ? `: ${selectedColor}` : ''}
+                    </h3>
                     <div className="flex flex-wrap gap-3">
                       {COLORS.map((color) => (
                         <div key={color.name} className="relative">
                           <button
-                            onClick={() => setSelectedColor(color.name)}
+                            onClick={() => handleColorSelect(color)}
                             className={`w-10 h-10 rounded-full transition-all ${
                               selectedColor === color.name
                                 ? 'ring-2 ring-primary ring-offset-2'
@@ -234,19 +272,6 @@ export function ProductModal({ isOpen, onClose, product }: ProductModalProps) {
                       <Heart className="h-5 w-5" />
                     </Button>
                   </div>
-
-                  {/* Additional Info */}
-                  {product.repurchases && (
-                    <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                      <Users className="h-4 w-4" />
-                      <span>{product.repurchases}+ people repurchased</span>
-                    </div>
-                  )}
-
-                  {/* Reward Points */}
-                  <p className="text-sm text-green-600">
-                    Earn up to 6 SHEIN Points calculated at checkout
-                  </p>
                 </div>
               </div>
             </div>
