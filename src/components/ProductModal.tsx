@@ -11,6 +11,8 @@ import { Button } from "@/components/ui/button";
 import { Heart, ShoppingBag, ChevronLeft, ChevronRight, Star } from 'lucide-react';
 import { useToast } from "@/hooks/use-toast";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import { cn } from '@/lib/utils';
+import { motion } from 'framer-motion';
 
 interface ProductModalProps {
   isOpen: boolean;
@@ -28,11 +30,11 @@ interface ProductModalProps {
 }
 
 const SIZES = [
-  { label: '8Y', dimensions: '122-128CM' },
-  { label: '9Y', dimensions: '128-134CM' },
-  { label: '10Y', dimensions: '134-140CM' },
-  { label: '11Y', dimensions: '140-146CM' },
-  { label: '12Y', dimensions: '146-152CM' },
+  { label: '8Y', dimensions: '122-128CM', quantity: 5 },
+  { label: '9Y', dimensions: '128-134CM', quantity: 15 },
+  { label: '10Y', dimensions: '134-140CM', quantity: 0 },
+  { label: '11Y', dimensions: '140-146CM', quantity: 8 },
+  { label: '12Y', dimensions: '146-152CM', quantity: 3 },
 ];
 
 const COLORS = [
@@ -85,12 +87,45 @@ export function ProductModal({ isOpen, onClose, product }: ProductModalProps) {
   const [selectedSize, setSelectedSize] = useState('');
   const [selectedColor, setSelectedColor] = useState('');
   const [currentImages, setCurrentImages] = useState(product.images);
+  const [isLiked, setIsLiked] = useState(false);
   const { toast } = useToast();
+
+  const selectedSizeData = SIZES.find(size => size.label === selectedSize);
 
   const handleColorSelect = (color: typeof COLORS[0]) => {
     setSelectedColor(color.name);
     setCurrentImages(color.images);
-    setSelectedImage(0); // Reset to first image when color changes
+    setSelectedImage(0);
+  };
+
+  const handleLikeClick = async () => {
+    try {
+      const response = await fetch('/api/like-product', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          productId: product.sku,
+          isLiked: !isLiked,
+        }),
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        setIsLiked(data.isLiked);
+        toast({
+          title: data.isLiked ? "Added to wishlist" : "Removed from wishlist",
+          description: data.isLiked ? "Product has been added to your wishlist" : "Product has been removed from your wishlist",
+        });
+      }
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: "Failed to update wishlist",
+        variant: "destructive",
+      });
+    }
   };
 
   const handleAddToCart = () => {
@@ -115,6 +150,32 @@ export function ProductModal({ isOpen, onClose, product }: ProductModalProps) {
 
   const previousImage = () => {
     setSelectedImage((prev) => (prev - 1 + currentImages.length) % currentImages.length);
+  };
+
+  const getQuantityMessage = () => {
+    if (!selectedSizeData) return null;
+    
+    if (selectedSizeData.quantity === 0) {
+      return (
+        <motion.div 
+          className="text-red-500 text-sm font-medium mt-2"
+          animate={{ x: [-2, 2, -2, 0] }}
+          transition={{ duration: 0.5, repeat: Infinity }}
+        >
+          SOLD OUT
+        </motion.div>
+      );
+    }
+    
+    if (selectedSizeData.quantity < 10) {
+      return (
+        <div className="text-red-500 text-sm font-medium mt-2">
+          {selectedSizeData.quantity} items left
+        </div>
+      );
+    }
+    
+    return null;
   };
 
   return (
@@ -169,11 +230,29 @@ export function ProductModal({ isOpen, onClose, product }: ProductModalProps) {
 
               {/* Right - Product Details */}
               <div className="col-span-1 md:col-span-5">
-                <DialogHeader>
-                  <DialogTitle className="text-2xl font-serif">{product.name}</DialogTitle>
-                  {product.sku && (
-                    <p className="text-sm text-muted-foreground">SKU: {product.sku}</p>
-                  )}
+                <DialogHeader className="flex flex-row items-start justify-between">
+                  <div>
+                    <DialogTitle className="text-2xl font-serif">{product.name}</DialogTitle>
+                    {product.sku && (
+                      <p className="text-sm text-muted-foreground">SKU: {product.sku}</p>
+                    )}
+                  </div>
+                  <Button
+                    variant="outline"
+                    size="icon"
+                    onClick={handleLikeClick}
+                    className={cn(
+                      "h-14 w-14 rounded-full border-2 transition-all",
+                      isLiked ? "border-primary" : "border-gray-200"
+                    )}
+                  >
+                    <Heart 
+                      className={cn(
+                        "h-6 w-6 transition-colors",
+                        isLiked ? "fill-primary text-primary" : "text-gray-500"
+                      )} 
+                    />
+                  </Button>
                 </DialogHeader>
 
                 <div className="mt-4 space-y-6">
@@ -251,7 +330,8 @@ export function ProductModal({ isOpen, onClose, product }: ProductModalProps) {
                             selectedSize === size.label
                               ? 'border-primary bg-primary/5 text-primary'
                               : 'border-gray-200 hover:border-primary'
-                          }`}
+                          } ${size.quantity === 0 ? 'opacity-50 cursor-not-allowed' : ''}`}
+                          disabled={size.quantity === 0}
                         >
                           {size.label} ({size.dimensions})
                         </button>
@@ -259,17 +339,18 @@ export function ProductModal({ isOpen, onClose, product }: ProductModalProps) {
                     </div>
                   </div>
 
+                  {/* Quantity Message */}
+                  {getQuantityMessage()}
+
                   {/* Add to Cart */}
                   <div className="flex gap-3">
                     <Button
                       onClick={handleAddToCart}
                       className="flex-1 h-12"
+                      disabled={selectedSizeData?.quantity === 0}
                     >
                       <ShoppingBag className="mr-2 h-5 w-5" />
-                      Add to Cart
-                    </Button>
-                    <Button variant="outline" size="icon" className="h-12 w-12">
-                      <Heart className="h-5 w-5" />
+                      {selectedSizeData?.quantity === 0 ? 'Sold Out' : 'Add to Cart'}
                     </Button>
                   </div>
                 </div>
