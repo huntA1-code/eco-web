@@ -1,3 +1,4 @@
+
 import { useState } from 'react';
 import {
   Dialog,
@@ -165,8 +166,6 @@ export function ProductModal({ isOpen, onClose, product }: ProductModalProps) {
                 <ProductHeader
                   name={product.name}
                   sku={product.sku}
-                  isLiked={isLiked}
-                  onLikeClick={handleLikeClick}
                 />
                 <div className="mt-4">
                   <ProductOptions
@@ -177,6 +176,12 @@ export function ProductModal({ isOpen, onClose, product }: ProductModalProps) {
                     onSizeSelect={setSelectedSize}
                     onColorSelect={handleColorSelect}
                     onAddToCart={handleAddToCart}
+                    price={product.price}
+                    originalPrice={product.originalPrice}
+                    rating={product.rating}
+                    reviews={product.reviews}
+                    isLiked={isLiked}
+                    onLikeClick={handleLikeClick}
                   />
                 </div>
               </div>

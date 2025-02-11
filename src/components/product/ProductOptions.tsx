@@ -1,7 +1,9 @@
 
-import { ShoppingBag } from 'lucide-react';
+import { ShoppingBag, Star, Heart } from 'lucide-react';
 import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
 import { motion } from 'framer-motion';
+import { cn } from '@/lib/utils';
 
 interface Size {
   label: string;
@@ -24,6 +26,12 @@ interface ProductOptionsProps {
   onSizeSelect: (size: string) => void;
   onColorSelect: (color: Color) => void;
   onAddToCart: () => void;
+  price: number;
+  originalPrice?: number;
+  rating?: number;
+  reviews?: number;
+  isLiked: boolean;
+  onLikeClick: () => void;
 }
 
 export function ProductOptions({
@@ -33,7 +41,13 @@ export function ProductOptions({
   selectedColor,
   onSizeSelect,
   onColorSelect,
-  onAddToCart
+  onAddToCart,
+  price,
+  originalPrice,
+  rating,
+  reviews,
+  isLiked,
+  onLikeClick
 }: ProductOptionsProps) {
   const selectedSizeData = sizes.find(size => size.label === selectedSize);
 
@@ -65,6 +79,31 @@ export function ProductOptions({
 
   return (
     <div className="space-y-6">
+      {/* Price and Rating */}
+      <div className="space-y-2">
+        <div className="flex items-center gap-2">
+          <span className="text-2xl font-semibold">${price.toFixed(2)}</span>
+          {originalPrice && originalPrice > price && (
+            <span className="text-lg text-muted-foreground line-through">
+              ${originalPrice.toFixed(2)}
+            </span>
+          )}
+        </div>
+        {rating && (
+          <div className="flex items-center gap-2">
+            <div className="flex items-center text-yellow-400">
+              <Star className="w-4 h-4 fill-current" />
+              <span className="ml-1 text-sm font-medium">{rating}</span>
+            </div>
+            {reviews && (
+              <span className="text-sm text-muted-foreground">
+                ({reviews} reviews)
+              </span>
+            )}
+          </div>
+        )}
+      </div>
+
       {/* Color Selection */}
       <div>
         <h3 className="font-medium mb-2">Color{selectedColor ? `: ${selectedColor}` : ''}</h3>
@@ -81,6 +120,14 @@ export function ProductOptions({
                 style={{ backgroundColor: color.hex }}
                 title={color.name}
               />
+              {color.isHot && (
+                <Badge 
+                  className="absolute -top-2 -right-2 px-1.5 py-0.5 bg-red-500"
+                  variant="secondary"
+                >
+                  Hot
+                </Badge>
+              )}
             </div>
           ))}
         </div>
@@ -110,7 +157,7 @@ export function ProductOptions({
       {/* Quantity Message */}
       {getQuantityMessage()}
 
-      {/* Add to Cart */}
+      {/* Add to Cart and Like */}
       <div className="flex gap-3">
         <Button
           onClick={onAddToCart}
@@ -119,6 +166,22 @@ export function ProductOptions({
         >
           <ShoppingBag className="mr-2 h-5 w-5" />
           {selectedSizeData?.quantity === 0 ? 'Sold Out' : 'Add to Cart'}
+        </Button>
+        <Button
+          variant="outline"
+          size="icon"
+          onClick={onLikeClick}
+          className={cn(
+            "h-12 w-12 rounded-full border-2 transition-all",
+            isLiked ? "border-primary" : "border-gray-200"
+          )}
+        >
+          <Heart 
+            className={cn(
+              "h-5 w-5 transition-colors",
+              isLiked ? "fill-primary text-primary" : "text-gray-500"
+            )} 
+          />
         </Button>
       </div>
     </div>
