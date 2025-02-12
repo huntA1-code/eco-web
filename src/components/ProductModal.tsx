@@ -1,4 +1,3 @@
-
 import { useState } from 'react';
 import {
   Dialog,
@@ -191,16 +190,6 @@ export function ProductModal({ isOpen, onClose, product }: ProductModalProps) {
                       -{calculateDiscountPercentage()}%
                     </Badge>
                   )}
-                  <div className="flex items-baseline gap-2">
-                    <span className="text-2xl font-bold text-red-600">
-                      ${enhancedProduct.price.toFixed(2)}
-                    </span>
-                    {enhancedProduct.originalPrice && (
-                      <span className="text-lg text-muted-foreground line-through">
-                        ${enhancedProduct.originalPrice.toFixed(2)}
-                      </span>
-                    )}
-                  </div>
                 </div>
 
                 <ProductOptions
@@ -223,20 +212,6 @@ export function ProductModal({ isOpen, onClose, product }: ProductModalProps) {
                   <p className="text-muted-foreground leading-relaxed">
                     {enhancedProduct.description}
                   </p>
-                )}
-
-                {enhancedProduct.isBestSeller && (
-                  <div className="flex items-center gap-2 mt-4">
-                    <Badge variant="secondary" className="bg-amber-500 text-white">
-                      <Award className="w-4 h-4 mr-1" />
-                      #6 Best Seller
-                    </Badge>
-                    {enhancedProduct.category && (
-                      <span className="text-sm text-muted-foreground">
-                        in {enhancedProduct.category}
-                      </span>
-                    )}
-                  </div>
                 )}
               </div>
             </div>
