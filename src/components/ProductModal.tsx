@@ -165,12 +165,20 @@ export function ProductModal({ isOpen, onClose, product }: ProductModalProps) {
               </div>
               <div className="col-span-5 space-y-6">
                 <div className="space-y-2">
-                  {enhancedProduct.isTrending && (
-                    <Badge variant="secondary" className="bg-primary text-white mb-2">
-                      <TrendingUp className="w-4 h-4 mr-1" />
-                      Trends
-                    </Badge>
-                  )}
+                  <div className="flex items-center gap-2">
+                    {enhancedProduct.isTrending && (
+                      <Badge variant="secondary" className="bg-primary text-white">
+                        <TrendingUp className="w-4 h-4 mr-1" />
+                        Trends
+                      </Badge>
+                    )}
+                    {enhancedProduct.isBestSeller && (
+                      <Badge variant="secondary" className="bg-amber-500 text-white">
+                        <Award className="w-4 h-4 mr-1" />
+                        #6 Best Seller
+                      </Badge>
+                    )}
+                  </div>
                   <h1 className="text-2xl font-bold font-serif">{enhancedProduct.name}</h1>
                   {enhancedProduct.sku && (
                     <p className="text-sm text-muted-foreground">SKU: {enhancedProduct.sku}</p>

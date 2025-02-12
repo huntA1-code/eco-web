@@ -1,4 +1,3 @@
-
 import { ShoppingBag, Star, Heart } from 'lucide-react';
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -81,27 +80,14 @@ export function ProductOptions({
     <div className="space-y-6">
       {/* Price and Rating */}
       <div className="space-y-2">
-        <div className="flex items-center gap-2">
+        <div className="flex items-baseline gap-2">
           <span className="text-2xl font-semibold">${price.toFixed(2)}</span>
           {originalPrice && originalPrice > price && (
-            <span className="text-lg text-muted-foreground line-through">
+            <span className="text-base text-muted-foreground line-through">
               ${originalPrice.toFixed(2)}
             </span>
           )}
         </div>
-        {rating && (
-          <div className="flex items-center gap-2">
-            <div className="flex items-center text-yellow-400">
-              <Star className="w-4 h-4 fill-current" />
-              <span className="ml-1 text-sm font-medium">{rating}</span>
-            </div>
-            {reviews && (
-              <span className="text-sm text-muted-foreground">
-                ({reviews} reviews)
-              </span>
-            )}
-          </div>
-        )}
       </div>
 
       {/* Color Selection */}
