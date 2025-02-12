@@ -139,6 +139,14 @@ export function ProductModal({ isOpen, onClose, product }: ProductModalProps) {
     setSelectedImage((prev) => (prev - 1 + currentImages.length) % currentImages.length);
   };
 
+  // Modify the product object to include trending and bestseller status
+  const enhancedProduct = {
+    ...product,
+    isTrending: true,
+    isBestSeller: true,
+    description: "This premium quality clothing item is designed with both style and comfort in mind. Made from high-grade materials, it features excellent durability and a perfect fit. Perfect for everyday wear or special occasions.",
+  };
+
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="max-w-4xl max-h-[90vh] p-0 overflow-hidden">
@@ -149,69 +157,44 @@ export function ProductModal({ isOpen, onClose, product }: ProductModalProps) {
                 <ImageGallery
                   images={currentImages}
                   selectedImage={selectedImage}
-                  productName={product.name}
+                  productName={enhancedProduct.name}
                   onImageSelect={setSelectedImage}
                   onNext={nextImage}
                   onPrevious={previousImage}
                 />
               </div>
               <div className="col-span-5 space-y-6">
-                {/* Product Header with Trending Badge */}
                 <div className="space-y-2">
-                  {product.isTrending && (
+                  {enhancedProduct.isTrending && (
                     <Badge variant="secondary" className="bg-primary text-white mb-2">
                       <TrendingUp className="w-4 h-4 mr-1" />
                       Trends
                     </Badge>
                   )}
-                  <h1 className="text-2xl font-bold font-serif">{product.name}</h1>
-                  {product.sku && (
-                    <p className="text-sm text-muted-foreground">SKU: {product.sku}</p>
+                  <h1 className="text-2xl font-bold font-serif">{enhancedProduct.name}</h1>
+                  {enhancedProduct.sku && (
+                    <p className="text-sm text-muted-foreground">SKU: {enhancedProduct.sku}</p>
                   )}
                 </div>
 
-                {/* Price Section */}
                 <div className="space-y-4">
                   {calculateDiscountPercentage() > 0 && (
                     <Badge className="bg-black text-white text-sm px-2 py-1">
                       -{calculateDiscountPercentage()}%
                     </Badge>
                   )}
-                  <div className="space-y-1">
-                    <p className="text-sm text-muted-foreground">From</p>
-                    <div className="flex items-baseline gap-2">
-                      <span className="text-2xl font-bold text-red-600">
-                        ${product.price.toFixed(2)}
-                      </span>
-                      {product.originalPrice && (
-                        <span className="text-lg text-muted-foreground line-through">
-                          ${product.originalPrice.toFixed(2)}
-                        </span>
-                      )}
-                    </div>
-                  </div>
-                </div>
-
-                {/* Ratings Section */}
-                {product.rating && (
-                  <div className="flex items-center gap-2">
-                    <div className="flex items-center text-yellow-400">
-                      {[...Array(5)].map((_, i) => (
-                        <Star
-                          key={i}
-                          className={`w-4 h-4 ${i < product.rating! ? 'fill-current' : ''}`}
-                        />
-                      ))}
-                    </div>
-                    {product.reviews && (
-                      <span className="text-sm text-muted-foreground">
-                        ({product.reviews}+ Reviews)
+                  <div className="flex items-baseline gap-2">
+                    <span className="text-2xl font-bold text-red-600">
+                      ${enhancedProduct.price.toFixed(2)}
+                    </span>
+                    {enhancedProduct.originalPrice && (
+                      <span className="text-lg text-muted-foreground line-through">
+                        ${enhancedProduct.originalPrice.toFixed(2)}
                       </span>
                     )}
                   </div>
-                )}
+                </div>
 
-                {/* Product Options */}
                 <ProductOptions
                   sizes={SIZES}
                   colors={COLORS}
@@ -220,31 +203,29 @@ export function ProductModal({ isOpen, onClose, product }: ProductModalProps) {
                   onSizeSelect={setSelectedSize}
                   onColorSelect={handleColorSelect}
                   onAddToCart={handleAddToCart}
-                  price={product.price}
-                  originalPrice={product.originalPrice}
-                  rating={product.rating}
-                  reviews={product.reviews}
+                  price={enhancedProduct.price}
+                  originalPrice={enhancedProduct.originalPrice}
+                  rating={enhancedProduct.rating}
+                  reviews={enhancedProduct.reviews}
                   isLiked={isLiked}
                   onLikeClick={handleLikeClick}
                 />
 
-                {/* Description */}
-                {product.description && (
+                {enhancedProduct.description && (
                   <p className="text-muted-foreground leading-relaxed">
-                    {product.description}
+                    {enhancedProduct.description}
                   </p>
                 )}
 
-                {/* Best Seller Badge */}
-                {product.isBestSeller && (
+                {enhancedProduct.isBestSeller && (
                   <div className="flex items-center gap-2 mt-4">
                     <Badge variant="secondary" className="bg-amber-500 text-white">
                       <Award className="w-4 h-4 mr-1" />
                       #6 Best Seller
                     </Badge>
-                    {product.category && (
+                    {enhancedProduct.category && (
                       <span className="text-sm text-muted-foreground">
-                        in {product.category}
+                        in {enhancedProduct.category}
                       </span>
                     )}
                   </div>
