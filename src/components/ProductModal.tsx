@@ -43,6 +43,15 @@ const COLORS = [
     name: 'Hot Pink', 
     hex: '#FF69B4', 
     isHot: true,
+    price: 49.99,
+    originalPrice: 89.99,
+    sizes: [
+      { label: '8Y', dimensions: '122-128CM', quantity: 2 },
+      { label: '9Y', dimensions: '128-134CM', quantity: 8 },
+      { label: '10Y', dimensions: '134-140CM', quantity: 0 },
+      { label: '11Y', dimensions: '140-146CM', quantity: 5 },
+      { label: '12Y', dimensions: '146-152CM', quantity: 1 },
+    ],
     images: [
       "https://images.unsplash.com/photo-1515886657613-9f3515b0c78f",
       "https://images.unsplash.com/photo-1503342217505-b0a15ec3261c",
@@ -54,6 +63,15 @@ const COLORS = [
     name: 'Navy', 
     hex: '#000080', 
     isHot: true,
+    price: 39.99,
+    originalPrice: 79.99,
+    sizes: [
+      { label: '8Y', dimensions: '122-128CM', quantity: 10 },
+      { label: '9Y', dimensions: '128-134CM', quantity: 12 },
+      { label: '10Y', dimensions: '134-140CM', quantity: 5 },
+      { label: '11Y', dimensions: '140-146CM', quantity: 3 },
+      { label: '12Y', dimensions: '146-152CM', quantity: 0 },
+    ],
     images: [
       "https://images.unsplash.com/photo-1582562124811-c09040d0a901",
       "https://images.unsplash.com/photo-1515886657613-9f3515b0c78f",
@@ -64,6 +82,15 @@ const COLORS = [
   { 
     name: 'Forest Green', 
     hex: '#228B22',
+    price: 44.99,
+    originalPrice: 84.99,
+    sizes: [
+      { label: '8Y', dimensions: '122-128CM', quantity: 7 },
+      { label: '9Y', dimensions: '128-134CM', quantity: 4 },
+      { label: '10Y', dimensions: '134-140CM', quantity: 2 },
+      { label: '11Y', dimensions: '140-146CM', quantity: 0 },
+      { label: '12Y', dimensions: '146-152CM', quantity: 8 },
+    ],
     images: [
       "https://images.unsplash.com/photo-1503342217505-b0a15ec3261c",
       "https://images.unsplash.com/photo-1515886657613-9f3515b0c78f",
@@ -74,6 +101,15 @@ const COLORS = [
   { 
     name: 'Black', 
     hex: '#000000',
+    price: 54.99,
+    originalPrice: 94.99,
+    sizes: [
+      { label: '8Y', dimensions: '122-128CM', quantity: 3 },
+      { label: '9Y', dimensions: '128-134CM', quantity: 6 },
+      { label: '10Y', dimensions: '134-140CM', quantity: 4 },
+      { label: '11Y', dimensions: '140-146CM', quantity: 2 },
+      { label: '12Y', dimensions: '146-152CM', quantity: 1 },
+    ],
     images: [
       "https://images.unsplash.com/photo-1466721591366-2d5fba72006d",
       "https://images.unsplash.com/photo-1515886657613-9f3515b0c78f",
@@ -88,12 +124,15 @@ export function ProductModal({ isOpen, onClose, product }: ProductModalProps) {
   const [selectedSize, setSelectedSize] = useState('');
   const [selectedColor, setSelectedColor] = useState('');
   const [currentImages, setCurrentImages] = useState(product.images);
+  const [currentSizes, setCurrentSizes] = useState(SIZES);
+  const [currentPrice, setCurrentPrice] = useState(product.price);
+  const [currentOriginalPrice, setCurrentOriginalPrice] = useState(product.originalPrice);
   const [isLiked, setIsLiked] = useState(false);
   const { toast } = useToast();
 
   const calculateDiscountPercentage = () => {
-    if (product.originalPrice && product.price) {
-      return Math.round(((product.originalPrice - product.price) / product.originalPrice) * 100);
+    if (currentOriginalPrice && currentPrice) {
+      return Math.round(((currentOriginalPrice - currentPrice) / currentOriginalPrice) * 100);
     }
     return product.discountPercentage || 0;
   };
@@ -102,6 +141,17 @@ export function ProductModal({ isOpen, onClose, product }: ProductModalProps) {
     setSelectedColor(color.name);
     setCurrentImages(color.images);
     setSelectedImage(0);
+    setCurrentSizes(color.sizes);
+    setCurrentPrice(color.price);
+    setCurrentOriginalPrice(color.originalPrice);
+  };
+
+  const nextImage = () => {
+    setSelectedImage((prev) => (prev + 1) % currentImages.length);
+  };
+
+  const previousImage = () => {
+    setSelectedImage((prev) => (prev - 1 + currentImages.length) % currentImages.length);
   };
 
   const handleLikeClick = () => {
@@ -130,20 +180,13 @@ export function ProductModal({ isOpen, onClose, product }: ProductModalProps) {
     });
   };
 
-  const nextImage = () => {
-    setSelectedImage((prev) => (prev + 1) % currentImages.length);
-  };
-
-  const previousImage = () => {
-    setSelectedImage((prev) => (prev - 1 + currentImages.length) % currentImages.length);
-  };
-
-  // Modify the product object to include trending and bestseller status
   const enhancedProduct = {
     ...product,
     isTrending: true,
     isBestSeller: true,
     description: "This premium quality clothing item is designed with both style and comfort in mind. Made from high-grade materials, it features excellent durability and a perfect fit. Perfect for everyday wear or special occasions.",
+    price: currentPrice,
+    originalPrice: currentOriginalPrice
   };
 
   return (
@@ -193,15 +236,15 @@ export function ProductModal({ isOpen, onClose, product }: ProductModalProps) {
                 </div>
 
                 <ProductOptions
-                  sizes={SIZES}
+                  sizes={currentSizes}
                   colors={COLORS}
                   selectedSize={selectedSize}
                   selectedColor={selectedColor}
                   onSizeSelect={setSelectedSize}
                   onColorSelect={handleColorSelect}
                   onAddToCart={handleAddToCart}
-                  price={enhancedProduct.price}
-                  originalPrice={enhancedProduct.originalPrice}
+                  price={currentPrice}
+                  originalPrice={currentOriginalPrice}
                   rating={enhancedProduct.rating}
                   reviews={enhancedProduct.reviews}
                   isLiked={isLiked}
