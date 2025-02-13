@@ -1,10 +1,11 @@
 import { useParams } from "react-router-dom";
 import { Badge } from "@/components/ui/badge";
-import { Heart, Award, TrendingUp, ChevronLeft, ChevronRight } from "lucide-react";
+import { Heart, Award, TrendingUp, ChevronLeft, ChevronRight, ChevronDown } from "lucide-react";
 import { useState } from "react";
 import { useToast } from "@/hooks/use-toast";
 import { AboutStore } from "@/components/AboutStore";
 import { CustomerReviews } from "@/components/CustomerReviews";
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 
 const SIZES = [
   { label: '8Y', dimensions: '122-128CM', quantity: 5 },
@@ -131,6 +132,8 @@ export default function ProductPage() {
   const [currentPrice, setCurrentPrice] = useState(COLORS[0].price);
   const [currentOriginalPrice, setCurrentOriginalPrice] = useState(COLORS[0].originalPrice);
   const [isLiked, setIsLiked] = useState(false);
+  const [openDescription, setOpenDescription] = useState(true);
+  const [openSizeFit, setOpenSizeFit] = useState(false);
 
   const handleColorSelect = (color: typeof COLORS[0]) => {
     setSelectedColor(color.name);
@@ -340,6 +343,69 @@ export default function ProductPage() {
                   <Heart className={`h-5 w-5 ${isLiked ? 'fill-current' : ''}`} />
                 </button>
               </div>
+            </div>
+            <div className="space-y-4 mt-6 border-t pt-6">
+              <Collapsible
+                open={openDescription}
+                onOpenChange={setOpenDescription}
+                className="border-b pb-4"
+              >
+                <CollapsibleTrigger className="flex items-center justify-between w-full">
+                  <h3 className="text-lg font-medium">Description</h3>
+                  <ChevronDown 
+                    className={`w-5 h-5 transition-transform duration-200 ${
+                      openDescription ? 'rotate-180' : ''
+                    }`}
+                  />
+                </CollapsibleTrigger>
+                <CollapsibleContent className="pt-4 space-y-4 text-muted-foreground">
+                  <div className="grid grid-cols-2 gap-4">
+                    <div>
+                      <p className="text-sm font-medium text-foreground">Color</p>
+                      <p className="text-sm">{selectedColor}</p>
+                    </div>
+                    <div>
+                      <p className="text-sm font-medium text-foreground">Material</p>
+                      <p className="text-sm">Premium Leather</p>
+                    </div>
+                    <div>
+                      <p className="text-sm font-medium text-foreground">Outsole Material</p>
+                      <p className="text-sm">Rubber</p>
+                    </div>
+                    <div>
+                      <p className="text-sm font-medium text-foreground">Upper Material</p>
+                      <p className="text-sm">Genuine Leather</p>
+                    </div>
+                    <div>
+                      <p className="text-sm font-medium text-foreground">Activity Type</p>
+                      <p className="text-sm">Casual Wear</p>
+                    </div>
+                  </div>
+                </CollapsibleContent>
+              </Collapsible>
+
+              <Collapsible
+                open={openSizeFit}
+                onOpenChange={setOpenSizeFit}
+                className="border-b pb-4"
+              >
+                <CollapsibleTrigger className="flex items-center justify-between w-full">
+                  <h3 className="text-lg font-medium">Size & Fit</h3>
+                  <ChevronDown 
+                    className={`w-5 h-5 transition-transform duration-200 ${
+                      openSizeFit ? 'rotate-180' : ''
+                    }`}
+                  />
+                </CollapsibleTrigger>
+                <CollapsibleContent className="pt-4 space-y-4 text-muted-foreground">
+                  <div className="space-y-2">
+                    <p className="text-sm">• True to size, order your normal size</p>
+                    <p className="text-sm">• Regular fit</p>
+                    <p className="text-sm">• Heel height: 1.5 inches</p>
+                    <p className="text-sm">• Available in standard width</p>
+                  </div>
+                </CollapsibleContent>
+              </Collapsible>
             </div>
             {product.description && (
               <p className="text-muted-foreground leading-relaxed mt-6">
