@@ -6,7 +6,6 @@ import { useToast } from "@/hooks/use-toast";
 import { AboutStore } from "@/components/AboutStore";
 import { CustomerReviews } from "@/components/CustomerReviews";
 
-// Use the same color and size data from ProductModal
 const SIZES = [
   { label: '8Y', dimensions: '122-128CM', quantity: 5 },
   { label: '9Y', dimensions: '128-134CM', quantity: 15 },
@@ -173,7 +172,6 @@ export default function ProductPage() {
     setSelectedImage(prev => (prev - 1 + currentImages.length) % currentImages.length);
   };
 
-  // Mock product data
   const product = {
     name: decodeURIComponent(productName || ""),
     sku: `SK${Math.random().toString(36).substr(2, 8)}`,
@@ -185,19 +183,17 @@ export default function ProductPage() {
   };
 
   return (
-    <div className="container mx-auto px-4 py-8">
+    <div className="container max-w-[1100px] mx-auto px-4 py-8">
       <div className="grid grid-cols-1 md:grid-cols-12 gap-8">
-        {/* Left - Gallery */}
         <div className="md:col-span-7">
           <div className="grid grid-cols-12 gap-4">
-            {/* Thumbnails */}
             <div className="hidden md:block col-span-1 -ml-2">
               <div className="flex flex-col gap-2 sticky top-0">
                 {currentImages.map((image, index) => (
                   <button
                     key={index}
                     onClick={() => setSelectedImage(index)}
-                    className={`w-14 h-14 rounded-lg overflow-hidden border-2 transition-all ${
+                    className={`w-12 h-12 rounded-lg overflow-hidden border-2 transition-all ${
                       selectedImage === index ? 'border-primary' : 'border-transparent'
                     }`}
                   >
@@ -210,10 +206,8 @@ export default function ProductPage() {
                 ))}
               </div>
             </div>
-
-            {/* Main Image */}
             <div className="col-span-11">
-              <div className="aspect-[3/4] rounded-lg overflow-hidden bg-gray-100 relative">
+              <div className="relative aspect-[4/5] max-w-[500px] mx-auto rounded-lg overflow-hidden bg-gray-100 group">
                 <img
                   src={currentImages[selectedImage]}
                   alt={product.name}
@@ -221,13 +215,15 @@ export default function ProductPage() {
                 />
                 <button
                   onClick={previousImage}
-                  className="absolute left-4 top-1/2 -translate-y-1/2 p-2 rounded-full bg-white/80 shadow-lg hover:bg-white"
+                  className="absolute left-4 top-1/2 -translate-y-1/2 p-2 rounded-full bg-white/80 shadow-lg hover:bg-white opacity-0 group-hover:opacity-100 transition-opacity duration-200"
+                  aria-label="Previous image"
                 >
                   <ChevronLeft className="w-5 h-5" />
                 </button>
                 <button
                   onClick={nextImage}
-                  className="absolute right-4 top-1/2 -translate-y-1/2 p-2 rounded-full bg-white/80 shadow-lg hover:bg-white"
+                  className="absolute right-4 top-1/2 -translate-y-1/2 p-2 rounded-full bg-white/80 shadow-lg hover:bg-white opacity-0 group-hover:opacity-100 transition-opacity duration-200"
+                  aria-label="Next image"
                 >
                   <ChevronRight className="w-5 h-5" />
                 </button>
@@ -235,8 +231,6 @@ export default function ProductPage() {
             </div>
           </div>
         </div>
-
-        {/* Right - Product Info */}
         <div className="md:col-span-5 space-y-6">
           <div className="space-y-2">
             <div className="flex items-center gap-2">
@@ -253,14 +247,11 @@ export default function ProductPage() {
                 </Badge>
               )}
             </div>
-            <h1 className="text-3xl font-bold font-serif">{product.name}</h1>
+            <h1 className="text-2xl font-bold font-serif">{product.name}</h1>
             {product.sku && (
               <p className="text-sm text-muted-foreground">SKU: {product.sku}</p>
             )}
-
-            {/* Product Options */}
             <div className="space-y-6 mt-6">
-              {/* Price and Discount */}
               <div className="flex items-center gap-4">
                 <div className="flex items-baseline gap-2">
                   <span className="text-2xl font-semibold">${currentPrice.toFixed(2)}</span>
@@ -276,8 +267,6 @@ export default function ProductPage() {
                   </Badge>
                 )}
               </div>
-
-              {/* Color Selection */}
               <div>
                 <h3 className="font-medium mb-2">Color{selectedColor ? `: ${selectedColor}` : ''}</h3>
                 <div className="flex flex-wrap gap-3">
@@ -305,8 +294,6 @@ export default function ProductPage() {
                   ))}
                 </div>
               </div>
-
-              {/* Size Selection */}
               <div>
                 <h3 className="font-medium mb-2">Size</h3>
                 <div className="grid grid-cols-2 gap-2">
@@ -326,8 +313,6 @@ export default function ProductPage() {
                   ))}
                 </div>
               </div>
-
-              {/* Quantity Warning */}
               {selectedSize && currentSizes.find(s => s.label === selectedSize)?.quantity === 0 && (
                 <div className="text-red-500 text-sm font-medium">
                   SOLD OUT
@@ -338,8 +323,6 @@ export default function ProductPage() {
                   {currentSizes.find(s => s.label === selectedSize)?.quantity} items left
                 </div>
               )}
-
-              {/* Add to Cart and Like */}
               <div className="flex gap-3">
                 <button
                   onClick={handleAddToCart}
@@ -358,8 +341,6 @@ export default function ProductPage() {
                 </button>
               </div>
             </div>
-
-            {/* Description */}
             {product.description && (
               <p className="text-muted-foreground leading-relaxed mt-6">
                 {product.description}
@@ -368,8 +349,6 @@ export default function ProductPage() {
           </div>
         </div>
       </div>
-
-      {/* Reviews Section */}
       <div className="mt-16">
         <CustomerReviews 
           reviews={[
@@ -400,8 +379,6 @@ export default function ProductPage() {
           availableColors={COLORS.map(color => color.name)}
         />
       </div>
-
-      {/* Store Section */}
       <div className="mt-16">
         <AboutStore {...{
           storeName: "MIMAOYIGOU",
