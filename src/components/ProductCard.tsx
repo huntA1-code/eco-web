@@ -2,8 +2,9 @@
 import { Heart, ShoppingCart } from "lucide-react";
 import { useState } from "react";
 import { Link } from "react-router-dom";
-import { QuickView } from "./QuickView";
 import { ProductModal } from "./ProductModal";
+import { cn } from "@/lib/utils";
+import { useToast } from "@/hooks/use-toast";
 
 interface ProductCardProps {
   product: {
@@ -27,7 +28,9 @@ interface ProductCardProps {
 
 export const ProductCard = ({ product }: ProductCardProps) => {
   const [isHovered, setIsHovered] = useState(false);
-  const [showQuickView, setShowQuickView] = useState(false);
+  const [showModal, setShowModal] = useState(false);
+  const [isLiked, setIsLiked] = useState(false);
+  const { toast } = useToast();
 
   // Generate additional product images for the gallery
   const productImages = [
@@ -37,8 +40,8 @@ export const ProductCard = ({ product }: ProductCardProps) => {
     "https://images.unsplash.com/photo-1466721591366-2d5fba72006d",
   ];
 
-  const handleQuickViewClose = () => {
-    setShowQuickView(false);
+  const handleModalClose = () => {
+    setShowModal(false);
   };
 
   const calculateDiscountedPrice = () => {
@@ -47,6 +50,15 @@ export const ProductCard = ({ product }: ProductCardProps) => {
     return product.discount.type === 'percentage' 
       ? product.price * (1 - product.discount.rate / 100)
       : product.price - product.discount.rate;
+  };
+
+  const handleLikeClick = (e: React.MouseEvent) => {
+    e.preventDefault();
+    setIsLiked(!isLiked);
+    toast({
+      title: !isLiked ? "Added to wishlist" : "Removed from wishlist",
+      description: !isLiked ? "Product has been added to your wishlist" : "Product has been removed from your wishlist"
+    });
   };
 
   return (
@@ -70,17 +82,20 @@ export const ProductCard = ({ product }: ProductCardProps) => {
           )}
           <div className={`absolute inset-0 bg-black/40 transition-opacity duration-300 ${isHovered ? 'opacity-100' : 'opacity-0'}`}>
             <div className="absolute top-2 right-2 flex gap-2">
-              <button className="btn-secondary p-1.5">
-                <Heart size={16} />
-              </button>
               <button 
-                onClick={(e) => {
-                  e.preventDefault();
-                  setShowQuickView(true);
-                }}
-                className="btn-secondary p-2 hover:bg-primary hover:text-white transition-colors duration-300"
+                onClick={handleLikeClick}
+                className={cn(
+                  "btn-secondary p-1.5 hover:bg-primary hover:text-white transition-colors duration-300",
+                  isLiked && "bg-primary text-white"
+                )}
               >
-                Quick View
+                <Heart 
+                  size={16} 
+                  className={cn(
+                    "transition-colors",
+                    isLiked ? "fill-current" : "fill-none"
+                  )} 
+                />
               </button>
             </div>
           </div>
@@ -133,6 +148,10 @@ export const ProductCard = ({ product }: ProductCardProps) => {
               </span>
             </div>
             <button 
+              onClick={(e) => {
+                e.preventDefault();
+                setShowModal(true);
+              }}
               className="btn-secondary p-2 hover:bg-primary hover:text-white transition-colors duration-300"
             >
               <ShoppingCart size={16} />
@@ -142,8 +161,8 @@ export const ProductCard = ({ product }: ProductCardProps) => {
       </Link>
 
       <ProductModal
-        isOpen={showQuickView}
-        onClose={() => setShowQuickView(false)}
+        isOpen={showModal}
+        onClose={handleModalClose}
         product={{
           name: product.name,
           price: product.price,
