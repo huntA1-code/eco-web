@@ -7,6 +7,7 @@ import { ProductHeader } from './product/ProductHeader';
 import { ProductOptions } from './product/ProductOptions';
 import { Badge } from "@/components/ui/badge";
 import { Star, Award, TrendingUp } from 'lucide-react';
+
 interface ProductModalProps {
   isOpen: boolean;
   onClose: () => void;
@@ -25,6 +26,7 @@ interface ProductModalProps {
     discountPercentage?: number;
   };
 }
+
 const SIZES = [{
   label: '8Y',
   dimensions: '122-128CM',
@@ -46,6 +48,7 @@ const SIZES = [{
   dimensions: '146-152CM',
   quantity: 3
 }];
+
 const COLORS = [{
   name: 'Hot Pink',
   hex: '#FF69B4',
@@ -157,28 +160,18 @@ const COLORS = [{
   }],
   images: ["https://images.unsplash.com/photo-1466721591366-2d5fba72006d", "https://images.unsplash.com/photo-1515886657613-9f3515b0c78f", "https://images.unsplash.com/photo-1503342217505-b0a15ec3261c", "https://images.unsplash.com/photo-1582562124811-c09040d0a901"]
 }];
-export function ProductModal({
-  isOpen,
-  onClose,
-  product
-}: ProductModalProps) {
+
+export function ProductModal({ isOpen, onClose, product }: ProductModalProps) {
   const [selectedImage, setSelectedImage] = useState(0);
   const [selectedSize, setSelectedSize] = useState('');
-  const [selectedColor, setSelectedColor] = useState('');
-  const [currentImages, setCurrentImages] = useState(product.images);
-  const [currentSizes, setCurrentSizes] = useState(SIZES);
-  const [currentPrice, setCurrentPrice] = useState(product.price);
-  const [currentOriginalPrice, setCurrentOriginalPrice] = useState(product.originalPrice);
+  const [selectedColor, setSelectedColor] = useState(COLORS[0].name);
+  const [currentImages, setCurrentImages] = useState(COLORS[0].images);
+  const [currentSizes, setCurrentSizes] = useState(COLORS[0].sizes);
+  const [currentPrice, setCurrentPrice] = useState(COLORS[0].price);
+  const [currentOriginalPrice, setCurrentOriginalPrice] = useState(COLORS[0].originalPrice);
   const [isLiked, setIsLiked] = useState(false);
-  const {
-    toast
-  } = useToast();
-  const calculateDiscountPercentage = () => {
-    if (currentOriginalPrice && currentPrice) {
-      return Math.round((currentOriginalPrice - currentPrice) / currentOriginalPrice * 100);
-    }
-    return product.discountPercentage || 0;
-  };
+  const { toast } = useToast();
+
   const handleColorSelect = (color: typeof COLORS[0]) => {
     setSelectedColor(color.name);
     setCurrentImages(color.images);
@@ -187,12 +180,15 @@ export function ProductModal({
     setCurrentPrice(color.price);
     setCurrentOriginalPrice(color.originalPrice);
   };
+
   const nextImage = () => {
     setSelectedImage(prev => (prev + 1) % currentImages.length);
   };
+
   const previousImage = () => {
     setSelectedImage(prev => (prev - 1 + currentImages.length) % currentImages.length);
   };
+
   const handleLikeClick = () => {
     setIsLiked(!isLiked);
     toast({
@@ -200,6 +196,7 @@ export function ProductModal({
       description: !isLiked ? "Product has been added to your wishlist" : "Product has been removed from your wishlist"
     });
   };
+
   const handleAddToCart = () => {
     if (!selectedSize || !selectedColor) {
       toast({
@@ -214,6 +211,7 @@ export function ProductModal({
       description: "The item has been added to your cart"
     });
   };
+
   const enhancedProduct = {
     ...product,
     isTrending: true,
@@ -222,45 +220,71 @@ export function ProductModal({
     price: currentPrice,
     originalPrice: currentOriginalPrice
   };
-  return <Dialog open={isOpen} onOpenChange={onClose}>
+
+  return (
+    <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="max-w-4xl max-h-[90vh] p-0 overflow-hidden">
         <ScrollArea className="max-h-[90vh]">
           <div className="p-6">
             <div className="grid grid-cols-1 md:grid-cols-12 gap-6">
               <div className="col-span-7">
-                <ImageGallery images={currentImages} selectedImage={selectedImage} productName={enhancedProduct.name} onImageSelect={setSelectedImage} onNext={nextImage} onPrevious={previousImage} />
+                <ImageGallery
+                  images={currentImages}
+                  selectedImage={selectedImage}
+                  productName={enhancedProduct.name}
+                  onImageSelect={setSelectedImage}
+                  onNext={nextImage}
+                  onPrevious={previousImage}
+                />
               </div>
               <div className="col-span-5 space-y-6">
                 <div className="space-y-2">
                   <div className="flex items-center gap-2">
-                    {enhancedProduct.isTrending && <Badge variant="secondary" className="bg-primary text-white">
+                    {enhancedProduct.isTrending && (
+                      <Badge variant="secondary" className="bg-primary text-white">
                         <TrendingUp className="w-4 h-4 mr-1" />
                         Trends
-                      </Badge>}
-                    {enhancedProduct.isBestSeller && <Badge variant="secondary" className="bg-amber-500 text-white">
+                      </Badge>
+                    )}
+                    {enhancedProduct.isBestSeller && (
+                      <Badge variant="secondary" className="bg-amber-500 text-white">
                         <Award className="w-4 h-4 mr-1" />
                         #6 Best Seller
-                      </Badge>}
+                      </Badge>
+                    )}
                   </div>
                   <h1 className="text-2xl font-bold font-serif">{enhancedProduct.name}</h1>
-                  {enhancedProduct.sku && <p className="text-sm text-muted-foreground">SKU: {enhancedProduct.sku}</p>}
+                  {enhancedProduct.sku && (
+                    <p className="text-sm text-muted-foreground">SKU: {enhancedProduct.sku}</p>
+                  )}
                 </div>
 
-                <div className="space-y-4 my-[8px]">
-                  {calculateDiscountPercentage() > 0 && <Badge className="bg-black text-white text-sm px-2 py-1">
-                      -{calculateDiscountPercentage()}%
-                    </Badge>}
-                </div>
+                <ProductOptions
+                  sizes={currentSizes}
+                  colors={COLORS}
+                  selectedSize={selectedSize}
+                  selectedColor={selectedColor}
+                  onSizeSelect={setSelectedSize}
+                  onColorSelect={handleColorSelect}
+                  onAddToCart={handleAddToCart}
+                  price={currentPrice}
+                  originalPrice={currentOriginalPrice}
+                  rating={enhancedProduct.rating}
+                  reviews={enhancedProduct.reviews}
+                  isLiked={isLiked}
+                  onLikeClick={handleLikeClick}
+                />
 
-                <ProductOptions sizes={currentSizes} colors={COLORS} selectedSize={selectedSize} selectedColor={selectedColor} onSizeSelect={setSelectedSize} onColorSelect={handleColorSelect} onAddToCart={handleAddToCart} price={currentPrice} originalPrice={currentOriginalPrice} rating={enhancedProduct.rating} reviews={enhancedProduct.reviews} isLiked={isLiked} onLikeClick={handleLikeClick} />
-
-                {enhancedProduct.description && <p className="text-muted-foreground leading-relaxed">
+                {enhancedProduct.description && (
+                  <p className="text-muted-foreground leading-relaxed">
                     {enhancedProduct.description}
-                  </p>}
+                  </p>
+                )}
               </div>
             </div>
           </div>
         </ScrollArea>
       </DialogContent>
-    </Dialog>;
+    </Dialog>
+  );
 }

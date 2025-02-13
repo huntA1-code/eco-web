@@ -1,4 +1,4 @@
-import { ShoppingBag, Star, Heart } from 'lucide-react';
+import { ShoppingBag, Heart } from 'lucide-react';
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { motion } from 'framer-motion';
@@ -50,6 +50,13 @@ export function ProductOptions({
 }: ProductOptionsProps) {
   const selectedSizeData = sizes.find(size => size.label === selectedSize);
 
+  const calculateDiscountPercentage = () => {
+    if (originalPrice && price) {
+      return Math.round(((originalPrice - price) / originalPrice) * 100);
+    }
+    return 0;
+  };
+
   const getQuantityMessage = () => {
     if (!selectedSizeData) return null;
     
@@ -78,8 +85,8 @@ export function ProductOptions({
 
   return (
     <div className="space-y-6">
-      {/* Price and Rating */}
-      <div className="space-y-2">
+      {/* Price, Discount and Rating */}
+      <div className="flex items-center gap-4">
         <div className="flex items-baseline gap-2">
           <span className="text-2xl font-semibold">${price.toFixed(2)}</span>
           {originalPrice && originalPrice > price && (
@@ -88,6 +95,11 @@ export function ProductOptions({
             </span>
           )}
         </div>
+        {calculateDiscountPercentage() > 0 && (
+          <Badge className="bg-black text-white text-sm px-2 py-1">
+            -{calculateDiscountPercentage()}%
+          </Badge>
+        )}
       </div>
 
       {/* Color Selection */}
