@@ -9,13 +9,6 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 import { Switch } from "@/components/ui/switch";
 import { Progress } from "@/components/ui/progress";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -51,10 +44,20 @@ export const CustomerReviews = ({ reviews: initialReviews, availableSizes, avail
   const [selectedTab, setSelectedTab] = useState("all");
   const [showLocalReviews, setShowLocalReviews] = useState(false);
   const [selectedRating, setSelectedRating] = useState("all");
-  const [selectedFilter, setSelectedFilter] = useState("all");
+  const [selectedColor, setSelectedColor] = useState("");
+  const [selectedSize, setSelectedSize] = useState("");
   const { toast } = useToast();
   const [selectedImages, setSelectedImages] = useState<FileList | null>(null);
   const [isOpen, setIsOpen] = useState(false);
+
+  const colorHexMap: Record<string, string> = {
+    'Hot Pink': '#FF69B4',
+    'Navy': '#000080',
+    'Forest Green': '#228B22',
+    'Black': '#000000',
+    'White': '#FFFFFF',
+    'Red': '#FF0000',
+  };
 
   const handleHelpfulClick = (reviewId: number) => {
     setReviews(prevReviews =>
@@ -107,7 +110,7 @@ export const CustomerReviews = ({ reviews: initialReviews, availableSizes, avail
   };
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 bg-white p-6 rounded-lg">
       <div className="flex justify-between items-center">
         <div className="space-y-6 w-full">
           <div className="flex justify-between items-start">
@@ -342,58 +345,114 @@ export const CustomerReviews = ({ reviews: initialReviews, availableSizes, avail
       </div>
       
       <div className="space-y-4">
-        {reviews.map((review) => (
-          <div key={review.id} className="p-4 bg-neutral-light rounded-lg">
-            <div className="flex justify-between items-start mb-2">
-              <div>
-                <p className="font-medium">{review.user}</p>
-                <div className="flex items-center gap-1 text-sm text-neutral">
-                  <div className="flex">
-                    {Array.from({ length: 5 }).map((_, i) => (
-                      <span 
-                        key={i} 
-                        className={i < review.rating ? "text-yellow-400" : "text-gray-300"}
-                      >
-                        ★
+        <div className="space-y-6">
+          <div className="space-y-4">
+            <h3 className="text-lg font-medium">Colour</h3>
+            <div className="flex flex-wrap gap-3">
+              {availableColors.map((color) => (
+                <button
+                  key={color}
+                  onClick={() => setSelectedColor(selectedColor === color ? '' : color)}
+                  className={`relative w-10 h-10 rounded-full transition-all ${
+                    selectedColor === color ? 'ring-2 ring-primary ring-offset-2' : ''
+                  } ${color.toLowerCase() === 'white' ? 'border border-gray-200' : ''}`}
+                  style={{ backgroundColor: colorHexMap[color] || color }}
+                  title={color}
+                >
+                  {selectedColor === color && (
+                    <span className="absolute inset-0 flex items-center justify-center">
+                      {color.toLowerCase() === 'white' ? (
+                        <div className="w-2 h-2 bg-black rounded-full" />
+                      ) : (
+                        <div className="w-2 h-2 bg-white rounded-full" />
+                      )}
+                    </span>
+                  )}
+                </button>
+              ))}
+            </div>
+          </div>
+
+          <div className="space-y-4">
+            <h3 className="text-lg font-medium">Size</h3>
+            <div className="flex flex-wrap gap-3">
+              {availableSizes.map((size) => (
+                <button
+                  key={size}
+                  onClick={() => setSelectedSize(selectedSize === size ? '' : size)}
+                  className={`px-4 py-2 rounded-full border transition-all ${
+                    selectedSize === size
+                      ? 'border-primary bg-primary/5 text-primary'
+                      : 'border-gray-200 hover:border-gray-300'
+                  }`}
+                >
+                  {size}
+                </button>
+              ))}
+            </div>
+          </div>
+        </div>
+
+        <div className="space-y-4">
+          {reviews
+            .filter(review => {
+              if (selectedColor && review.color !== selectedColor) return false;
+              if (selectedSize && review.size !== selectedSize) return false;
+              return true;
+            })
+            .map((review) => (
+              <div key={review.id} className="p-4 bg-neutral-light rounded-lg">
+                <div className="flex justify-between items-start mb-2">
+                  <div>
+                    <p className="font-medium">{review.user}</p>
+                    <div className="flex items-center gap-1 text-sm text-neutral">
+                      <div className="flex">
+                        {Array.from({ length: 5 }).map((_, i) => (
+                          <span 
+                            key={i} 
+                            className={i < review.rating ? "text-yellow-400" : "text-gray-300"}
+                          >
+                            ★
+                          </span>
+                        ))}
+                      </div>
+                      <span>
+                        {new Date(review.date).toLocaleDateString()}
                       </span>
+                    </div>
+                  </div>
+                  <button 
+                    onClick={() => handleHelpfulClick(review.id)}
+                    className="flex items-center gap-1 text-sm text-neutral hover:text-neutral-dark"
+                  >
+                    <ThumbsUp size={14} />
+                    <span>Helpful ({review.helpfulCount})</span>
+                  </button>
+                </div>
+                
+                {review.overallFit && (
+                  <div className="text-sm text-neutral mb-2">
+                    Fit: {review.overallFit}
+                  </div>
+                )}
+                
+                <p className="text-neutral-dark mb-3">{review.comment}</p>
+                
+                {review.images && review.images.length > 0 && (
+                  <div className="flex gap-2 overflow-x-auto pb-2">
+                    {review.images.map((image, idx) => (
+                      <img 
+                        key={idx}
+                        src={image} 
+                        alt={`Review ${review.id} image ${idx + 1}`}
+                        className="w-20 h-20 object-cover rounded"
+                      />
                     ))}
                   </div>
-                  <span>
-                    {new Date(review.date).toLocaleDateString()}
-                  </span>
-                </div>
+                )}
               </div>
-              <button 
-                onClick={() => handleHelpfulClick(review.id)}
-                className="flex items-center gap-1 text-sm text-neutral hover:text-neutral-dark"
-              >
-                <ThumbsUp size={14} />
-                <span>Helpful ({review.helpfulCount})</span>
-              </button>
-            </div>
-            
-            {review.overallFit && (
-              <div className="text-sm text-neutral mb-2">
-                Fit: {review.overallFit}
-              </div>
-            )}
-            
-            <p className="text-neutral-dark mb-3">{review.comment}</p>
-            
-            {review.images && review.images.length > 0 && (
-              <div className="flex gap-2 overflow-x-auto pb-2">
-                {review.images.map((image, idx) => (
-                  <img 
-                    key={idx}
-                    src={image} 
-                    alt={`Review ${review.id} image ${idx + 1}`}
-                    className="w-20 h-20 object-cover rounded"
-                  />
-                ))}
-              </div>
-            )}
-          </div>
-        ))}
+            ))}
+        </div>
       </div>
     </div>
   );
