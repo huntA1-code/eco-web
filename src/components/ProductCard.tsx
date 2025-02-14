@@ -1,7 +1,6 @@
-
 import { Heart, ShoppingCart } from "lucide-react";
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { ProductModal } from "./ProductModal";
 import { cn } from "@/lib/utils";
 import { useToast } from "@/hooks/use-toast";
@@ -31,8 +30,8 @@ export const ProductCard = ({ product }: ProductCardProps) => {
   const [showModal, setShowModal] = useState(false);
   const [isLiked, setIsLiked] = useState(false);
   const { toast } = useToast();
+  const navigate = useNavigate();
 
-  // Generate additional product images for the gallery
   const productImages = [
     product.image,
     "https://images.unsplash.com/photo-1515886657613-9f3515b0c78f",
@@ -61,13 +60,19 @@ export const ProductCard = ({ product }: ProductCardProps) => {
     });
   };
 
+  const handleCardClick = (e: React.MouseEvent) => {
+    if (!(e.target as HTMLElement).closest('button')) {
+      navigate(`/product/${encodeURIComponent(product.name)}`);
+    }
+  };
+
   return (
     <>
-      <Link 
-        to={`/products/${encodeURIComponent(product.name)}`}
-        className="block card group animate-fade-up relative"
+      <div 
+        className="block card group animate-fade-up relative cursor-pointer"
         onMouseEnter={() => setIsHovered(true)}
         onMouseLeave={() => setIsHovered(false)}
+        onClick={handleCardClick}
       >
         <div className="relative aspect-[3/4] overflow-hidden">
           <img
@@ -103,7 +108,8 @@ export const ProductCard = ({ product }: ProductCardProps) => {
 
         <div className="p-4 relative">
           <Link 
-            to={`/store`}
+            to="/store"
+            onClick={(e) => e.stopPropagation()}
             className="text-xs text-primary hover:underline"
           >
             {product.brand}
@@ -149,7 +155,7 @@ export const ProductCard = ({ product }: ProductCardProps) => {
             </div>
             <button 
               onClick={(e) => {
-                e.preventDefault();
+                e.stopPropagation();
                 setShowModal(true);
               }}
               className="btn-secondary p-2 hover:bg-primary hover:text-white transition-colors duration-300"
@@ -158,7 +164,7 @@ export const ProductCard = ({ product }: ProductCardProps) => {
             </button>
           </div>
         </div>
-      </Link>
+      </div>
 
       <ProductModal
         isOpen={showModal}

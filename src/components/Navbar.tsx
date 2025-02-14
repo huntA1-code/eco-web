@@ -1,6 +1,6 @@
 
 import { useState } from 'react';
-import { ShoppingBag, Search, Heart, User, Menu, X } from 'lucide-react';
+import { ShoppingBag, Search, Heart, User, Menu, X, LayoutDashboard } from 'lucide-react';
 import { Link, useNavigate } from 'react-router-dom';
 
 export const Navbar = () => {
@@ -32,6 +32,13 @@ export const Navbar = () => {
               <ShoppingBag className="w-5 h-5" />
               <span className="absolute -top-1 -right-1 bg-primary text-white text-xs w-4 h-4 rounded-full flex items-center justify-center">0</span>
             </Link>
+            <Link 
+              to="/dashboard"
+              className="p-2 hover:bg-muted rounded-full flex items-center gap-2 text-sm"
+            >
+              <LayoutDashboard className="w-5 h-5" />
+              <span className="hidden lg:inline">Dashboard</span>
+            </Link>
           </div>
           
           <button 
@@ -46,6 +53,10 @@ export const Navbar = () => {
       {isOpen && (
         <div className="md:hidden bg-white border-t border-border animate-fade-in">
           <div className="px-4 pt-2 pb-4 space-y-2">
+            <Link to="/dashboard" className="flex items-center gap-2 nav-link py-2 hover:text-primary">
+              <LayoutDashboard className="w-5 h-5" />
+              Dashboard
+            </Link>
             <Link to="#" className="block nav-link py-2 hover:text-primary">NEW IN</Link>
             <Link to="#" className="block nav-link py-2 hover:text-primary">CLOTHING</Link>
             <Link to="#" className="block nav-link py-2 hover:text-primary">SHOES</Link>
