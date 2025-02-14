@@ -1,10 +1,16 @@
 
 import { useState } from 'react';
-import { ShoppingBag, Search, Heart, User, Menu, X, LayoutDashboard } from 'lucide-react';
+import { ShoppingBag, Search, Heart, User, Menu, X, LayoutDashboard, LogIn, UserPlus, ClipboardList } from 'lucide-react';
 import { Link, useNavigate } from 'react-router-dom';
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
 
 export const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
+  const [isSignedIn] = useState(false); // Replace with actual auth state
   const navigate = useNavigate();
 
   return (
@@ -19,9 +25,50 @@ export const Navbar = () => {
             <button className="p-2 hover:bg-muted rounded-full">
               <Search className="w-5 h-5" />
             </button>
-            <button className="p-2 hover:bg-muted rounded-full">
-              <User className="w-5 h-5" />
-            </button>
+            <Popover>
+              <PopoverTrigger asChild>
+                <button className="p-2 hover:bg-muted rounded-full">
+                  <User className="w-5 h-5" />
+                </button>
+              </PopoverTrigger>
+              <PopoverContent className="w-48 p-2" align="end">
+                {isSignedIn ? (
+                  <div className="space-y-1">
+                    <button
+                      onClick={() => navigate('/profile')}
+                      className="w-full flex items-center gap-2 px-3 py-2 text-sm hover:bg-muted rounded-md transition-colors"
+                    >
+                      <User className="w-4 h-4" />
+                      My Profile
+                    </button>
+                    <button
+                      onClick={() => navigate('/wishlist/my-orders')}
+                      className="w-full flex items-center gap-2 px-3 py-2 text-sm hover:bg-muted rounded-md transition-colors"
+                    >
+                      <ClipboardList className="w-4 h-4" />
+                      My Orders
+                    </button>
+                  </div>
+                ) : (
+                  <div className="space-y-1">
+                    <button
+                      onClick={() => navigate('/signin')}
+                      className="w-full flex items-center gap-2 px-3 py-2 text-sm hover:bg-muted rounded-md transition-colors"
+                    >
+                      <LogIn className="w-4 h-4" />
+                      Sign In
+                    </button>
+                    <button
+                      onClick={() => navigate('/signup')}
+                      className="w-full flex items-center gap-2 px-3 py-2 text-sm hover:bg-muted rounded-md transition-colors"
+                    >
+                      <UserPlus className="w-4 h-4" />
+                      Sign Up
+                    </button>
+                  </div>
+                )}
+              </PopoverContent>
+            </Popover>
             <button 
               className="p-2 hover:bg-muted rounded-full"
               onClick={() => navigate('/wishlist')}
@@ -53,6 +100,29 @@ export const Navbar = () => {
       {isOpen && (
         <div className="md:hidden bg-white border-t border-border animate-fade-in">
           <div className="px-4 pt-2 pb-4 space-y-2">
+            {isSignedIn ? (
+              <>
+                <Link to="/profile" className="flex items-center gap-2 nav-link py-2 hover:text-primary">
+                  <User className="w-5 h-5" />
+                  My Profile
+                </Link>
+                <Link to="/wishlist/my-orders" className="flex items-center gap-2 nav-link py-2 hover:text-primary">
+                  <ClipboardList className="w-5 h-5" />
+                  My Orders
+                </Link>
+              </>
+            ) : (
+              <>
+                <Link to="/signin" className="flex items-center gap-2 nav-link py-2 hover:text-primary">
+                  <LogIn className="w-5 h-5" />
+                  Sign In
+                </Link>
+                <Link to="/signup" className="flex items-center gap-2 nav-link py-2 hover:text-primary">
+                  <UserPlus className="w-5 h-5" />
+                  Sign Up
+                </Link>
+              </>
+            )}
             <Link to="/dashboard" className="flex items-center gap-2 nav-link py-2 hover:text-primary">
               <LayoutDashboard className="w-5 h-5" />
               Dashboard
