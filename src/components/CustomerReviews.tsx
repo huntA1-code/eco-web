@@ -12,6 +12,13 @@ import {
 import { Switch } from "@/components/ui/switch";
 import { Progress } from "@/components/ui/progress";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 interface Review {
   id: number;
@@ -46,6 +53,7 @@ export const CustomerReviews = ({ reviews: initialReviews, availableSizes, avail
   const [selectedRating, setSelectedRating] = useState("all");
   const [selectedColor, setSelectedColor] = useState("");
   const [selectedSize, setSelectedSize] = useState("");
+  const [selectedFilter, setSelectedFilter] = useState("all");
   const { toast } = useToast();
   const [selectedImages, setSelectedImages] = useState<FileList | null>(null);
   const [isOpen, setIsOpen] = useState(false);
