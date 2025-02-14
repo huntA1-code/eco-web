@@ -233,7 +233,39 @@ export default function ProductPage() {
               </div>
             </div>
           </div>
+
+          <div className="mt-8">
+            <CustomerReviews 
+              reviews={[
+                {
+                  id: 1,
+                  user: "Sarah M.",
+                  rating: 5,
+                  comment: "Absolutely love this product! The quality is outstanding.",
+                  date: "2024-02-15",
+                  helpfulCount: 8,
+                  overallFit: "True to Size",
+                  size: "M",
+                  color: "Black"
+                },
+                {
+                  id: 2,
+                  user: "John D.",
+                  rating: 4,
+                  comment: "Great fit and comfortable. Would buy again.",
+                  date: "2024-02-10",
+                  helpfulCount: 3,
+                  overallFit: "Runs Small",
+                  size: "L",
+                  color: "Navy"
+                }
+              ]} 
+              availableSizes={SIZES.map(size => size.label)}
+              availableColors={COLORS.map(color => color.name)}
+            />
+          </div>
         </div>
+
         <div className="md:col-span-5 space-y-6">
           <div className="space-y-2">
             <div className="flex items-center gap-2">
@@ -416,43 +448,13 @@ export default function ProductPage() {
         </div>
       </div>
       <div className="mt-16">
-        <CustomerReviews 
-          reviews={[
-            {
-              id: 1,
-              user: "Sarah M.",
-              rating: 5,
-              comment: "Absolutely love this product! The quality is outstanding.",
-              date: "2024-02-15",
-              helpfulCount: 8,
-              overallFit: "True to Size",
-              size: "M",
-              color: "Black"
-            },
-            {
-              id: 2,
-              user: "John D.",
-              rating: 4,
-              comment: "Great fit and comfortable. Would buy again.",
-              date: "2024-02-10",
-              helpfulCount: 3,
-              overallFit: "Runs Small",
-              size: "L",
-              color: "Navy"
-            }
-          ]} 
-          availableSizes={SIZES.map(size => size.label)}
-          availableColors={COLORS.map(color => color.name)}
+        <AboutStore 
+          storeName="MIMAOYIGOU"
+          rating={4.86}
+          itemCount={23}
+          followerCount={119}
+          logo="https://images.unsplash.com/photo-1472851294608-062f824d29cc"
         />
-      </div>
-      <div className="mt-16">
-        <AboutStore {...{
-          storeName: "MIMAOYIGOU",
-          rating: 4.86,
-          itemCount: 23,
-          followerCount: 119,
-          logo: "https://images.unsplash.com/photo-1472851294608-062f824d29cc",
-        }} />
       </div>
     </div>
   );
