@@ -164,7 +164,11 @@ const Authentication = () => {
                       <FormItem>
                         <FormLabel>Password</FormLabel>
                         <FormControl>
-                          <PasswordInput />
+                          <Input
+                            type="password"
+                            placeholder="Enter your password"
+                            {...field}
+                          />
                         </FormControl>
                         <FormMessage />
                       </FormItem>
@@ -293,7 +297,11 @@ const Authentication = () => {
                       <FormItem>
                         <FormLabel>Password</FormLabel>
                         <FormControl>
-                          <PasswordInput {...field} />
+                          <Input
+                            type="password"
+                            placeholder="Enter your password"
+                            {...field}
+                          />
                         </FormControl>
                         <FormMessage />
                       </FormItem>
@@ -307,7 +315,11 @@ const Authentication = () => {
                       <FormItem>
                         <FormLabel>Confirm Password</FormLabel>
                         <FormControl>
-                          <PasswordInput {...field} />
+                          <Input
+                            type="password"
+                            placeholder="Confirm your password"
+                            {...field}
+                          />
                         </FormControl>
                         <FormMessage />
                       </FormItem>
