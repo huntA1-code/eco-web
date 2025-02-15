@@ -1,3 +1,4 @@
+
 import { Routes, Route } from "react-router-dom";
 import { Navbar } from "./components/Navbar";
 import { SubNavbar } from "./components/SubNavbar";
@@ -42,6 +43,7 @@ import EditDiscount from "./pages/dashboard/discounts/EditDiscount";
 import DiscountProducts from "./pages/dashboard/discounts/DiscountProducts";
 import RecentlyViewed from "./pages/RecentlyViewed";
 import Authentication from "./pages/Authentication";
+import OTPVerification from "./pages/OTPVerification";
 
 function App() {
   const location = useLocation();
@@ -72,7 +74,8 @@ function App() {
         <Route path="/pay" element={<Pay />} />
         <Route path="/order-complete" element={<OrderComplete />} />
         <Route path="/store" element={<Store />} />
-        <Route path="/auth/*" element={<Authentication />} />
+        <Route path="/auth" element={<Authentication />} />
+        <Route path="/auth/verify" element={<OTPVerification />} />
         <Route path="/dashboard/*" element={<Dashboard />}>
           <Route index element={<Overview />} />
           <Route path="products/view" element={<ViewProducts />} />

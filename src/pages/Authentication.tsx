@@ -76,14 +76,14 @@ const Authentication = () => {
   const onSignUp = (values: z.infer<typeof signUpSchema>) => {
     console.log(values);
     toast({
-      title: "Success",
-      description: "Account created successfully!",
+      title: "Account Created",
+      description: "Please verify your email address",
     });
+    navigate('/auth/verify');
   };
 
   return (
     <div className="min-h-screen flex">
-      {/* Left side - Image */}
       <div className="hidden lg:block lg:w-1/2 bg-cover bg-center" 
            style={{ backgroundImage: 'url("https://images.unsplash.com/photo-1469334031218-e382a71b716b?q=80&w=2070&auto=format&fit=crop")' }}>
         <div className="h-full w-full backdrop-blur-sm bg-black/30 flex items-center justify-center">
@@ -99,7 +99,6 @@ const Authentication = () => {
         </div>
       </div>
 
-      {/* Right side - Forms */}
       <div className="w-full lg:w-1/2 flex items-center justify-center p-8 bg-white">
         <motion.div 
           initial={{ opacity: 0 }}
