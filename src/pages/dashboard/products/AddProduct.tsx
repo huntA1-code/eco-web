@@ -1,3 +1,4 @@
+
 import { useForm, useFieldArray } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
@@ -55,17 +56,22 @@ const productSchema = z.object({
       name_details: z.string().min(1, "Name details are required"),
       original_price: z.number().min(0, "Price must be positive"),
       sale_price: z.number().min(0, "Price must be positive"),
-      product_code: z.string().min(1, "Product code is required"),
       variations: z.array(
         z.object({
           size_id: z.string().min(1, "Size is required"),
           qty_in_stock: z.number().min(0, "Quantity must be positive"),
         })
       ),
+      cart_image: z.object({
+        file: z.instanceof(File),
+        description: z.string(),
+        bytes: z.string().optional(),
+      }).nullable(),
       images: z.array(
         z.object({
           file: z.instanceof(File),
           description: z.string(),
+          bytes: z.string().optional(),
         })
       ),
     })
@@ -99,7 +105,7 @@ const AddProduct = () => {
   const onSubmit = async (values: ProductFormData) => {
     try {
       console.log("Preparing product data for submission...");
-
+      
       const formData = {
         ...values,
         product_items: values.product_items.map(item => ({
@@ -318,8 +324,8 @@ const AddProduct = () => {
                       name_details: "",
                       original_price: 0,
                       sale_price: 0,
-                      product_code: "",
                       variations: [],
+                      cart_image: null,
                       images: [],
                     })
                   }
