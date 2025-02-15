@@ -237,14 +237,14 @@ const Authentication = () => {
                         <FormLabel>First Name</FormLabel>
                         <FormControl>
                           <Input 
-                            {...field}
-                            placeholder="John"
                             type="text"
-                            value={field.value}
-                            onChange={(e) => {
-                              const value = e.target.value;
-                              if (/^[a-zA-Z\s]*$/.test(value) || value === '') {
-                                field.onChange(value);
+                            placeholder="John"
+                            className="focus:ring-2 focus:ring-primary"
+                            {...field}
+                            onKeyPress={(e) => {
+                              // Allow only letters and spaces
+                              if (!/[a-zA-Z\s]/.test(e.key)) {
+                                e.preventDefault();
                               }
                             }}
                           />
@@ -262,14 +262,14 @@ const Authentication = () => {
                         <FormLabel>Nickname</FormLabel>
                         <FormControl>
                           <Input 
-                            {...field}
-                            placeholder="Johnny"
                             type="text"
-                            value={field.value}
-                            onChange={(e) => {
-                              const value = e.target.value;
-                              if (/^[a-zA-Z0-9\s]*$/.test(value) || value === '') {
-                                field.onChange(value);
+                            placeholder="Johnny"
+                            className="focus:ring-2 focus:ring-primary"
+                            {...field}
+                            onKeyPress={(e) => {
+                              // Allow letters, numbers, and spaces
+                              if (!/[a-zA-Z0-9\s]/.test(e.key)) {
+                                e.preventDefault();
                               }
                             }}
                           />
