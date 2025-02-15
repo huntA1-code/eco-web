@@ -1,4 +1,3 @@
-
 import { useForm, useFieldArray } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
@@ -104,41 +103,18 @@ const AddProduct = () => {
 
   const onSubmit = async (values: ProductFormData) => {
     try {
-      console.log("Preparing product data for submission...");
+      console.log("Product data to be submitted:", values);
       
-      const formData = {
-        ...values,
-        product_items: values.product_items.map(item => ({
-          ...item,
-          cart_image: item.cart_image ? {
-            description: item.cart_image.description,
-            bytes: item.cart_image.bytes,
-            filename: item.cart_image.file.name
-          } : null,
-          images: item.images.map(image => ({
-            description: image.description,
-            bytes: image.bytes,
-            filename: image.file.name
-          }))
-        }))
-      };
-
-      const response = await fetch('/api/products', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(formData)
-      });
-
-      if (!response.ok) {
-        throw new Error('Failed to create product');
-      }
+      // Mock successful API call
+      // In a real application, this would be a fetch call to your backend
+      await new Promise(resolve => setTimeout(resolve, 1000)); // Simulate network delay
 
       toast({
         title: "Success",
         description: "Product created successfully",
       });
+      
+      // Navigate to products view page
       navigate("/dashboard/products/view");
     } catch (error) {
       console.error("Error creating product:", error);
