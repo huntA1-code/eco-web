@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Routes, Route, useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
@@ -238,11 +237,15 @@ const Authentication = () => {
                         <FormLabel>First Name</FormLabel>
                         <FormControl>
                           <Input 
-                            placeholder="John" 
-                            {...field} 
+                            {...field}
+                            placeholder="John"
+                            type="text"
+                            value={field.value}
                             onChange={(e) => {
-                              const value = e.target.value.replace(/[^a-zA-Z\s]/g, '');
-                              field.onChange(value);
+                              const value = e.target.value;
+                              if (/^[a-zA-Z\s]*$/.test(value) || value === '') {
+                                field.onChange(value);
+                              }
                             }}
                           />
                         </FormControl>
@@ -259,11 +262,15 @@ const Authentication = () => {
                         <FormLabel>Nickname</FormLabel>
                         <FormControl>
                           <Input 
-                            placeholder="Johnny" 
                             {...field}
+                            placeholder="Johnny"
+                            type="text"
+                            value={field.value}
                             onChange={(e) => {
-                              const value = e.target.value.replace(/[^a-zA-Z0-9\s]/g, '');
-                              field.onChange(value);
+                              const value = e.target.value;
+                              if (/^[a-zA-Z0-9\s]*$/.test(value) || value === '') {
+                                field.onChange(value);
+                              }
                             }}
                           />
                         </FormControl>
