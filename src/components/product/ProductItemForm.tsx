@@ -1,5 +1,6 @@
+
 import { useState } from "react";
-import { useFieldArray, useForm } from "react-hook-form";
+import { useFieldArray, Control } from "react-hook-form";
 import {
   FormControl,
   FormField,
@@ -17,7 +18,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Trash2, X } from "lucide-react";
-import { Color, SizeCategory, SizeOption, ProductItem, ProductImage } from "@/types/product";
+import { Color, SizeCategory, SizeOption, ProductItem, ProductImage, ProductFormData } from "@/types/product";
 
 const mockColors: Color[] = [
   { id: "1", name: "Black", hexa: "#000000" },
@@ -37,7 +38,7 @@ const mockSizeCategories: SizeCategory[] = [
 ];
 
 interface ProductItemFormProps {
-  control: any;
+  control: Control<ProductFormData>;
   index: number;
   onRemove: () => void;
 }
@@ -67,7 +68,7 @@ export const ProductItemForm = ({
       reader.readAsDataURL(file);
       reader.onload = () => {
         const base64String = reader.result as string;
-        resolve(base64String.split(',')[1]); // Remove the data:image/xyz;base64, prefix
+        resolve(base64String.split(',')[1]);
       };
       reader.onerror = (error) => reject(error);
     });
@@ -202,6 +203,45 @@ export const ProductItemForm = ({
         />
       </div>
 
+      <FormField
+        control={control}
+        name={`product_items.${index}.cart_image`}
+        render={({ field }) => (
+          <FormItem>
+            <FormLabel>Cart Image</FormLabel>
+            <FormControl>
+              <div className="space-y-2">
+                <Input
+                  type="file"
+                  accept="image/*"
+                  onChange={(e) => handleCartImageUpload(e, field)}
+                  className="cursor-pointer"
+                />
+                {field.value && (
+                  <div className="flex items-center gap-2 p-2 border rounded">
+                    <img
+                      src={URL.createObjectURL(field.value.file)}
+                      alt="Cart preview"
+                      className="w-16 h-16 object-cover rounded"
+                    />
+                    <span className="flex-1">{field.value.file.name}</span>
+                    <Button
+                      type="button"
+                      variant="ghost"
+                      size="icon"
+                      onClick={() => field.onChange(null)}
+                    >
+                      <X className="h-4 w-4" />
+                    </Button>
+                  </div>
+                )}
+              </div>
+            </FormControl>
+            <FormMessage />
+          </FormItem>
+        )}
+      />
+
       <div className="space-y-4">
         <div>
           <FormLabel>Size Category</FormLabel>
@@ -300,90 +340,56 @@ export const ProductItemForm = ({
         )}
       </div>
 
-      <div>
-        <FormLabel>Cart Image</FormLabel>
-        <div className="space-y-2">
-          <Input
-            type="file"
-            accept="image/*"
-            onChange={(e) => handleCartImageUpload(e, control.getValues().product_items[index].cart_image)}
-            className="cursor-pointer"
-          />
-          {control.getValues().product_items[index].cart_image && (
-            <div className="flex items-center gap-2 p-2 border rounded">
-              <img
-                src={URL.createObjectURL(control.getValues().product_items[index].cart_image.file)}
-                alt="Cart preview"
-                className="w-16 h-16 object-cover rounded"
-              />
-              <span className="flex-1">{control.getValues().product_items[index].cart_image.file.name}</span>
-              <Button
-                type="button"
-                variant="ghost"
-                size="icon"
-                onClick={() => control.getValues().product_items[index].cart_image.onChange(null)}
-              >
-                <X className="h-4 w-4" />
-              </Button>
-            </div>
-          )}
-        </div>
-      </div>
-
-      <div>
-        <FormLabel>Product Images</FormLabel>
-        <div className="space-y-4">
-          <FormField
-            control={control}
-            name={`product_items.${index}.images`}
-            render={({ field }) => (
-              <FormItem>
-                <FormControl>
-                  <div className="space-y-4">
-                    <Input
-                      type="file"
-                      multiple
-                      accept="image/*"
-                      onChange={(e) => handleImagesUpload(e, field)}
-                      className="cursor-pointer"
-                    />
-                    <div className="grid grid-cols-2 gap-4">
-                      {field.value?.map((image: ProductImage, imageIndex: number) => (
-                        <div key={imageIndex} className="p-4 border rounded flex flex-col gap-2">
-                          <img
-                            src={URL.createObjectURL(image.file)}
-                            alt={`Preview ${imageIndex + 1}`}
-                            className="w-full h-40 object-cover rounded"
-                          />
-                          <Input
-                            placeholder="Image description"
-                            value={image.description}
-                            onChange={(e) => {
-                              const newImages = [...field.value];
-                              newImages[imageIndex].description = e.target.value;
-                              field.onChange(newImages);
-                            }}
-                          />
-                          <Button
-                            type="button"
-                            variant="destructive"
-                            size="sm"
-                            onClick={() => removeImage(field, imageIndex)}
-                            className="self-end"
-                          >
-                            Remove
-                          </Button>
-                        </div>
-                      ))}
+      <FormField
+        control={control}
+        name={`product_items.${index}.images`}
+        render={({ field }) => (
+          <FormItem>
+            <FormLabel>Product Images</FormLabel>
+            <FormControl>
+              <div className="space-y-4">
+                <Input
+                  type="file"
+                  multiple
+                  accept="image/*"
+                  onChange={(e) => handleImagesUpload(e, field)}
+                  className="cursor-pointer"
+                />
+                <div className="grid grid-cols-2 gap-4">
+                  {field.value?.map((image: ProductImage, imageIndex: number) => (
+                    <div key={imageIndex} className="p-4 border rounded flex flex-col gap-2">
+                      <img
+                        src={URL.createObjectURL(image.file)}
+                        alt={`Preview ${imageIndex + 1}`}
+                        className="w-full h-40 object-cover rounded"
+                      />
+                      <Input
+                        placeholder="Image description"
+                        value={image.description}
+                        onChange={(e) => {
+                          const newImages = [...field.value];
+                          newImages[imageIndex].description = e.target.value;
+                          field.onChange(newImages);
+                        }}
+                      />
+                      <Button
+                        type="button"
+                        variant="destructive"
+                        size="sm"
+                        onClick={() => removeImage(field, imageIndex)}
+                        className="self-end"
+                      >
+                        Remove
+                      </Button>
                     </div>
-                  </div>
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-        </div>
-      </div>
+                  ))}
+                </div>
+              </div>
+            </FormControl>
+            <FormMessage />
+          </FormItem>
+        )}
+      />
     </div>
   );
 };
