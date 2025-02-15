@@ -16,8 +16,8 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Trash2 } from "lucide-react";
-import { Color, SizeCategory, SizeOption, ProductItem } from "@/types/product";
+import { Trash2, X } from "lucide-react";
+import { Color, SizeCategory, SizeOption, ProductItem, ProductImage } from "@/types/product";
 
 const mockColors: Color[] = [
   { id: "1", name: "Black", hexa: "#000000" },
@@ -61,15 +61,48 @@ export const ProductItemForm = ({
     setSizeOptions(category?.options || []);
   };
 
-  const handleImageUpload = (event: React.ChangeEvent<HTMLInputElement>, field: any) => {
+  const handleImageToBase64 = async (file: File): Promise<string> => {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.readAsDataURL(file);
+      reader.onload = () => {
+        const base64String = reader.result as string;
+        resolve(base64String.split(',')[1]); // Remove the data:image/xyz;base64, prefix
+      };
+      reader.onerror = (error) => reject(error);
+    });
+  };
+
+  const handleCartImageUpload = async (event: React.ChangeEvent<HTMLInputElement>, field: any) => {
+    const file = event.target.files?.[0];
+    if (file) {
+      const bytes = await handleImageToBase64(file);
+      field.onChange({
+        file,
+        description: "Cart image",
+        bytes
+      });
+    }
+  };
+
+  const handleImagesUpload = async (event: React.ChangeEvent<HTMLInputElement>, field: any) => {
     const files = event.target.files;
     if (files) {
-      const newImages = Array.from(files).map((file) => ({
-        file,
-        description: "",
-      }));
-      field.onChange(newImages);
+      const newImages = await Promise.all(
+        Array.from(files).map(async (file) => ({
+          file,
+          description: "",
+          bytes: await handleImageToBase64(file)
+        }))
+      );
+      field.onChange([...(field.value || []), ...newImages]);
     }
+  };
+
+  const removeImage = (field: any, index: number) => {
+    const newImages = [...field.value];
+    newImages.splice(index, 1);
+    field.onChange(newImages);
   };
 
   return (
@@ -268,49 +301,88 @@ export const ProductItemForm = ({
       </div>
 
       <div>
-        <FormLabel>Images</FormLabel>
-        <div className="grid grid-cols-2 gap-4">
+        <FormLabel>Cart Image</FormLabel>
+        <div className="space-y-2">
+          <Input
+            type="file"
+            accept="image/*"
+            onChange={(e) => handleCartImageUpload(e, control.getValues().product_items[index].cart_image)}
+            className="cursor-pointer"
+          />
+          {control.getValues().product_items[index].cart_image && (
+            <div className="flex items-center gap-2 p-2 border rounded">
+              <img
+                src={URL.createObjectURL(control.getValues().product_items[index].cart_image.file)}
+                alt="Cart preview"
+                className="w-16 h-16 object-cover rounded"
+              />
+              <span className="flex-1">{control.getValues().product_items[index].cart_image.file.name}</span>
+              <Button
+                type="button"
+                variant="ghost"
+                size="icon"
+                onClick={() => control.getValues().product_items[index].cart_image.onChange(null)}
+              >
+                <X className="h-4 w-4" />
+              </Button>
+            </div>
+          )}
+        </div>
+      </div>
+
+      <div>
+        <FormLabel>Product Images</FormLabel>
+        <div className="space-y-4">
           <FormField
             control={control}
             name={`product_items.${index}.images`}
             render={({ field }) => (
               <FormItem>
                 <FormControl>
-                  <Input
-                    type="file"
-                    multiple
-                    accept="image/*"
-                    onChange={(e) => handleImageUpload(e, field)}
-                    className="cursor-pointer"
-                  />
+                  <div className="space-y-4">
+                    <Input
+                      type="file"
+                      multiple
+                      accept="image/*"
+                      onChange={(e) => handleImagesUpload(e, field)}
+                      className="cursor-pointer"
+                    />
+                    <div className="grid grid-cols-2 gap-4">
+                      {field.value?.map((image: ProductImage, imageIndex: number) => (
+                        <div key={imageIndex} className="p-4 border rounded flex flex-col gap-2">
+                          <img
+                            src={URL.createObjectURL(image.file)}
+                            alt={`Preview ${imageIndex + 1}`}
+                            className="w-full h-40 object-cover rounded"
+                          />
+                          <Input
+                            placeholder="Image description"
+                            value={image.description}
+                            onChange={(e) => {
+                              const newImages = [...field.value];
+                              newImages[imageIndex].description = e.target.value;
+                              field.onChange(newImages);
+                            }}
+                          />
+                          <Button
+                            type="button"
+                            variant="destructive"
+                            size="sm"
+                            onClick={() => removeImage(field, imageIndex)}
+                            className="self-end"
+                          >
+                            Remove
+                          </Button>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
                 </FormControl>
                 <FormMessage />
               </FormItem>
             )}
           />
         </div>
-        <FormField
-          control={control}
-          name={`product_items.${index}.images`}
-          render={({ field }) => (
-            <div>
-              {field.value?.map((image: any, imageIndex: number) => (
-                <div key={imageIndex} className="mt-2 flex items-center gap-2">
-                  <span>{image.file.name}</span>
-                  <Input
-                    placeholder="Image description"
-                    value={image.description}
-                    onChange={(e) => {
-                      const newImages = [...field.value];
-                      newImages[imageIndex].description = e.target.value;
-                      field.onChange(newImages);
-                    }}
-                  />
-                </div>
-              ))}
-            </div>
-          )}
-        />
       </div>
     </div>
   );

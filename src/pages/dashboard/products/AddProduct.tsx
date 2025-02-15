@@ -28,7 +28,6 @@ import { AttributeMultiSelect } from "@/components/product/AttributeMultiSelect"
 import { ProductItemForm } from "@/components/product/ProductItemForm";
 import { ProductFormData } from "@/types/product";
 
-// Mock data - replace with API calls
 const mockDiscounts = [
   { id: "1", name: "Summer Sale 20% OFF", rate: 20 },
   { id: "2", name: "Flash Sale 30% OFF", rate: 30 },
@@ -99,8 +98,37 @@ const AddProduct = () => {
 
   const onSubmit = async (values: ProductFormData) => {
     try {
-      console.log("Creating product:", values);
-      // Implement product creation logic here
+      console.log("Preparing product data for submission...");
+
+      const formData = {
+        ...values,
+        product_items: values.product_items.map(item => ({
+          ...item,
+          cart_image: item.cart_image ? {
+            description: item.cart_image.description,
+            bytes: item.cart_image.bytes,
+            filename: item.cart_image.file.name
+          } : null,
+          images: item.images.map(image => ({
+            description: image.description,
+            bytes: image.bytes,
+            filename: image.file.name
+          }))
+        }))
+      };
+
+      const response = await fetch('/api/products', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(formData)
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to create product');
+      }
+
       toast({
         title: "Success",
         description: "Product created successfully",
