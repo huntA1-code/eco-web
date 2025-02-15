@@ -1,3 +1,4 @@
+
 export interface Category {
   id: string;
   name: string;
@@ -55,7 +56,6 @@ export interface ProductItem {
   name_details: string;
   original_price: number;
   sale_price: number;
-  product_code: string;
   variations: ProductVariation[];
   cart_image: ProductImage | null;
   images: ProductImage[];

@@ -327,7 +327,7 @@ const AddProduct = () => {
                       variations: [],
                       cart_image: null,
                       images: [],
-                    })
+                    } as ProductItem)
                   }
                 >
                   Add Variation
