@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from "react";
 import { CategoryTree } from "@/components/CategoryTree";
 import {
@@ -46,7 +47,7 @@ export const CategorySelect = ({ control, name }: CategorySelectProps) => {
         <FormItem>
           <FormLabel>Category</FormLabel>
           <FormControl>
-            <div className="border rounded-md p-4 max-h-60 overflow-y-auto">
+            <div className="border rounded-md p-4 max-h-60 overflow-y-auto bg-white shadow-sm">
               {categories.map((category) => (
                 <CategoryTree
                   key={category.id}

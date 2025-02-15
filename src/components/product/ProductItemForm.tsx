@@ -16,9 +16,9 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { Trash2 } from "lucide-react";
 import { Color, SizeCategory, SizeOption, ProductItem } from "@/types/product";
 
-// Mock data - replace with API calls
 const mockColors: Color[] = [
   { id: "1", name: "Black", hexa: "#000000" },
   { id: "2", name: "White", hexa: "#FFFFFF" },
@@ -76,8 +76,13 @@ export const ProductItemForm = ({
     <div className="border rounded-lg p-4 space-y-4">
       <div className="flex justify-between items-center">
         <h3 className="text-lg font-semibold">Product Variation {index + 1}</h3>
-        <Button variant="destructive" size="sm" onClick={onRemove}>
-          Remove
+        <Button 
+          variant="ghost" 
+          size="icon" 
+          onClick={onRemove}
+          className="text-red-500 hover:text-red-700 hover:bg-red-50"
+        >
+          <Trash2 className="h-5 w-5" />
         </Button>
       </div>
 
@@ -157,20 +162,6 @@ export const ProductItemForm = ({
                   {...field}
                   onChange={(e) => field.onChange(parseFloat(e.target.value))}
                 />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-
-        <FormField
-          control={control}
-          name={`product_items.${index}.product_code`}
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Product Code</FormLabel>
-              <FormControl>
-                <Input {...field} />
               </FormControl>
               <FormMessage />
             </FormItem>
