@@ -1,10 +1,10 @@
-
 import React, { useState } from 'react';
 import { Routes, Route, useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { useToast } from '@/hooks/use-toast';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
+import { PasswordInput } from '@/components/ui/password-input';
 import {
   Form,
   FormControl,
@@ -28,7 +28,8 @@ const signInSchema = z.object({
 });
 
 const signUpSchema = z.object({
-  fullName: z.string().min(2, 'Full name must be at least 2 characters'),
+  firstName: z.string().min(2, 'First name must be at least 2 characters'),
+  nickname: z.string().min(2, 'Nickname must be at least 2 characters'),
   email: z.string().email('Invalid email address'),
   password: z.string().min(6, 'Password must be at least 6 characters'),
   confirmPassword: z.string(),
@@ -55,7 +56,8 @@ const Authentication = () => {
   const signUpForm = useForm<z.infer<typeof signUpSchema>>({
     resolver: zodResolver(signUpSchema),
     defaultValues: {
-      fullName: '',
+      firstName: '',
+      nickname: '',
       email: '',
       password: '',
       confirmPassword: '',
@@ -135,19 +137,7 @@ const Authentication = () => {
                       <FormItem>
                         <FormLabel>Password</FormLabel>
                         <FormControl>
-                          <div className="relative">
-                            <Input 
-                              type={showPassword ? "text" : "password"}
-                              {...field}
-                            />
-                            <button
-                              type="button"
-                              onClick={() => setShowPassword(!showPassword)}
-                              className="absolute right-3 top-1/2 -translate-y-1/2"
-                            >
-                              {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
-                            </button>
-                          </div>
+                          <PasswordInput />
                         </FormControl>
                         <FormMessage />
                       </FormItem>
@@ -211,12 +201,26 @@ const Authentication = () => {
                 <form onSubmit={signUpForm.handleSubmit(onSignUp)} className="space-y-6">
                   <FormField
                     control={signUpForm.control}
-                    name="fullName"
+                    name="firstName"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel>Full Name</FormLabel>
+                        <FormLabel>First Name</FormLabel>
                         <FormControl>
-                          <Input placeholder="John Doe" {...field} />
+                          <Input placeholder="John" {...field} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+
+                  <FormField
+                    control={signUpForm.control}
+                    name="nickname"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Nickname</FormLabel>
+                        <FormControl>
+                          <Input placeholder="Johnny" {...field} />
                         </FormControl>
                         <FormMessage />
                       </FormItem>
@@ -244,19 +248,7 @@ const Authentication = () => {
                       <FormItem>
                         <FormLabel>Password</FormLabel>
                         <FormControl>
-                          <div className="relative">
-                            <Input 
-                              type={showPassword ? "text" : "password"}
-                              {...field}
-                            />
-                            <button
-                              type="button"
-                              onClick={() => setShowPassword(!showPassword)}
-                              className="absolute right-3 top-1/2 -translate-y-1/2"
-                            >
-                              {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
-                            </button>
-                          </div>
+                          <PasswordInput />
                         </FormControl>
                         <FormMessage />
                       </FormItem>
