@@ -1,4 +1,3 @@
-
 import { Routes, Route } from "react-router-dom";
 import { Navbar } from "./components/Navbar";
 import { SubNavbar } from "./components/SubNavbar";
@@ -42,6 +41,7 @@ import AddDiscount from "./pages/dashboard/discounts/AddDiscount";
 import EditDiscount from "./pages/dashboard/discounts/EditDiscount";
 import DiscountProducts from "./pages/dashboard/discounts/DiscountProducts";
 import RecentlyViewed from "./pages/RecentlyViewed";
+import Authentication from "./pages/Authentication";
 
 function App() {
   const location = useLocation();
@@ -51,11 +51,16 @@ function App() {
     location.pathname === path || location.pathname.startsWith(path + '/')
   );
 
+  const hideNavbarPaths = ['/auth'];
+  const shouldHideNavbar = hideNavbarPaths.some(path =>
+    location.pathname.startsWith(path)
+  );
+
   const isDashboardPage = location.pathname.startsWith('/dashboard');
 
   return (
     <>
-      {!isDashboardPage && <Navbar />}
+      {!isDashboardPage && !shouldHideNavbar && <Navbar />}
       {!isDashboardPage && shouldShowSubNavbar && <SubNavbar />}
       <Routes>
         <Route path="/" element={<Index />} />
@@ -67,6 +72,7 @@ function App() {
         <Route path="/pay" element={<Pay />} />
         <Route path="/order-complete" element={<OrderComplete />} />
         <Route path="/store" element={<Store />} />
+        <Route path="/auth/*" element={<Authentication />} />
         <Route path="/dashboard/*" element={<Dashboard />}>
           <Route index element={<Overview />} />
           <Route path="products/view" element={<ViewProducts />} />

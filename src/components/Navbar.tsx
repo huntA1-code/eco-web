@@ -1,4 +1,3 @@
-
 import { useState } from 'react';
 import { ShoppingBag, Search, Heart, User, Menu, X, LayoutDashboard, LogIn, UserPlus, ClipboardList } from 'lucide-react';
 import { Link, useNavigate } from 'react-router-dom';
@@ -14,7 +13,7 @@ export const Navbar = () => {
   const navigate = useNavigate();
 
   return (
-    <nav className="fixed top-0 left-0 right-0 w-full bg-white z-50 shadow-sm">
+    <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
       <div className="container mx-auto px-4">
         <div className="flex items-center justify-between h-16">
           <div className="flex-shrink-0">
@@ -51,13 +50,12 @@ export const Navbar = () => {
                   </div>
                 ) : (
                   <div className="space-y-1">
-                    <button
-                      onClick={() => navigate('/signin')}
+                    <Link
+                      to="/auth"
                       className="w-full flex items-center gap-2 px-3 py-2 text-sm hover:bg-muted rounded-md transition-colors"
                     >
-                      <LogIn className="w-4 h-4" />
                       Sign In
-                    </button>
+                    </Link>
                     <button
                       onClick={() => navigate('/signup')}
                       className="w-full flex items-center gap-2 px-3 py-2 text-sm hover:bg-muted rounded-md transition-colors"
@@ -113,8 +111,7 @@ export const Navbar = () => {
               </>
             ) : (
               <>
-                <Link to="/signin" className="flex items-center gap-2 nav-link py-2 hover:text-primary">
-                  <LogIn className="w-5 h-5" />
+                <Link to="/auth" className="flex items-center gap-2 nav-link py-2 hover:text-primary">
                   Sign In
                 </Link>
                 <Link to="/signup" className="flex items-center gap-2 nav-link py-2 hover:text-primary">
@@ -135,6 +132,6 @@ export const Navbar = () => {
           </div>
         </div>
       )}
-    </nav>
+    </header>
   );
 };
