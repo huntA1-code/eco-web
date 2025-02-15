@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { Routes, Route, useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
@@ -28,10 +29,16 @@ const signInSchema = z.object({
 });
 
 const signUpSchema = z.object({
-  firstName: z.string().min(2, 'First name must be at least 2 characters'),
-  nickname: z.string().min(2, 'Nickname must be at least 2 characters'),
+  firstName: z.string()
+    .min(2, 'First name must be at least 2 characters')
+    .regex(/^[a-zA-Z\s]*$/, 'First name can only contain letters and spaces'),
+  nickname: z.string()
+    .min(2, 'Nickname must be at least 2 characters')
+    .regex(/^[a-zA-Z0-9\s]*$/, 'Nickname can only contain letters, numbers, and spaces'),
   email: z.string().email('Invalid email address'),
-  password: z.string().min(6, 'Password must be at least 6 characters'),
+  password: z.string()
+    .min(6, 'Password must be at least 6 characters')
+    .regex(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)/, 'Password must contain at least one uppercase letter, one lowercase letter, and one number'),
   confirmPassword: z.string(),
   userType: z.enum(['buyer', 'seller']),
 }).refine((data) => data.password === data.confirmPassword, {
@@ -41,7 +48,6 @@ const signUpSchema = z.object({
 
 const Authentication = () => {
   const [isSignIn, setIsSignIn] = useState(true);
-  const [showPassword, setShowPassword] = useState(false);
   const navigate = useNavigate();
   const { toast } = useToast();
 
@@ -63,27 +69,48 @@ const Authentication = () => {
       confirmPassword: '',
       userType: 'buyer',
     },
+    mode: 'onBlur', // This will trigger validation when field loses focus
   });
 
-  const onSignIn = (values: z.infer<typeof signInSchema>) => {
-    console.log(values);
-    toast({
-      title: "Success",
-      description: "You have successfully signed in!",
-    });
+  const onSignIn = async (values: z.infer<typeof signInSchema>) => {
+    try {
+      console.log('Sign in values:', values);
+      // Here you would typically make an API call to authenticate
+      toast({
+        title: "Success",
+        description: "You have successfully signed in!",
+      });
+      navigate('/');
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: "Failed to sign in. Please try again.",
+        variant: "destructive",
+      });
+    }
   };
 
-  const onSignUp = (values: z.infer<typeof signUpSchema>) => {
-    console.log(values);
-    toast({
-      title: "Account Created",
-      description: "Please verify your email address",
-    });
-    navigate('/auth/verify');
+  const onSignUp = async (values: z.infer<typeof signUpSchema>) => {
+    try {
+      console.log('Sign up values:', values);
+      // Here you would typically make an API call to register
+      toast({
+        title: "Account Created",
+        description: "Please verify your email address",
+      });
+      navigate('/auth/verify');
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: "Failed to create account. Please try again.",
+        variant: "destructive",
+      });
+    }
   };
 
   return (
     <div className="min-h-screen flex">
+      {/* Left side - Image */}
       <div className="hidden lg:block lg:w-1/2 bg-cover bg-center" 
            style={{ backgroundImage: 'url("https://images.unsplash.com/photo-1469334031218-e382a71b716b?q=80&w=2070&auto=format&fit=crop")' }}>
         <div className="h-full w-full backdrop-blur-sm bg-black/30 flex items-center justify-center">
@@ -99,6 +126,7 @@ const Authentication = () => {
         </div>
       </div>
 
+      {/* Right side - Forms */}
       <div className="w-full lg:w-1/2 flex items-center justify-center p-8 bg-white">
         <motion.div 
           initial={{ opacity: 0 }}
@@ -205,7 +233,14 @@ const Authentication = () => {
                       <FormItem>
                         <FormLabel>First Name</FormLabel>
                         <FormControl>
-                          <Input placeholder="John" {...field} />
+                          <Input 
+                            placeholder="John" 
+                            {...field} 
+                            onChange={(e) => {
+                              const value = e.target.value.replace(/[^a-zA-Z\s]/g, '');
+                              field.onChange(value);
+                            }}
+                          />
                         </FormControl>
                         <FormMessage />
                       </FormItem>
@@ -219,7 +254,14 @@ const Authentication = () => {
                       <FormItem>
                         <FormLabel>Nickname</FormLabel>
                         <FormControl>
-                          <Input placeholder="Johnny" {...field} />
+                          <Input 
+                            placeholder="Johnny" 
+                            {...field}
+                            onChange={(e) => {
+                              const value = e.target.value.replace(/[^a-zA-Z0-9\s]/g, '');
+                              field.onChange(value);
+                            }}
+                          />
                         </FormControl>
                         <FormMessage />
                       </FormItem>
@@ -233,7 +275,11 @@ const Authentication = () => {
                       <FormItem>
                         <FormLabel>Email</FormLabel>
                         <FormControl>
-                          <Input placeholder="your@email.com" {...field} />
+                          <Input 
+                            type="email"
+                            placeholder="your@email.com" 
+                            {...field} 
+                          />
                         </FormControl>
                         <FormMessage />
                       </FormItem>
@@ -247,7 +293,7 @@ const Authentication = () => {
                       <FormItem>
                         <FormLabel>Password</FormLabel>
                         <FormControl>
-                          <PasswordInput />
+                          <PasswordInput {...field} />
                         </FormControl>
                         <FormMessage />
                       </FormItem>
@@ -261,7 +307,7 @@ const Authentication = () => {
                       <FormItem>
                         <FormLabel>Confirm Password</FormLabel>
                         <FormControl>
-                          <Input type="password" {...field} />
+                          <PasswordInput {...field} />
                         </FormControl>
                         <FormMessage />
                       </FormItem>
@@ -342,7 +388,10 @@ const Authentication = () => {
                 Already have an account?{' '}
                 <button
                   type="button"
-                  onClick={() => setIsSignIn(true)}
+                  onClick={() => {
+                    setIsSignIn(true);
+                    signInForm.reset();
+                  }}
                   className="text-primary hover:underline"
                 >
                   Sign in
