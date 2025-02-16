@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Star, ThumbsUp, Upload } from 'lucide-react';
 import { useToast } from "@/hooks/use-toast";
@@ -66,6 +65,12 @@ export const CustomerReviews = ({ reviews: initialReviews, availableSizes, avail
     'Black': '#000000',
     'White': '#FFFFFF',
     'Red': '#FF0000',
+  };
+
+  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e && e.target && e.target.files) {
+      setSelectedImages(e.target.files);
+    }
   };
 
   const handleHelpfulClick = (reviewId: number) => {
@@ -238,7 +243,7 @@ export const CustomerReviews = ({ reviews: initialReviews, availableSizes, avail
                       <input
                         type="file"
                         multiple
-                        onChange={(e) => setSelectedImages(e.target.files)}
+                        onChange={handleImageChange}
                         className="hidden"
                         id="image-upload"
                       />

@@ -48,7 +48,13 @@ const Store = () => {
             availableSizes={availableSizes}
             availableColors={availableColors}
           />
-          <AboutStore />
+          <AboutStore 
+            storeName="Fashion Store"
+            rating={4.8}
+            itemCount={1250}
+            followerCount={5600}
+            logo="/placeholder.svg"
+          />
         </div>
       </main>
     </>
