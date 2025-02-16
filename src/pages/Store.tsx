@@ -17,15 +17,16 @@ const Store = () => {
   const [selectedFilters, setSelectedFilters] = useState<Record<string, any>>({});
   const [showMobileFilters, setShowMobileFilters] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
-  const productsPerPage = 20; // Changed to 20 products per page
+  const productsPerPage = 20;
 
-  // Sample products data with more items
+  // Updated products data with fallback image
   const products = Array.from({ length: 100 }, (_, index) => ({
     id: index + 1,
     name: `Sport Running Shoes ${index + 1}`,
     brand: ["Nike", "Adidas", "Puma", "Under Armour"][Math.floor(Math.random() * 4)],
     price: 99.99 + Math.floor(Math.random() * 100),
-    image: "https://images.unsplash.com/photo-1542291026-7eec264c27ff",
+    // Using a local placeholder image to avoid CORS issues
+    image: "/placeholder.svg",
     colors: ["Black", "White", "Red"],
     sizes: ["US 7", "US 8", "US 9", "US 10"],
     description: "Premium running shoes with advanced cushioning technology.",
