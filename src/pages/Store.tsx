@@ -36,28 +36,35 @@ const availableColors = ["Black", "White", "Navy", "Red", "Forest Green", "Hot P
 
 const Store = () => {
   return (
-    <>
+    <div className="min-h-screen bg-gray-50">
       <StoreHeader />
       <StoreStats />
       <main className="max-w-[1400px] mx-auto px-4 py-8">
-        <div className="grid grid-cols-1 gap-8">
-          <FeaturedProducts />
-          <DiscountProducts />
-          <CustomerReviews
-            reviews={mockReviews}
-            availableSizes={availableSizes}
-            availableColors={availableColors}
-          />
-          <AboutStore 
-            storeName="Fashion Store"
-            rating={4.8}
-            itemCount={1250}
-            followerCount={5600}
-            logo="/placeholder.svg"
-          />
+        <div className="grid grid-cols-1 md:grid-cols-12 gap-8">
+          {/* Main Content - 8 columns on desktop */}
+          <div className="md:col-span-8 space-y-8">
+            <FeaturedProducts />
+            <DiscountProducts />
+            <CustomerReviews
+              reviews={mockReviews}
+              availableSizes={availableSizes}
+              availableColors={availableColors}
+            />
+          </div>
+          
+          {/* Sidebar - 4 columns on desktop */}
+          <div className="md:col-span-4 space-y-8">
+            <AboutStore 
+              storeName="Multi-brand Sports Flagship Store"
+              rating={4.91}
+              itemCount={5000}
+              followerCount={448}
+              logo="/placeholder.svg"
+            />
+          </div>
         </div>
       </main>
-    </>
+    </div>
   );
 };
 
