@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useCallback } from 'react';
 import { Star, ThumbsUp, Upload } from 'lucide-react';
 import { useToast } from "@/hooks/use-toast";
 import { Button } from "@/components/ui/button";
@@ -18,6 +18,8 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { fetchReviews, addReview, toggleHelpful, type ReviewData } from '@/api/reviews';
+import { useLocation } from 'react-router-dom';
 
 interface Review {
   id: number;
@@ -39,7 +41,12 @@ interface CustomerReviewsProps {
 }
 
 export const CustomerReviews = ({ reviews: initialReviews, availableSizes, availableColors }: CustomerReviewsProps) => {
-  const [reviews, setReviews] = useState(initialReviews);
+  const [reviews, setReviews] = useState<ReviewData[]>(initialReviews);
+  const [isLoading, setIsLoading] = useState(false);
+  const { toast } = useToast();
+  const location = useLocation();
+  const productId = decodeURIComponent(location.pathname.split('/').pop() || '');
+
   const [newReview, setNewReview] = useState({
     rating: 5,
     comment: '',
@@ -52,7 +59,6 @@ export const CustomerReviews = ({ reviews: initialReviews, availableSizes, avail
   const [selectedColor, setSelectedColor] = useState("all");
   const [selectedSize, setSelectedSize] = useState("all");
   const [selectedFilter, setSelectedFilter] = useState("all");
-  const { toast } = useToast();
   const [selectedImages, setSelectedImages] = useState<FileList | null>(null);
   const [isOpen, setIsOpen] = useState(false);
 
@@ -71,46 +77,76 @@ export const CustomerReviews = ({ reviews: initialReviews, availableSizes, avail
     }
   };
 
-  const handleHelpfulClick = (reviewId: number) => {
-    setReviews(prevReviews =>
-      prevReviews.map(review =>
-        review.id === reviewId
-          ? { ...review, helpfulCount: review.helpfulCount + 1 }
-          : review
-      )
-    );
+  const handleHelpfulClick = async (reviewId: number, currentIsHelpful: boolean | undefined) => {
+    try {
+      setIsLoading(true);
+      const { helpfulCount } = await toggleHelpful(reviewId, !currentIsHelpful);
+      
+      setReviews(prevReviews =>
+        prevReviews.map(review =>
+          review.id === reviewId
+            ? { ...review, helpfulCount, isHelpful: !currentIsHelpful }
+            : review
+        )
+      );
+
+      toast({
+        title: currentIsHelpful ? "Removed helpful mark" : "Marked as helpful",
+        description: currentIsHelpful ? "Your feedback has been removed" : "Thank you for your feedback!",
+      });
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: "Failed to update helpful status",
+        variant: "destructive",
+      });
+    } finally {
+      setIsLoading(false);
+    }
   };
 
-  const handleSubmitReview = (e: React.FormEvent) => {
+  const handleSubmitReview = async (e: React.FormEvent) => {
     e.preventDefault();
-    const newReviewObj = {
-      id: reviews.length + 1,
-      user: "Current User",
-      rating: newReview.rating,
-      comment: newReview.comment,
-      date: new Date().toISOString(),
-      size: newReview.size,
-      color: newReview.color,
-      overallFit: newReview.overallFit,
-      helpfulCount: 0,
-      images: selectedImages ? Array.from(selectedImages).map(file => URL.createObjectURL(file)) : [],
-    };
+    try {
+      setIsLoading(true);
+      
+      const reviewData = {
+        user: "Current User",
+        rating: newReview.rating,
+        comment: newReview.comment,
+        date: new Date().toISOString(),
+        size: newReview.size,
+        color: newReview.color,
+        overallFit: newReview.overallFit,
+        images: selectedImages ? Array.from(selectedImages).map(file => URL.createObjectURL(file)) : [],
+      };
 
-    setReviews(prev => [...prev, newReviewObj]);
-    setNewReview({
-      rating: 5,
-      comment: '',
-      size: '',
-      color: '',
-      overallFit: 'True to Size',
-    });
-    setSelectedImages(null);
-    setIsOpen(false);
-    
-    toast({
-      title: "Review submitted",
-      description: "Thank you for your review!",
-    });
+      const addedReview = await addReview(productId, reviewData);
+      setReviews(prev => [...prev, addedReview]);
+      
+      setNewReview({
+        rating: 5,
+        comment: '',
+        size: '',
+        color: '',
+        overallFit: 'True to Size',
+      });
+      setSelectedImages(null);
+      setIsOpen(false);
+      
+      toast({
+        title: "Review submitted",
+        description: "Thank you for your review!",
+      });
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: "Failed to submit review",
+        variant: "destructive",
+      });
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   const overallRating = (reviews.reduce((acc, review) => acc + review.rating, 0) / reviews.length).toFixed(2);
@@ -408,10 +444,18 @@ export const CustomerReviews = ({ reviews: initialReviews, availableSizes, avail
                     </div>
                   </div>
                   <button 
-                    onClick={() => handleHelpfulClick(review.id)}
-                    className="flex items-center gap-1 text-sm text-neutral hover:text-neutral-dark"
+                    onClick={() => handleHelpfulClick(review.id, review.isHelpful)}
+                    disabled={isLoading}
+                    className={`flex items-center gap-1 text-sm transition-colors ${
+                      review.isHelpful 
+                        ? 'text-primary hover:text-primary/80' 
+                        : 'text-neutral hover:text-neutral-dark'
+                    }`}
                   >
-                    <ThumbsUp size={14} />
+                    <ThumbsUp 
+                      size={14} 
+                      className={review.isHelpful ? 'fill-current' : ''}
+                    />
                     <span>Helpful ({review.helpfulCount})</span>
                   </button>
                 </div>
