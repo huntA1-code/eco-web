@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { Truck, Trash2 } from 'lucide-react';
 import { Input } from '@/components/ui/input';
@@ -23,7 +24,7 @@ const Cart = () => {
       size: "Black / UK3.5(EUR36)",
       price: 88.00,
       quantity: 1,
-      image: "/placeholder.svg"
+      image: "https://images.unsplash.com/photo-1618160702438-9b02ab6515c9"
     },
     {
       id: 2,
@@ -31,7 +32,7 @@ const Cart = () => {
       size: "White / UK4(EUR37)",
       price: 120.00,
       quantity: 1,
-      image: "/placeholder.svg"
+      image: "https://images.unsplash.com/photo-1535268647677-300dbf3d78d1"
     },
     {
       id: 3,
@@ -39,7 +40,7 @@ const Cart = () => {
       size: "Gray / UK5(EUR38)",
       price: 95.00,
       quantity: 1,
-      image: "/placeholder.svg"
+      image: "https://images.unsplash.com/photo-1485833077593-4278bba3f11f"
     }
   ]);
 
@@ -120,7 +121,11 @@ const Cart = () => {
                   onCheckedChange={() => handleSelectItem(item.id)}
                   className="w-5 h-5 mt-2"
                 />
-                <img src={item.image} alt={item.name} className="w-24 h-24 object-cover rounded" />
+                <img 
+                  src={item.image} 
+                  alt={item.name} 
+                  className="w-24 h-24 object-cover rounded-lg"
+                />
                 <div className="flex-1">
                   <h3 className="font-medium">{item.name}</h3>
                   <p className="text-sm text-neutral mt-1">{item.size}</p>
@@ -148,7 +153,7 @@ const Cart = () => {
                         <Trash2 className="w-5 h-5" />
                       </button>
                     </div>
-                    <span className="font-semibold">£{item.price.toFixed(2)}</span>
+                    <span className="font-semibold">${item.price.toFixed(2)}</span>
                   </div>
                 </div>
               </div>
@@ -163,7 +168,7 @@ const Cart = () => {
             <div className="space-y-4 mb-6">
               <div className="flex justify-between">
                 <span>Estimated Price:</span>
-                <span className="font-semibold">£{calculateTotal().toFixed(2)}</span>
+                <span className="font-semibold">${calculateTotal().toFixed(2)}</span>
               </div>
             </div>
 
