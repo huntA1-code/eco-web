@@ -1,10 +1,8 @@
 import { Check, Star } from 'lucide-react';
 import { Button } from '../ui/button';
 import { StoreStats } from './StoreStats';
-
 export const StoreHeader = () => {
-  return (
-    <div className="w-full bg-neutral-700 text-white">
+  return <div className="w-full bg-neutral-700 text-white">
       <div className="max-w-7xl mx-auto px-4 py-8">
         <div className="flex items-start gap-6">
           {/* Store Logo */}
@@ -15,10 +13,7 @@ export const StoreHeader = () => {
             <div className="flex items-center gap-4 mb-4">
               <h1 className="text-2xl font-bold">Multi-brand Sports Flagship Store</h1>
               <div className="flex items-center gap-2">
-                <Button variant="outline" size="sm" className="bg-white/10 hover:bg-white/20">
-                  <Check size={16} />
-                  Choices
-                </Button>
+                
                 <Button variant="outline" size="sm" className="bg-white/10 hover:bg-white/20">
                   <Check size={16} />
                   Brand
@@ -41,6 +36,5 @@ export const StoreHeader = () => {
           </div>
         </div>
       </div>
-    </div>
-  );
+    </div>;
 };
