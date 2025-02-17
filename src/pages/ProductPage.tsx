@@ -6,6 +6,7 @@ import { useToast } from "@/hooks/use-toast";
 import { AboutStore } from "@/components/AboutStore";
 import { CustomerReviews } from "@/components/CustomerReviews";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
+
 const SIZES = [{
   label: '8Y',
   dimensions: '122-128CM',
@@ -27,6 +28,7 @@ const SIZES = [{
   dimensions: '146-152CM',
   quantity: 3
 }];
+
 const COLORS = [{
   name: 'Hot Pink',
   hex: '#FF69B4',
@@ -54,7 +56,7 @@ const COLORS = [{
     dimensions: '146-152CM',
     quantity: 1
   }],
-  images: ["https://images.unsplash.com/photo-1515886657613-9f3515b0c78f", "https://images.unsplash.com/photo-1503342217505-b0a15ec3261c", "https://images.unsplash.com/photo-1582562124811-c09040d0a901", "https://images.unsplash.com/photo-1466721591366-2d5fba72006d"]
+  images: ["/placeholder.svg", "/placeholder.svg", "/placeholder.svg", "/placeholder.svg"]
 }, {
   name: 'Navy',
   hex: '#000080',
@@ -82,7 +84,7 @@ const COLORS = [{
     dimensions: '146-152CM',
     quantity: 0
   }],
-  images: ["https://images.unsplash.com/photo-1582562124811-c09040d0a901", "https://images.unsplash.com/photo-1515886657613-9f3515b0c78f", "https://images.unsplash.com/photo-1503342217505-b0a15ec3261c", "https://images.unsplash.com/photo-1466721591366-2d5fba72006d"]
+  images: ["/placeholder.svg", "/placeholder.svg", "/placeholder.svg", "/placeholder.svg"]
 }, {
   name: 'Forest Green',
   hex: '#228B22',
@@ -109,7 +111,7 @@ const COLORS = [{
     dimensions: '146-152CM',
     quantity: 8
   }],
-  images: ["https://images.unsplash.com/photo-1503342217505-b0a15ec3261c", "https://images.unsplash.com/photo-1515886657613-9f3515b0c78f", "https://images.unsplash.com/photo-1582562124811-c09040d0a901", "https://images.unsplash.com/photo-1466721591366-2d5fba72006d"]
+  images: ["/placeholder.svg", "/placeholder.svg", "/placeholder.svg", "/placeholder.svg"]
 }, {
   name: 'Black',
   hex: '#000000',
@@ -136,8 +138,9 @@ const COLORS = [{
     dimensions: '146-152CM',
     quantity: 1
   }],
-  images: ["https://images.unsplash.com/photo-1466721591366-2d5fba72006d", "https://images.unsplash.com/photo-1515886657613-9f3515b0c78f", "https://images.unsplash.com/photo-1503342217505-b0a15ec3261c", "https://images.unsplash.com/photo-1582562124811-c09040d0a901"]
+  images: ["/placeholder.svg", "/placeholder.svg", "/placeholder.svg", "/placeholder.svg"]
 }];
+
 export default function ProductPage() {
   const {
     productName
@@ -155,6 +158,7 @@ export default function ProductPage() {
   const [isLiked, setIsLiked] = useState(false);
   const [openDescription, setOpenDescription] = useState(true);
   const [openSizeFit, setOpenSizeFit] = useState(false);
+
   const handleColorSelect = (color: typeof COLORS[0]) => {
     setSelectedColor(color.name);
     setCurrentImages(color.images);
@@ -163,6 +167,7 @@ export default function ProductPage() {
     setCurrentPrice(color.price);
     setCurrentOriginalPrice(color.originalPrice);
   };
+
   const handleAddToCart = () => {
     if (!selectedSize) {
       toast({
@@ -177,6 +182,7 @@ export default function ProductPage() {
       description: `${productName} has been added to your cart.`
     });
   };
+
   const handleLikeClick = () => {
     setIsLiked(!isLiked);
     toast({
@@ -184,12 +190,15 @@ export default function ProductPage() {
       description: !isLiked ? "Product has been added to your wishlist" : "Product has been removed from your wishlist"
     });
   };
+
   const nextImage = () => {
     setSelectedImage(prev => (prev + 1) % currentImages.length);
   };
+
   const previousImage = () => {
     setSelectedImage(prev => (prev - 1 + currentImages.length) % currentImages.length);
   };
+
   const product = {
     name: decodeURIComponent(productName || ""),
     sku: `SK${Math.random().toString(36).substr(2, 8)}`,
@@ -199,6 +208,7 @@ export default function ProductPage() {
     isBestSeller: true,
     description: "This premium quality clothing item is designed with both style and comfort in mind. Made from high-grade materials, it features excellent durability and a perfect fit. Perfect for everyday wear or special occasions."
   };
+
   return <div className="container max-w-[1100px] mx-auto px-4 py-8">
       <div className="grid grid-cols-1 md:grid-cols-12 gap-8">
         <div className="md:col-span-7">
