@@ -1,7 +1,8 @@
+
 import { motion } from 'framer-motion';
-import { Heart, ShoppingCart, SlidersHorizontal } from 'lucide-react';
+import { Heart, ShoppingCart } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+
 const products = [{
   id: 1,
   name: "Floral Summer Dress",
@@ -35,57 +36,9 @@ const products = [{
   likes: 312,
   unitsSold: 200
 }];
+
 export default function SignedInWishlist() {
   return <div className="container mx-auto">
-      <div className="flex justify-between items-center mb-6">
-        <div className="flex gap-4">
-          <Select defaultValue="category">
-            <SelectTrigger className="w-[180px]">
-              <SelectValue placeholder="Category" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="all">All Categories</SelectItem>
-              <SelectItem value="dresses">Dresses</SelectItem>
-              <SelectItem value="tops">Tops</SelectItem>
-              <SelectItem value="bottoms">Bottoms</SelectItem>
-            </SelectContent>
-          </Select>
-          <Select defaultValue="status">
-            <SelectTrigger className="w-[180px]">
-              <SelectValue placeholder="Status" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="all">All Status</SelectItem>
-              <SelectItem value="instock">In Stock</SelectItem>
-              <SelectItem value="outofstock">Out of Stock</SelectItem>
-            </SelectContent>
-          </Select>
-          
-        </div>
-        <Select defaultValue="recent">
-          <SelectTrigger className="w-[180px]">
-            <SelectValue placeholder="Sort By" />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="recent">Recently Added</SelectItem>
-            <SelectItem value="price-low">Price: Low to High</SelectItem>
-            <SelectItem value="price-high">Price: High to Low</SelectItem>
-          </SelectContent>
-        </Select>
-      </div>
-
-      <div className="flex gap-4 mb-8">
-        <Button variant="outline" className="hover:bg-primary/10">
-          Price cut
-        </Button>
-        <Button variant="outline" className="hover:bg-primary/10">
-          Low in stock
-        </Button>
-        <Button variant="outline" className="hover:bg-primary/10">
-          Back in stock
-        </Button>
-      </div>
-
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
         {products.map(product => <motion.div key={product.id} initial={{
         opacity: 0,
