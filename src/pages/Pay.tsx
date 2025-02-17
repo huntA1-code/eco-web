@@ -7,6 +7,12 @@ import { useNavigate } from 'react-router-dom';
 
 const Pay = () => {
   const navigate = useNavigate();
+  
+  // Constants for calculations
+  const subtotal = 303.00;
+  const taxRate = 0.20; // 20% VAT
+  const taxAmount = subtotal * taxRate;
+  const total = subtotal + taxAmount;
 
   return (
     <div className="container mx-auto px-4 py-8 mt-20">
@@ -102,16 +108,20 @@ const Pay = () => {
             <div className="space-y-4">
               <div className="flex justify-between text-sm">
                 <span>Subtotal (3 items)</span>
-                <span>£303.00</span>
+                <span>£{subtotal.toFixed(2)}</span>
               </div>
               <div className="flex justify-between text-sm">
                 <span>Shipping</span>
                 <span className="text-primary">FREE</span>
               </div>
+              <div className="flex justify-between text-sm">
+                <span>Tax (VAT 20%)</span>
+                <span>£{taxAmount.toFixed(2)}</span>
+              </div>
               <div className="pt-4 border-t">
                 <div className="flex justify-between font-semibold">
                   <span>Total</span>
-                  <span>£303.00</span>
+                  <span>£{total.toFixed(2)}</span>
                 </div>
                 <p className="text-xs text-muted-foreground mt-1">Including VAT</p>
               </div>
