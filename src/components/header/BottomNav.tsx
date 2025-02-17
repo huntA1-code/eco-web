@@ -8,14 +8,7 @@ export const BottomNav = () => {
   return <div className="w-full border-b border-gray-200">
       <div className="max-w-7xl mx-auto px-4 py-3">
         <div className="flex items-center justify-between">
-          <div className="flex gap-8">
-            <Link to="/store" className={`${isStorePage ? 'text-gray-900 border-b-2 border-gray-900' : 'text-gray-600 hover:text-gray-900'}`}>
-              Item
-            </Link>
-            <Link to="/store-review" className={`${isReviewPage ? 'text-gray-900 border-b-2 border-gray-900' : 'text-gray-600 hover:text-gray-900'}`}>
-              Review
-            </Link>
-          </div>
+          
           <div className="flex items-center gap-4">
             
             <div className="relative">
