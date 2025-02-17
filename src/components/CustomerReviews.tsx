@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Star, ThumbsUp, Upload } from 'lucide-react';
 import { useToast } from "@/hooks/use-toast";
@@ -133,6 +132,30 @@ export const CustomerReviews = ({ reviews: initialReviews, availableSizes, avail
       setReviews(filteredReviews);
     }
   };
+
+  const handleFilterChange = (filterType: string, value: string) => {
+    if (filterType === 'color') {
+      setSelectedColor(value);
+    } else if (filterType === 'size') {
+      setSelectedSize(value);
+    }
+  };
+
+  const filteredReviews = reviews.filter(review => {
+    if (selectedTab === "images" && (!review.images || review.images.length === 0)) {
+      return false;
+    }
+    if (selectedColor && review.color !== selectedColor) {
+      return false;
+    }
+    if (selectedSize && review.size !== selectedSize) {
+      return false;
+    }
+    if (selectedRating !== "all" && review.rating !== parseInt(selectedRating)) {
+      return false;
+    }
+    return true;
+  });
 
   return (
     <div className="space-y-6 bg-white p-6 rounded-lg">
@@ -295,7 +318,12 @@ export const CustomerReviews = ({ reviews: initialReviews, availableSizes, avail
           </div>
 
           <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
-            <Tabs defaultValue="all" className="w-full sm:w-auto">
+            <Tabs 
+              defaultValue="all" 
+              value={selectedTab}
+              onValueChange={setSelectedTab}
+              className="w-full sm:w-auto"
+            >
               <TabsList>
                 <TabsTrigger 
                   value="all"
@@ -325,17 +353,25 @@ export const CustomerReviews = ({ reviews: initialReviews, availableSizes, avail
                   <SelectItem value="1">1 Star</SelectItem>
                 </SelectContent>
               </Select>
-              <Select value={selectedFilter} onValueChange={setSelectedFilter}>
+              <Select value={selectedColor} onValueChange={(value) => handleFilterChange('color', value)}>
                 <SelectTrigger className="w-full sm:w-[150px]">
-                  <SelectValue placeholder="Filter by" />
+                  <SelectValue placeholder="Color" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="all">All</SelectItem>
+                  <SelectItem value="">All Colors</SelectItem>
                   {availableColors.map((color) => (
                     <SelectItem key={color} value={color}>
                       {color}
                     </SelectItem>
                   ))}
+                </SelectContent>
+              </Select>
+              <Select value={selectedSize} onValueChange={(value) => handleFilterChange('size', value)}>
+                <SelectTrigger className="w-full sm:w-[150px]">
+                  <SelectValue placeholder="Size" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="">All Sizes</SelectItem>
                   {availableSizes.map((size) => (
                     <SelectItem key={size} value={size}>
                       Size {size}
@@ -350,13 +386,8 @@ export const CustomerReviews = ({ reviews: initialReviews, availableSizes, avail
       
       <div className="space-y-4">
         <div className="space-y-4">
-          {reviews
-            .filter(review => {
-              if (selectedColor && review.color !== selectedColor) return false;
-              if (selectedSize && review.size !== selectedSize) return false;
-              return true;
-            })
-            .map((review) => (
+          {filteredReviews.length > 0 ? (
+            filteredReviews.map((review) => (
               <div key={review.id} className="p-4 bg-neutral-light rounded-lg">
                 <div className="flex justify-between items-start mb-2">
                   <div>
@@ -407,7 +438,12 @@ export const CustomerReviews = ({ reviews: initialReviews, availableSizes, avail
                   </div>
                 )}
               </div>
-            ))}
+            ))
+          ) : (
+            <div className="text-center py-8 text-gray-500">
+              No reviews match your selected filters.
+            </div>
+          )}
         </div>
       </div>
     </div>
