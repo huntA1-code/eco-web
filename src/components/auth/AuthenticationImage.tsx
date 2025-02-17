@@ -4,7 +4,7 @@ import { motion } from 'framer-motion';
 export const AuthenticationImage = () => {
   return (
     <div className="hidden lg:block lg:w-1/2 bg-cover bg-center" 
-         style={{ backgroundImage: 'url("https://images.unsplash.com/photo-1469334031218-e382a71b716b?q=80&w=2070&auto=format&fit=crop")' }}>
+         style={{ backgroundImage: 'url("https://images.unsplash.com/photo-1617137968427-85924c800a22?q=80&w=1974&auto=format&fit=crop")' }}>
       <div className="h-full w-full backdrop-blur-sm bg-black/30 flex items-center justify-center">
         <motion.div 
           initial={{ opacity: 0, y: 20 }}
