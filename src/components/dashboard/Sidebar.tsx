@@ -1,4 +1,3 @@
-
 import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { 
@@ -13,6 +12,8 @@ import {
   Package,
   ClipboardList,
   RefreshCw,
+  User,
+  MapPin
 } from 'lucide-react';
 import { Link, useNavigate } from 'react-router-dom';
 
@@ -30,11 +31,10 @@ interface MenuItem {
 const menuItems: MenuItem[] = [
   {
     title: 'My Account',
-    path: '/account'
-  },
-  {
-    title: 'My Assets',
-    path: '/assets'
+    items: [
+      { title: 'My Profile', icon: <User className="w-4 h-4" />, path: '/account/profile' },
+      { title: 'Address', icon: <MapPin className="w-4 h-4" />, path: '/account/address' }
+    ]
   },
   {
     title: 'My Orders',
