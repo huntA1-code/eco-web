@@ -159,189 +159,188 @@ export const CustomerReviews = ({ reviews: initialReviews, availableSizes, avail
 
   return (
     <div className="space-y-6 bg-white p-6 rounded-lg">
-      <div className="flex justify-between items-center">
-        <div className="space-y-6 w-full">
-          <div className="flex justify-between items-start">
-            <div className="space-y-4">
-              <h3 className="text-2xl font-serif font-semibold">Customer Reviews</h3>
-              <div className="flex items-center gap-3">
-                <span className="text-3xl font-bold">{overallRating}</span>
-                <div className="flex gap-1">
-                  {[...Array(5)].map((_, i) => (
-                    <Star
-                      key={i}
-                      className="w-5 h-5 fill-yellow-400 text-yellow-400"
-                    />
-                  ))}
+      <div className="space-y-6 w-full">
+        <div className="flex justify-between items-start">
+          <div className="space-y-4">
+            <h3 className="text-2xl font-serif font-semibold">Customer Reviews</h3>
+            <div className="flex items-center gap-3">
+              <span className="text-3xl font-bold">{overallRating}</span>
+              <div className="flex gap-1">
+                {[...Array(5)].map((_, i) => (
+                  <Star
+                    key={i}
+                    className="w-5 h-5 fill-yellow-400 text-yellow-400"
+                  />
+                ))}
+              </div>
+            </div>
+          </div>
+          <Dialog open={isOpen} onOpenChange={setIsOpen}>
+            <DialogTrigger asChild>
+              <Button variant="outline">Write a Review</Button>
+            </DialogTrigger>
+            <DialogContent className="sm:max-w-[500px]">
+              <DialogHeader>
+                <DialogTitle>Write a Review</DialogTitle>
+              </DialogHeader>
+              <form onSubmit={handleSubmitReview} className="space-y-4">
+                <div>
+                  <label className="block text-sm mb-1">Rating</label>
+                  <div className="flex gap-1">
+                    {Array.from({ length: 5 }).map((_, idx) => (
+                      <button
+                        key={idx}
+                        type="button"
+                        onClick={() => setNewReview(prev => ({ ...prev, rating: idx + 1 }))}
+                        className={`text-2xl ${
+                          idx < newReview.rating ? "text-yellow-400" : "text-gray-300"
+                        }`}
+                      >
+                        ★
+                      </button>
+                    ))}
+                  </div>
                 </div>
-              </div>
-            </div>
-            <Dialog open={isOpen} onOpenChange={setIsOpen}>
-              <DialogTrigger asChild>
-                <Button variant="outline">Write a Review</Button>
-              </DialogTrigger>
-              <DialogContent className="sm:max-w-[500px]">
-                <DialogHeader>
-                  <DialogTitle>Write a Review</DialogTitle>
-                </DialogHeader>
-                <form onSubmit={handleSubmitReview} className="space-y-4">
-                  <div>
-                    <label className="block text-sm mb-1">Rating</label>
-                    <div className="flex gap-1">
-                      {Array.from({ length: 5 }).map((_, idx) => (
-                        <button
-                          key={idx}
-                          type="button"
-                          onClick={() => setNewReview(prev => ({ ...prev, rating: idx + 1 }))}
-                          className={`text-2xl ${
-                            idx < newReview.rating ? "text-yellow-400" : "text-gray-300"
-                          }`}
-                        >
-                          ★
-                        </button>
-                      ))}
-                    </div>
-                  </div>
 
+                <div>
+                  <label className="block text-sm mb-1">Your Review</label>
+                  <textarea
+                    value={newReview.comment}
+                    onChange={(e) => setNewReview(prev => ({ ...prev, comment: e.target.value }))}
+                    className="w-full p-2 border rounded"
+                    rows={4}
+                    required
+                  />
+                </div>
+
+                <div className="grid grid-cols-3 gap-4">
                   <div>
-                    <label className="block text-sm mb-1">Your Review</label>
-                    <textarea
-                      value={newReview.comment}
-                      onChange={(e) => setNewReview(prev => ({ ...prev, comment: e.target.value }))}
-                      className="w-full p-2 border rounded"
-                      rows={4}
-                      required
+                    <label className="block text-sm mb-1">Size</label>
+                    <Select 
+                      value={newReview.size} 
+                      onValueChange={(value) => setNewReview(prev => ({ ...prev, size: value }))}
+                    >
+                      <SelectTrigger>
+                        <SelectValue placeholder="Select size" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {availableSizes.map((size) => (
+                          <SelectItem key={size} value={size}>
+                            {size}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  
+                  <div>
+                    <label className="block text-sm mb-1">Color</label>
+                    <Select 
+                      value={newReview.color} 
+                      onValueChange={(value) => setNewReview(prev => ({ ...prev, color: value }))}
+                    >
+                      <SelectTrigger>
+                        <SelectValue placeholder="Select color" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {availableColors.map((color) => (
+                          <SelectItem key={color} value={color}>
+                            {color}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  
+                  <div>
+                    <label className="block text-sm mb-1">Fit</label>
+                    <Select 
+                      value={newReview.overallFit} 
+                      onValueChange={(value) => setNewReview(prev => ({ ...prev, overallFit: value }))}
+                    >
+                      <SelectTrigger>
+                        <SelectValue placeholder="Select fit" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="True to Size">True to Size</SelectItem>
+                        <SelectItem value="Runs Small">Runs Small</SelectItem>
+                        <SelectItem value="Runs Large">Runs Large</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                </div>
+
+                <div>
+                  <label className="block text-sm mb-1">Images</label>
+                  <div className="border-2 border-dashed rounded p-4 text-center">
+                    <input
+                      type="file"
+                      multiple
+                      onChange={handleImageChange}
+                      className="hidden"
+                      id="image-upload"
                     />
+                    <label htmlFor="image-upload" className="cursor-pointer flex items-center justify-center gap-2">
+                      <Upload size={20} />
+                      <span>Upload Images</span>
+                    </label>
                   </div>
+                </div>
 
-                  <div className="grid grid-cols-3 gap-4">
-                    <div>
-                      <label className="block text-sm mb-1">Size</label>
-                      <Select 
-                        value={newReview.size} 
-                        onValueChange={(value) => setNewReview(prev => ({ ...prev, size: value }))}
-                      >
-                        <SelectTrigger>
-                          <SelectValue placeholder="Select size" />
-                        </SelectTrigger>
-                        <SelectContent>
-                          {availableSizes.map((size) => (
-                            <SelectItem key={size} value={size}>
-                              {size}
-                            </SelectItem>
-                          ))}
-                        </SelectContent>
-                      </Select>
-                    </div>
-                    
-                    <div>
-                      <label className="block text-sm mb-1">Color</label>
-                      <Select 
-                        value={newReview.color} 
-                        onValueChange={(value) => setNewReview(prev => ({ ...prev, color: value }))}
-                      >
-                        <SelectTrigger>
-                          <SelectValue placeholder="Select color" />
-                        </SelectTrigger>
-                        <SelectContent>
-                          {availableColors.map((color) => (
-                            <SelectItem key={color} value={color}>
-                              {color}
-                            </SelectItem>
-                          ))}
-                        </SelectContent>
-                      </Select>
-                    </div>
-                    
-                    <div>
-                      <label className="block text-sm mb-1">Fit</label>
-                      <Select 
-                        value={newReview.overallFit} 
-                        onValueChange={(value) => setNewReview(prev => ({ ...prev, overallFit: value }))}
-                      >
-                        <SelectTrigger>
-                          <SelectValue placeholder="Select fit" />
-                        </SelectTrigger>
-                        <SelectContent>
-                          <SelectItem value="True to Size">True to Size</SelectItem>
-                          <SelectItem value="Runs Small">Runs Small</SelectItem>
-                          <SelectItem value="Runs Large">Runs Large</SelectItem>
-                        </SelectContent>
-                      </Select>
-                    </div>
-                  </div>
+                <Button type="submit" className="w-full">
+                  Submit Review
+                </Button>
+              </form>
+            </DialogContent>
+          </Dialog>
+        </div>
 
-                  <div>
-                    <label className="block text-sm mb-1">Images</label>
-                    <div className="border-2 border-dashed rounded p-4 text-center">
-                      <input
-                        type="file"
-                        multiple
-                        onChange={handleImageChange}
-                        className="hidden"
-                        id="image-upload"
-                      />
-                      <label htmlFor="image-upload" className="cursor-pointer flex items-center justify-center gap-2">
-                        <Upload size={20} />
-                        <span>Upload Images</span>
-                      </label>
-                    </div>
-                  </div>
-
-                  <Button type="submit" className="w-full">
-                    Submit Review
-                  </Button>
-                </form>
-              </DialogContent>
-            </Dialog>
-          </div>
-
-          <div className="space-y-3">
-            <h4 className="font-medium">Fit Distribution</h4>
-            <div className="space-y-2">
-              <div className="flex items-center gap-4">
-                <span className="w-24 text-sm">Small</span>
-                <Progress value={fitDistribution.small} className="flex-1" />
-                <span className="text-sm w-12">{fitDistribution.small}%</span>
-              </div>
-              <div className="flex items-center gap-4">
-                <span className="w-24 text-sm">True to Size</span>
-                <Progress value={fitDistribution.trueToSize} className="flex-1 bg-gray-200 [&>div]:bg-black" />
-                <span className="text-sm w-12">{fitDistribution.trueToSize}%</span>
-              </div>
-              <div className="flex items-center gap-4">
-                <span className="w-24 text-sm">Large</span>
-                <Progress value={fitDistribution.large} className="flex-1" />
-                <span className="text-sm w-12">{fitDistribution.large}%</span>
-              </div>
+        <div className="space-y-3">
+          <h4 className="font-medium">Fit Distribution</h4>
+          <div className="space-y-2">
+            <div className="flex items-center gap-4">
+              <span className="w-24 text-sm">Small</span>
+              <Progress value={fitDistribution.small} className="flex-1" />
+              <span className="text-sm w-12">{fitDistribution.small}%</span>
+            </div>
+            <div className="flex items-center gap-4">
+              <span className="w-24 text-sm">True to Size</span>
+              <Progress value={fitDistribution.trueToSize} className="flex-1 bg-gray-200 [&>div]:bg-black" />
+              <span className="text-sm w-12">{fitDistribution.trueToSize}%</span>
+            </div>
+            <div className="flex items-center gap-4">
+              <span className="w-24 text-sm">Large</span>
+              <Progress value={fitDistribution.large} className="flex-1" />
+              <span className="text-sm w-12">{fitDistribution.large}%</span>
             </div>
           </div>
+        </div>
 
-          <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
-            <Tabs 
-              defaultValue="all" 
-              value={selectedTab}
-              onValueChange={setSelectedTab}
-              className="w-full sm:w-auto"
-            >
-              <TabsList>
-                <TabsTrigger 
-                  value="all"
-                  className="data-[state=active]:border-b-2 data-[state=active]:border-black"
-                >
-                  All Reviews
-                </TabsTrigger>
-                <TabsTrigger 
-                  value="images"
-                  className="data-[state=active]:border-b-2 data-[state=active]:border-black"
-                >
-                  Images
-                </TabsTrigger>
-              </TabsList>
-            </Tabs>
-            <div className="flex gap-3 w-full sm:w-auto">
+        <div className="space-y-4">
+          <Tabs 
+            defaultValue="all" 
+            value={selectedTab}
+            onValueChange={setSelectedTab}
+            className="w-full"
+          >
+            <TabsList className="mb-4">
+              <TabsTrigger 
+                value="all"
+                className="data-[state=active]:border-b-2 data-[state=active]:border-black"
+              >
+                All Reviews
+              </TabsTrigger>
+              <TabsTrigger 
+                value="images"
+                className="data-[state=active]:border-b-2 data-[state=active]:border-black"
+              >
+                Images
+              </TabsTrigger>
+            </TabsList>
+
+            <div className="flex flex-wrap gap-3">
               <Select value={selectedRating} onValueChange={handleRatingFilter}>
-                <SelectTrigger className="w-full sm:w-[150px]">
+                <SelectTrigger className="w-[150px]">
                   <SelectValue placeholder="Rating" />
                 </SelectTrigger>
                 <SelectContent>
@@ -354,7 +353,7 @@ export const CustomerReviews = ({ reviews: initialReviews, availableSizes, avail
                 </SelectContent>
               </Select>
               <Select value={selectedColor} onValueChange={(value) => handleFilterChange('color', value)}>
-                <SelectTrigger className="w-full sm:w-[150px]">
+                <SelectTrigger className="w-[150px]">
                   <SelectValue placeholder="Color" />
                 </SelectTrigger>
                 <SelectContent>
@@ -367,7 +366,7 @@ export const CustomerReviews = ({ reviews: initialReviews, availableSizes, avail
                 </SelectContent>
               </Select>
               <Select value={selectedSize} onValueChange={(value) => handleFilterChange('size', value)}>
-                <SelectTrigger className="w-full sm:w-[150px]">
+                <SelectTrigger className="w-[150px]">
                   <SelectValue placeholder="Size" />
                 </SelectTrigger>
                 <SelectContent>
@@ -380,7 +379,7 @@ export const CustomerReviews = ({ reviews: initialReviews, availableSizes, avail
                 </SelectContent>
               </Select>
             </div>
-          </div>
+          </Tabs>
         </div>
       </div>
       
