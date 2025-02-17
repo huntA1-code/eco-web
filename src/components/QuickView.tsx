@@ -6,7 +6,7 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { Badge } from "@/components/ui/badge";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Heart, ShoppingBag, ChevronRight } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { Link } from "react-router-dom";
@@ -41,7 +41,25 @@ export const QuickView = ({ product, isOpen, onClose }: QuickViewProps) => {
   const [selectedSize, setSelectedSize] = useState<string>("");
   const [selectedColor, setSelectedColor] = useState<string>(COLORS[0].hex);
   const { toast } = useToast();
-  const [selectedImage, setSelectedImage] = useState(product.image);
+  const [selectedImage, setSelectedImage] = useState<string>("");
+
+  useEffect(() => {
+    if (product) {
+      setSelectedImage(product.image);
+    }
+  }, [product]);
+
+  if (!product) {
+    return null;
+  }
+
+  // Generate additional product images for the gallery
+  const productImages = [
+    product.image,
+    product.image.replace(/\d+$/, "2"),
+    product.image.replace(/\d+$/, "3"),
+    product.image.replace(/\d+$/, "4"),
+  ];
 
   const handleAddToCart = () => {
     if (!selectedSize) {
@@ -58,14 +76,6 @@ export const QuickView = ({ product, isOpen, onClose }: QuickViewProps) => {
       description: `${product.name} (Size: ${selectedSize}) has been added to your cart.`,
     });
   };
-
-  // Generate additional product images for the gallery
-  const productImages = [
-    product.image,
-    product.image.replace(/\d+$/, "2"),
-    product.image.replace(/\d+$/, "3"),
-    product.image.replace(/\d+$/, "4"),
-  ];
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
