@@ -1,6 +1,6 @@
 
 import { useState } from "react";
-import { Header } from "../components/header/Header";
+import { Header } from "@/components/header/Header";
 import { CustomerReviews } from "@/components/CustomerReviews";
 import { BottomNav } from "@/components/header/BottomNav";
 
@@ -15,7 +15,8 @@ const mockReviews = [
     overallFit: "True to Size",
     size: "M",
     color: "Black",
-    helpfulCount: 12
+    helpfulCount: 12,
+    avatar: "/placeholder.svg" // Using local placeholder image
   },
   {
     id: 2,
@@ -26,7 +27,8 @@ const mockReviews = [
     overallFit: "Runs Small",
     size: "L",
     color: "Navy",
-    helpfulCount: 8
+    helpfulCount: 8,
+    avatar: "/placeholder.svg" // Using local placeholder image
   },
   {
     id: 3,
@@ -37,7 +39,8 @@ const mockReviews = [
     overallFit: "True to Size",
     size: "S",
     color: "Red",
-    helpfulCount: 15
+    helpfulCount: 15,
+    avatar: "/placeholder.svg" // Using local placeholder image
   }
 ];
 
@@ -48,7 +51,6 @@ const StoreReview = () => {
   return (
     <div className="min-h-screen bg-gray-50">
       <Header />
-      <BottomNav />
       <main className="max-w-[1400px] mx-auto px-4 py-8">
         <CustomerReviews
           reviews={mockReviews}
