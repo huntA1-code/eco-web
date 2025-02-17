@@ -1,3 +1,4 @@
+
 import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { 
@@ -32,8 +33,8 @@ const menuItems: MenuItem[] = [
   {
     title: 'My Account',
     items: [
-      { title: 'My Profile', icon: <User className="w-4 h-4" />, path: '/account/profile' },
-      { title: 'Address', icon: <MapPin className="w-4 h-4" />, path: '/account/address' }
+      { title: 'My Profile', icon: <User className="w-4 h-4" />, path: '/wishlist/account/profile' },
+      { title: 'Address', icon: <MapPin className="w-4 h-4" />, path: '/wishlist/account/address' }
     ]
   },
   {
