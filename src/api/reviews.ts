@@ -108,6 +108,7 @@ export const toggleHelpful = async (reviewId: number, helpful: boolean): Promise
   }
   
   // If no change, return current helpfulCount
+  const allProductKeys = Object.keys(localStorage).filter(key => key.startsWith('reviews_'));
   const allReviews = allProductKeys.flatMap(key => JSON.parse(localStorage.getItem(key) || '[]'));
   const review = allReviews.find((r: ReviewData) => r.id === reviewId);
   return { helpfulCount: review?.helpfulCount || 0 };
