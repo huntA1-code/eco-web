@@ -1,6 +1,8 @@
+
 import { Categories } from "@/components/Categories";
 import { Hero } from "@/components/Hero";
 import { FeaturedProducts } from "@/components/FeaturedProducts";
+import { TrendProducts } from "@/components/TrendProducts";
 import { OfferProducts } from "@/components/OfferProducts";
 import { DiscountProducts } from "@/components/DiscountProducts";
 import { Services } from "@/components/Services";
@@ -12,6 +14,7 @@ const Index = () => {
       <Hero />
       <Categories />
       <FeaturedProducts />
+      <TrendProducts />
       <OfferProducts />
       <DiscountProducts />
       <Services />
