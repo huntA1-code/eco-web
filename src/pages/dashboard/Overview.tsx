@@ -1,7 +1,6 @@
 
 import { SalesRevenue } from "@/components/dashboard/SalesRevenue";
 import { OrderManagement } from "@/components/dashboard/OrderManagement";
-import { ProductInsights } from "@/components/dashboard/ProductInsights";
 import { CustomerFeedback } from "@/components/dashboard/CustomerFeedback";
 import { Card, CardContent } from "@/components/ui/card";
 import { ArrowUpRight, ArrowDownRight, DollarSign, ShoppingBag, Star, Package } from "lucide-react";
@@ -10,7 +9,7 @@ export const Overview = () => {
   console.log("Rendering Overview component");
   
   return (
-    <div className="space-y-8 p-8 bg-secondary/5 max-w-[1400px] mx-auto min-h-screen">
+    <div className="space-y-8 bg-secondary/5 max-w-[1400px] mx-auto min-h-screen">
       <div className="space-y-3">
         <h2 className="text-3xl font-bold tracking-tight">Vendor Dashboard</h2>
         <p className="text-muted-foreground">
@@ -84,12 +83,6 @@ export const Overview = () => {
       <div className="space-y-4">
         <h3 className="text-xl font-semibold">Order Management</h3>
         <OrderManagement />
-      </div>
-
-      {/* Product Insights */}
-      <div className="space-y-4">
-        <h3 className="text-xl font-semibold">Product & Inventory Insights</h3>
-        <ProductInsights />
       </div>
 
       {/* Customer Feedback */}
