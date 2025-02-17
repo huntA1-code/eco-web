@@ -51,12 +51,17 @@ export const TrendStore = () => {
             {stores.map((store, index) => (
               <CarouselItem key={index} className="pl-2 md:pl-4 basis-full sm:basis-1/2 md:basis-1/3 lg:basis-1/4">
                 <div className="animate-fade-up" style={{ animationDelay: `${index * 100}ms` }}>
-                  <div className="relative aspect-square overflow-hidden rounded-lg">
+                  <div className="relative aspect-square overflow-hidden rounded-lg group">
                     <img
                       src={store.image}
                       alt={store.name}
-                      className="w-full h-full object-cover transition-transform duration-500 hover:scale-110"
+                      className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
                     />
+                    <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end">
+                      <h3 className="text-white font-medium p-4 w-full text-center bg-black/60">
+                        {store.name}
+                      </h3>
+                    </div>
                   </div>
                 </div>
               </CarouselItem>
