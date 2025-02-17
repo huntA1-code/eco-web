@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { Star, ThumbsUp, Upload } from 'lucide-react';
 import { useToast } from "@/hooks/use-toast";
@@ -9,7 +10,6 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import { Switch } from "@/components/ui/switch";
 import { Progress } from "@/components/ui/progress";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
@@ -49,7 +49,6 @@ export const CustomerReviews = ({ reviews: initialReviews, availableSizes, avail
     overallFit: 'True to Size',
   });
   const [selectedTab, setSelectedTab] = useState("all");
-  const [showLocalReviews, setShowLocalReviews] = useState(false);
   const [selectedRating, setSelectedRating] = useState("all");
   const [selectedColor, setSelectedColor] = useState("");
   const [selectedSize, setSelectedSize] = useState("");
@@ -121,6 +120,18 @@ export const CustomerReviews = ({ reviews: initialReviews, availableSizes, avail
     small: 4,
     trueToSize: 94,
     large: 2
+  };
+
+  const handleRatingFilter = (rating: string) => {
+    setSelectedRating(rating);
+    if (rating === "all") {
+      setReviews(initialReviews);
+    } else {
+      const filteredReviews = initialReviews.filter(review => 
+        review.rating === parseInt(rating)
+      );
+      setReviews(filteredReviews);
+    }
   };
 
   return (
@@ -283,27 +294,6 @@ export const CustomerReviews = ({ reviews: initialReviews, availableSizes, avail
             </div>
           </div>
 
-          <div className="flex items-center justify-between border-t border-b py-4">
-            <div className="flex items-center gap-3">
-              <span className="font-medium">View Local Reviews</span>
-              <div className="flex items-center gap-1">
-                <span className="font-medium">4.90</span>
-                <div className="flex">
-                  {[...Array(5)].map((_, i) => (
-                    <Star
-                      key={i}
-                      className="w-4 h-4 fill-yellow-400 text-yellow-400"
-                    />
-                  ))}
-                </div>
-              </div>
-            </div>
-            <Switch
-              checked={showLocalReviews}
-              onCheckedChange={setShowLocalReviews}
-            />
-          </div>
-
           <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
             <Tabs defaultValue="all" className="w-full sm:w-auto">
               <TabsList>
@@ -322,7 +312,7 @@ export const CustomerReviews = ({ reviews: initialReviews, availableSizes, avail
               </TabsList>
             </Tabs>
             <div className="flex gap-3 w-full sm:w-auto">
-              <Select value={selectedRating} onValueChange={setSelectedRating}>
+              <Select value={selectedRating} onValueChange={handleRatingFilter}>
                 <SelectTrigger className="w-full sm:w-[150px]">
                   <SelectValue placeholder="Rating" />
                 </SelectTrigger>
@@ -359,54 +349,6 @@ export const CustomerReviews = ({ reviews: initialReviews, availableSizes, avail
       </div>
       
       <div className="space-y-4">
-        <div className="space-y-6">
-          <div className="space-y-4">
-            <h3 className="text-lg font-medium">Colour</h3>
-            <div className="flex flex-wrap gap-3">
-              {availableColors.map((color) => (
-                <button
-                  key={color}
-                  onClick={() => setSelectedColor(selectedColor === color ? '' : color)}
-                  className={`relative w-10 h-10 rounded-full transition-all ${
-                    selectedColor === color ? 'ring-2 ring-primary ring-offset-2' : ''
-                  } ${color.toLowerCase() === 'white' ? 'border border-gray-200' : ''}`}
-                  style={{ backgroundColor: colorHexMap[color] || color }}
-                  title={color}
-                >
-                  {selectedColor === color && (
-                    <span className="absolute inset-0 flex items-center justify-center">
-                      {color.toLowerCase() === 'white' ? (
-                        <div className="w-2 h-2 bg-black rounded-full" />
-                      ) : (
-                        <div className="w-2 h-2 bg-white rounded-full" />
-                      )}
-                    </span>
-                  )}
-                </button>
-              ))}
-            </div>
-          </div>
-
-          <div className="space-y-4">
-            <h3 className="text-lg font-medium">Size</h3>
-            <div className="flex flex-wrap gap-3">
-              {availableSizes.map((size) => (
-                <button
-                  key={size}
-                  onClick={() => setSelectedSize(selectedSize === size ? '' : size)}
-                  className={`px-4 py-2 rounded-full border transition-all ${
-                    selectedSize === size
-                      ? 'border-primary bg-primary/5 text-primary'
-                      : 'border-gray-200 hover:border-gray-300'
-                  }`}
-                >
-                  {size}
-                </button>
-              ))}
-            </div>
-          </div>
-        </div>
-
         <div className="space-y-4">
           {reviews
             .filter(review => {
