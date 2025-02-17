@@ -20,7 +20,7 @@ export default function WishList() {
           <Route path="recently-viewed" element={<RecentlyViewed />} />
           <Route path="my-orders" element={<MyOrders />} />
           <Route path="follow" element={<FollowedStores />} />
-          <Route path="/account/profile" element={<ProfileUpdate />} />
+          <Route path="account/profile" element={<ProfileUpdate />} />
           <Route path="/" element={
             isSignedIn ? <SignedInWishlist /> : <SignedOutWishlist />
           } />
