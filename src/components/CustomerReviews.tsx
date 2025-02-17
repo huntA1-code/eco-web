@@ -446,17 +446,27 @@ export const CustomerReviews = ({ reviews: initialReviews, availableSizes, avail
                   <button 
                     onClick={() => handleHelpfulClick(review.id, review.isHelpful)}
                     disabled={isLoading}
-                    className={`flex items-center gap-1 text-sm transition-colors ${
-                      review.isHelpful 
-                        ? 'text-primary hover:text-primary/80' 
-                        : 'text-neutral hover:text-neutral-dark'
-                    }`}
+                    className={`
+                      flex items-center gap-1.5 px-3 py-1.5 rounded-full 
+                      transition-all duration-200 text-sm font-medium
+                      ${review.isHelpful 
+                        ? 'bg-primary/10 text-primary hover:bg-primary/20' 
+                        : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+                      }
+                      disabled:opacity-50 disabled:cursor-not-allowed
+                    `}
                   >
                     <ThumbsUp 
                       size={14} 
-                      className={review.isHelpful ? 'fill-current' : ''}
+                      className={`transition-transform duration-200 ${
+                        review.isHelpful 
+                          ? 'fill-primary transform scale-110' 
+                          : 'transform scale-100'
+                      }`}
                     />
-                    <span>Helpful ({review.helpfulCount})</span>
+                    <span>
+                      {review.isHelpful ? 'Helpful' : 'Helpful'} ({review.helpfulCount})
+                    </span>
                   </button>
                 </div>
                 
