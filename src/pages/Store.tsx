@@ -6,7 +6,6 @@ import { ProductCard } from '../components/ProductCard';
 import {
   Pagination,
   PaginationContent,
-  PaginationEllipsis,
   PaginationItem,
   PaginationLink,
   PaginationNext,
@@ -19,13 +18,11 @@ const Store = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const productsPerPage = 20;
 
-  // Updated products data with fallback image
   const products = Array.from({ length: 100 }, (_, index) => ({
     id: index + 1,
     name: `Sport Running Shoes ${index + 1}`,
     brand: ["Nike", "Adidas", "Puma", "Under Armour"][Math.floor(Math.random() * 4)],
     price: 99.99 + Math.floor(Math.random() * 100),
-    // Using a local placeholder image to avoid CORS issues
     image: "/placeholder.svg",
     colors: ["Black", "White", "Red"],
     sizes: ["US 7", "US 8", "US 9", "US 10"],
