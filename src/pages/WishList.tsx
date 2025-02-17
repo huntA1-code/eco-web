@@ -8,6 +8,7 @@ import RecentlyViewed from './RecentlyViewed';
 import MyOrders from './dashboard/orders/MyOrders';
 import FollowedStores from './FollowedStores';
 import ProfileUpdate from './dashboard/profile/ProfileUpdate';
+import Address from './dashboard/profile/Address';
 
 export default function WishList() {
   const [isSignedIn] = useState(true);
@@ -21,6 +22,7 @@ export default function WishList() {
           <Route path="my-orders" element={<MyOrders />} />
           <Route path="follow" element={<FollowedStores />} />
           <Route path="account/profile" element={<ProfileUpdate />} />
+          <Route path="account/address" element={<Address />} />
           <Route path="/" element={
             isSignedIn ? <SignedInWishlist /> : <SignedOutWishlist />
           } />
