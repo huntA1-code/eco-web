@@ -205,8 +205,7 @@ export default function ProductPage() {
     rating: 4.8,
     reviews: 128,
     isTrending: true,
-    isBestSeller: true,
-    description: "This premium quality clothing item is designed with both style and comfort in mind. Made from high-grade materials, it features excellent durability and a perfect fit. Perfect for everyday wear or special occasions."
+    isBestSeller: true
   };
 
   return <div className="container max-w-[1100px] mx-auto px-4 py-8">
@@ -367,7 +366,6 @@ export default function ProductPage() {
                 </CollapsibleContent>
               </Collapsible>
             </div>
-            {product.description}
           </div>
         </div>
       </div>
