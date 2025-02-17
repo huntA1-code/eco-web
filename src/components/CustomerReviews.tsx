@@ -49,8 +49,8 @@ export const CustomerReviews = ({ reviews: initialReviews, availableSizes, avail
   });
   const [selectedTab, setSelectedTab] = useState("all");
   const [selectedRating, setSelectedRating] = useState("all");
-  const [selectedColor, setSelectedColor] = useState("");
-  const [selectedSize, setSelectedSize] = useState("");
+  const [selectedColor, setSelectedColor] = useState("all");
+  const [selectedSize, setSelectedSize] = useState("all");
   const [selectedFilter, setSelectedFilter] = useState("all");
   const { toast } = useToast();
   const [selectedImages, setSelectedImages] = useState<FileList | null>(null);
@@ -145,10 +145,10 @@ export const CustomerReviews = ({ reviews: initialReviews, availableSizes, avail
     if (selectedTab === "images" && (!review.images || review.images.length === 0)) {
       return false;
     }
-    if (selectedColor && review.color !== selectedColor) {
+    if (selectedColor !== "all" && review.color !== selectedColor) {
       return false;
     }
-    if (selectedSize && review.size !== selectedSize) {
+    if (selectedSize !== "all" && review.size !== selectedSize) {
       return false;
     }
     if (selectedRating !== "all" && review.rating !== parseInt(selectedRating)) {
@@ -358,7 +358,7 @@ export const CustomerReviews = ({ reviews: initialReviews, availableSizes, avail
                   <SelectValue placeholder="Color" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="">All Colors</SelectItem>
+                  <SelectItem value="all">All Colors</SelectItem>
                   {availableColors.map((color) => (
                     <SelectItem key={color} value={color}>
                       {color}
@@ -371,7 +371,7 @@ export const CustomerReviews = ({ reviews: initialReviews, availableSizes, avail
                   <SelectValue placeholder="Size" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="">All Sizes</SelectItem>
+                  <SelectItem value="all">All Sizes</SelectItem>
                   {availableSizes.map((size) => (
                     <SelectItem key={size} value={size}>
                       Size {size}
