@@ -2,16 +2,11 @@ import React, { useState } from "react";
 import { Outlet, useLocation, useNavigate } from "react-router-dom";
 import {
   LayoutDashboard,
-  Users,
   ShoppingBag,
   ClipboardList,
   Store,
-  CreditCard,
   Percent,
   MessageSquare,
-  Image,
-  BarChart,
-  Settings,
   ChevronDown,
 } from "lucide-react";
 
@@ -27,7 +22,6 @@ const productSubMenu = [
 
 const sidebarLinks = [
   { icon: LayoutDashboard, label: "Overview", path: "/dashboard" },
-  { icon: Users, label: "Users", path: "/dashboard/users" },
   {
     icon: ShoppingBag,
     label: "Products",
@@ -36,12 +30,8 @@ const sidebarLinks = [
   },
   { icon: ClipboardList, label: "Orders", path: "/dashboard/orders" },
   { icon: Store, label: "Stores", path: "/dashboard/stores" },
-  { icon: CreditCard, label: "Payments", path: "/dashboard/payments" },
   { icon: Percent, label: "Discounts", path: "/dashboard/discounts" },
   { icon: MessageSquare, label: "Reviews", path: "/dashboard/reviews" },
-  { icon: Image, label: "Content", path: "/dashboard/content" },
-  { icon: BarChart, label: "Analytics", path: "/dashboard/analytics" },
-  { icon: Settings, label: "Settings", path: "/dashboard/settings" },
 ];
 
 const Dashboard = () => {
