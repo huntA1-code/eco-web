@@ -44,6 +44,7 @@ import DiscountProducts from "./pages/dashboard/discounts/DiscountProducts";
 import RecentlyViewed from "./pages/RecentlyViewed";
 import Authentication from "./pages/Authentication";
 import OTPVerification from "./pages/OTPVerification";
+import StoreReview from "./pages/StoreReview";
 
 function App() {
   const location = useLocation();
@@ -67,13 +68,14 @@ function App() {
       <Routes>
         <Route path="/" element={<Index />} />
         <Route path="/products" element={<Products />} />
-        <Route path="/product/:id" element={<ProductPage />} />
+        <Route path="/product/:productName" element={<ProductPage />} />
         <Route path="/cart" element={<Cart />} />
         <Route path="/wishlist/*" element={<WishList />} />
         <Route path="/place-order" element={<PlaceOrder />} />
         <Route path="/pay" element={<Pay />} />
         <Route path="/order-complete" element={<OrderComplete />} />
         <Route path="/store" element={<Store />} />
+        <Route path="/store-review" element={<StoreReview />} />
         <Route path="/auth" element={<Authentication />} />
         <Route path="/auth/verify" element={<OTPVerification />} />
         <Route path="/dashboard/*" element={<Dashboard />}>
