@@ -16,7 +16,7 @@ const products = [{
   reviews: 128,
   discount: {
     rate: 20,
-    type: 'percentage'
+    type: 'percentage' as const  // Fixed by adding type assertion
   }
 }, {
   id: 2,
