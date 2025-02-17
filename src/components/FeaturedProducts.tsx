@@ -110,9 +110,11 @@ export const FeaturedProducts = () => {
           <CarouselNext className="hidden md:flex -right-4" />
         </Carousel>
       </div>
-      {selectedProduct && (
-        <QuickView product={selectedProduct} onClose={() => setSelectedProduct(null)} />
-      )}
+      <QuickView 
+        product={selectedProduct} 
+        isOpen={!!selectedProduct} 
+        onClose={() => setSelectedProduct(null)} 
+      />
     </section>
   );
 };
