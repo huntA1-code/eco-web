@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { Star, ThumbsUp, ThumbsDown } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
@@ -44,6 +43,30 @@ const DashboardReviews = () => {
       });
     } finally {
       setIsLoading(false);
+    }
+  };
+
+  const handleSortChange = async (newSortBy: string) => {
+    // Validate that newSortBy is one of the allowed values
+    if (newSortBy === 'recent' || newSortBy === 'highest' || newSortBy === 'lowest') {
+      setSortBy(newSortBy);
+      try {
+        setIsLoading(true);
+        const fetchedReviews = await fetchReviews('default', {
+          isStoreReview: activeTab === "store",
+          rating: selectedRating === "all" ? undefined : Number(selectedRating),
+          sortBy: newSortBy,
+        });
+        setReviews(fetchedReviews);
+      } catch (error) {
+        toast({
+          title: "Error",
+          description: "Failed to fetch reviews",
+          variant: "destructive",
+        });
+      } finally {
+        setIsLoading(false);
+      }
     }
   };
 
@@ -115,7 +138,7 @@ const DashboardReviews = () => {
                   </SelectContent>
                 </Select>
 
-                <Select value={sortBy} onValueChange={setSortBy}>
+                <Select value={sortBy} onValueChange={handleSortChange}>
                   <SelectTrigger className="w-[180px]">
                     <SelectValue placeholder="Sort by" />
                   </SelectTrigger>
