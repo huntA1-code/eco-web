@@ -55,12 +55,12 @@ const productSchema = z.object({
     z.object({
       color_id: z.string().min(1, "Color is required"),
       name_details: z.string().min(1, "Name details are required"),
-      original_price: z.number().min(0, "Price must be positive"),
-      sale_price: z.number().min(0, "Price must be positive"),
+      original_price: z.coerce.number().min(0, "Price must be positive"),
+      sale_price: z.coerce.number().min(0, "Price must be positive"),
       variations: z.array(
         z.object({
           size_id: z.string().min(1, "Size is required"),
-          qty_in_stock: z.number().min(0, "Quantity must be positive"),
+          qty_in_stock: z.coerce.number().min(0, "Quantity must be positive"),
         })
       ),
       cart_image: z.object({
@@ -87,13 +87,14 @@ const EditProduct = () => {
   const form = useForm<ProductFormData>({
     resolver: zodResolver(productSchema),
     defaultValues: {
+      category_id: "",
+      brand_id: "",
       name: "",
       description: "",
       care_instructions: "",
       about: "",
       is_featured: false,
       discount_id: "",
-      brand_id: "",
       attribute_options: [],
       product_items: [],
     },
@@ -168,6 +169,8 @@ const EditProduct = () => {
         });
 
         form.reset(response);
+        
+        console.log("Form data after reset:", form.getValues());
       } catch (error) {
         console.error("Error fetching product:", error);
         toast({
