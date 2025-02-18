@@ -1,4 +1,3 @@
-
 import { useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -105,11 +104,9 @@ const EditProduct = () => {
     name: "product_items",
   });
 
-  // Simulate fetching product data with more detailed mock data
   useEffect(() => {
     const fetchProduct = async () => {
       try {
-        // Simulated API call with comprehensive mock data
         const response = await new Promise<ProductFormData>((resolve) => {
           setTimeout(() => {
             resolve({
@@ -190,7 +187,6 @@ const EditProduct = () => {
     try {
       console.log("Product data to be updated:", values);
       
-      // Simulated API call
       await new Promise(resolve => setTimeout(resolve, 1000));
 
       toast({
