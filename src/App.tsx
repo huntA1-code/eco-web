@@ -1,4 +1,3 @@
-
 import { Routes, Route } from "react-router-dom";
 import { Navbar } from "./components/Navbar";
 import { SubNavbar } from "./components/SubNavbar";
@@ -45,6 +44,7 @@ import RecentlyViewed from "./pages/RecentlyViewed";
 import Authentication from "./pages/Authentication";
 import OTPVerification from "./pages/OTPVerification";
 import StoreReview from "./pages/StoreReview";
+import DashboardReviews from "./pages/dashboard/DashboardReviews";
 
 function App() {
   const location = useLocation();
@@ -80,6 +80,7 @@ function App() {
         <Route path="/auth/verify" element={<OTPVerification />} />
         <Route path="/dashboard/*" element={<Dashboard />}>
           <Route index element={<Overview />} />
+          <Route path="reviews" element={<DashboardReviews />} />
           <Route path="products/view" element={<ViewProducts />} />
           <Route path="products/add" element={<AddProduct />} />
           <Route path="products/edit" element={<EditProduct />} />
