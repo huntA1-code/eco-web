@@ -80,6 +80,12 @@ export const ProductItemForm = ({
     }
   };
 
+  const handleRemoveImage = (images: ProductImage[], imgIndex: number, field: any) => {
+    const newImages = [...images];
+    newImages.splice(imgIndex, 1);
+    field.onChange(newImages);
+  };
+
   return (
     <div className="border rounded-lg p-4 space-y-4">
       <div className="flex justify-between items-center">
@@ -350,7 +356,7 @@ export const ProductItemForm = ({
                         type="button"
                         variant="destructive"
                         size="sm"
-                        onClick={() => removeImage(field, imageIndex)}
+                        onClick={() => handleRemoveImage(field.value, imageIndex, field)}
                         className="self-end"
                       >
                         Remove

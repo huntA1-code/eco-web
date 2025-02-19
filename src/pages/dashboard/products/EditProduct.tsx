@@ -1,4 +1,3 @@
-
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -27,31 +26,25 @@ const productSchema = z.object({
   description: z.string().min(1, "Description is required"),
   care_instructions: z.string(),
   about: z.string(),
-  is_featured: z.boolean().default(false),
   discount_id: z.string().optional(),
   attribute_options: z.array(z.string()),
   product_items: z.array(
     z.object({
       color_id: z.string().min(1, "Color is required"),
       name_details: z.string().min(1, "Name details are required"),
-      original_price: z.coerce.number().min(0, "Price must be positive"),
-      sale_price: z.coerce.number().min(0, "Price must be positive"),
+      original_price: z.number().min(0, "Price must be positive"),
+      sale_price: z.number().min(0, "Price must be positive"),
       variations: z.array(
         z.object({
           size_id: z.string().min(1, "Size is required"),
-          qty_in_stock: z.coerce.number().min(0, "Quantity must be positive"),
+          qty_in_stock: z.number().min(0, "Quantity must be positive"),
         })
       ),
-      cart_image: z.object({
-        file: z.instanceof(File),
-        description: z.string(),
-        bytes: z.string().optional(),
-      }).nullable(),
+      cart_image: z.string().nullable(),
       images: z.array(
         z.object({
-          file: z.instanceof(File),
+          path: z.string(),
           description: z.string(),
-          bytes: z.string().optional(),
         })
       ),
     })
@@ -73,7 +66,6 @@ const EditProduct = () => {
       description: "",
       care_instructions: "",
       about: "",
-      is_featured: false,
       discount_id: "",
       attribute_options: [],
       product_items: [],
@@ -142,11 +134,14 @@ const EditProduct = () => {
     );
   }
 
+  const handleFileUpload = (file: File): string => {
+    return `/uploads/${file.name}`;
+  };
+
   return (
     <div className="min-h-[calc(100vh-4rem)] bg-gray-50">
       <div className="max-w-7xl mx-auto py-8 px-4 sm:px-6 lg:px-8">
         <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-8">
-          {/* Header */}
           <div className="flex items-center justify-between mb-8">
             <div>
               <h2 className="text-2xl font-bold text-gray-900">Edit Product</h2>
@@ -176,7 +171,6 @@ const EditProduct = () => {
           </div>
 
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
-            {/* Basic Information */}
             <div className="bg-gray-50 rounded-lg p-6 space-y-6">
               <h3 className="text-lg font-medium text-gray-900 mb-4">Basic Information</h3>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -256,7 +250,6 @@ const EditProduct = () => {
               </div>
             </div>
 
-            {/* Product Details */}
             <div className="bg-gray-50 rounded-lg p-6 space-y-6">
               <h3 className="text-lg font-medium text-gray-900 mb-4">Product Details</h3>
               <div className="space-y-6">
@@ -303,7 +296,6 @@ const EditProduct = () => {
               </div>
             </div>
 
-            {/* Featured Product */}
             <div className="bg-gray-50 rounded-lg p-6">
               <div className="flex items-center justify-between">
                 <div>
@@ -323,7 +315,6 @@ const EditProduct = () => {
               </div>
             </div>
 
-            {/* Attributes */}
             <div className="bg-gray-50 rounded-lg p-6">
               <h3 className="text-lg font-medium text-gray-900 mb-4">Attributes</h3>
               <select
@@ -337,7 +328,6 @@ const EditProduct = () => {
               </select>
             </div>
 
-            {/* Product Variations */}
             <div className="bg-gray-50 rounded-lg p-6">
               <div className="flex justify-between items-center mb-6">
                 <h3 className="text-lg font-medium text-gray-900">Product Variations</h3>
@@ -424,7 +414,6 @@ const EditProduct = () => {
                       </div>
                     </div>
 
-                    {/* Size Variations */}
                     <div className="mt-6">
                       <h4 className="text-base font-medium text-gray-900 mb-4">Size Variations</h4>
                       <table className="min-w-full divide-y divide-gray-200">
@@ -500,7 +489,6 @@ const EditProduct = () => {
                       </button>
                     </div>
 
-                    {/* Images */}
                     <div className="mt-6">
                       <h4 className="text-base font-medium text-gray-900 mb-4">Images</h4>
                       <div className="space-y-4">
@@ -514,10 +502,8 @@ const EditProduct = () => {
                             onChange={(e) => {
                               const file = e.target.files?.[0];
                               if (file) {
-                                form.setValue(`product_items.${index}.cart_image`, {
-                                  file,
-                                  description: "Cart image",
-                                });
+                                const path = handleFileUpload(file);
+                                form.setValue(`product_items.${index}.cart_image`, path);
                               }
                             }}
                             className="w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-purple-50 file:text-purple-700 hover:file:bg-purple-100"
@@ -533,17 +519,16 @@ const EditProduct = () => {
                             multiple
                             accept="image/*"
                             onChange={(e) => {
-                              const files = e.target.files;
-                              if (files) {
-                                const newImages = Array.from(files).map((file) => ({
-                                  file,
-                                  description: "",
-                                }));
-                                form.setValue(`product_items.${index}.images`, [
-                                  ...(field.images || []),
-                                  ...newImages,
-                                ]);
-                              }
+                              const files = Array.from(e.target.files || []);
+                              const newImages = files.map((file) => ({
+                                path: handleFileUpload(file),
+                                description: "",
+                              }));
+                              const currentImages = form.getValues(`product_items.${index}.images`) || [];
+                              form.setValue(`product_items.${index}.images`, [
+                                ...currentImages,
+                                ...newImages,
+                              ]);
                             }}
                             className="w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-purple-50 file:text-purple-700 hover:file:bg-purple-100"
                           />
@@ -557,8 +542,8 @@ const EditProduct = () => {
                                 className="relative rounded-lg overflow-hidden group"
                               >
                                 <img
-                                  src={URL.createObjectURL(image.file)}
-                                  alt={`Preview ${imgIndex + 1}`}
+                                  src={image.path}
+                                  alt={image.description}
                                   className="w-full h-32 object-cover"
                                 />
                                 <input
