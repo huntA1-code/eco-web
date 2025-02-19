@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm, useFieldArray } from "react-hook-form";
@@ -7,7 +7,6 @@ import { Button } from "@/components/ui/button";
 import {
   Form,
   FormControl,
-  FormDescription,
   FormField,
   FormItem,
   FormLabel,
@@ -29,6 +28,8 @@ import { AttributeMultiSelect } from "@/components/product/AttributeMultiSelect"
 import { ProductItemForm } from "@/components/product/ProductItemForm";
 import { ProductFormData } from "@/types/product";
 import { ArrowLeft, Loader2, Save } from "lucide-react";
+import { getMockProduct } from "@/data/mockProducts";
+import { Card, CardContent } from "@/components/ui/card";
 
 const mockDiscounts = [
   { id: "1", name: "Summer Sale 20% OFF", rate: 20 },
@@ -83,6 +84,7 @@ const EditProduct = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
   const { id } = useParams<{ id: string }>();
+  const [isLoading, setIsLoading] = useState(true);
   
   const form = useForm<ProductFormData>({
     resolver: zodResolver(productSchema),
@@ -108,69 +110,10 @@ const EditProduct = () => {
   useEffect(() => {
     const fetchProduct = async () => {
       try {
-        const response = await new Promise<ProductFormData>((resolve) => {
-          setTimeout(() => {
-            resolve({
-              category_id: "1", // Men's Shoes
-              brand_id: "1", // Nike
-              name: "Nike Air Max 270",
-              description: "The Nike Air Max 270 delivers modern comfort with a design inspired by Air Max icons. The shoe features Nike's biggest heel Air unit yet, providing all-day comfort while giving you an elevated look.",
-              care_instructions: "- Clean with a soft, dry cloth\n- Avoid direct sunlight and heat\n- Store in a cool, dry place\n- Use shoe trees to maintain shape",
-              about: "The Nike Air Max 270 men's shoe is inspired by two icons of Air: the Air Max 180 and Air Max 93. It features Nike's biggest heel Air unit yet, offering a super-soft ride that feels as impossible as it looks.",
-              is_featured: true,
-              discount_id: "1", // Summer Sale
-              attribute_options: ["1", "2"], // Cotton, Mesh
-              product_items: [
-                {
-                  color_id: "1", // Black
-                  name_details: "Black/White-Solar Red",
-                  original_price: 150,
-                  sale_price: 129.99,
-                  variations: [
-                    { size_id: "1", qty_in_stock: 15 }, // US 7
-                    { size_id: "2", qty_in_stock: 20 }, // US 8
-                    { size_id: "3", qty_in_stock: 18 }, // US 9
-                    { size_id: "4", qty_in_stock: 12 }, // US 10
-                  ],
-                  cart_image: null,
-                  images: [],
-                },
-                {
-                  color_id: "2", // White
-                  name_details: "White/University Blue-Pure Platinum",
-                  original_price: 150,
-                  sale_price: 129.99,
-                  variations: [
-                    { size_id: "1", qty_in_stock: 10 }, // US 7
-                    { size_id: "2", qty_in_stock: 25 }, // US 8
-                    { size_id: "3", qty_in_stock: 22 }, // US 9
-                    { size_id: "4", qty_in_stock: 15 }, // US 10
-                  ],
-                  cart_image: null,
-                  images: [],
-                },
-                {
-                  color_id: "3", // Gray
-                  name_details: "Wolf Grey/Cool Grey-Pure Platinum",
-                  original_price: 150,
-                  sale_price: 129.99,
-                  variations: [
-                    { size_id: "1", qty_in_stock: 8 }, // US 7
-                    { size_id: "2", qty_in_stock: 16 }, // US 8
-                    { size_id: "3", qty_in_stock: 20 }, // US 9
-                    { size_id: "4", qty_in_stock: 14 }, // US 10
-                  ],
-                  cart_image: null,
-                  images: [],
-                },
-              ],
-            });
-          }, 1000);
-        });
-
+        setIsLoading(true);
+        await new Promise(resolve => setTimeout(resolve, 1000));
+        const response = getMockProduct(id || "1");
         form.reset(response);
-        
-        console.log("Form data after reset:", form.getValues());
       } catch (error) {
         console.error("Error fetching product:", error);
         toast({
@@ -178,6 +121,8 @@ const EditProduct = () => {
           description: "Failed to fetch product data",
           variant: "destructive",
         });
+      } finally {
+        setIsLoading(false);
       }
     };
 
@@ -207,6 +152,17 @@ const EditProduct = () => {
       });
     }
   };
+
+  if (isLoading) {
+    return (
+      <div className="h-[calc(100vh-4rem)] flex items-center justify-center">
+        <div className="text-center space-y-4">
+          <Loader2 className="w-8 h-8 animate-spin mx-auto text-primary" />
+          <p className="text-lg font-medium">Loading product data...</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="h-[calc(100vh-4rem)] overflow-y-auto">
@@ -241,189 +197,209 @@ const EditProduct = () => {
 
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
-            <div className="grid gap-6 md:grid-cols-2">
-              <CategorySelect control={form.control} name="category_id" />
+            <Card>
+              <CardContent className="p-6">
+                <div className="grid gap-6 md:grid-cols-2">
+                  <CategorySelect control={form.control} name="category_id" />
 
-              <FormField
-                control={form.control}
-                name="name"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Product Name</FormLabel>
-                    <FormControl>
-                      <Input placeholder="Enter product name" {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
+                  <FormField
+                    control={form.control}
+                    name="name"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Product Name</FormLabel>
+                        <FormControl>
+                          <Input placeholder="Enter product name" {...field} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
 
-              <FormField
-                control={form.control}
-                name="brand_id"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Brand</FormLabel>
-                    <Select onValueChange={field.onChange} value={field.value}>
+                  <FormField
+                    control={form.control}
+                    name="brand_id"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Brand</FormLabel>
+                        <Select onValueChange={field.onChange} value={field.value}>
+                          <FormControl>
+                            <SelectTrigger>
+                              <SelectValue placeholder="Select brand" />
+                            </SelectTrigger>
+                          </FormControl>
+                          <SelectContent>
+                            {mockBrands.map((brand) => (
+                              <SelectItem key={brand.id} value={brand.id}>
+                                {brand.name}
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+
+                  <FormField
+                    control={form.control}
+                    name="discount_id"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Discount</FormLabel>
+                        <Select onValueChange={field.onChange} value={field.value}>
+                          <FormControl>
+                            <SelectTrigger>
+                              <SelectValue placeholder="Select discount" />
+                            </SelectTrigger>
+                          </FormControl>
+                          <SelectContent>
+                            {mockDiscounts.map((discount) => (
+                              <SelectItem key={discount.id} value={discount.id}>
+                                {discount.name} ({discount.rate}% OFF)
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </div>
+              </CardContent>
+            </Card>
+
+            <Card>
+              <CardContent className="p-6 space-y-6">
+                <FormField
+                  control={form.control}
+                  name="description"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Description</FormLabel>
                       <FormControl>
-                        <SelectTrigger>
-                          <SelectValue placeholder="Select brand" />
-                        </SelectTrigger>
+                        <Textarea
+                          placeholder="Enter product description"
+                          className="min-h-[100px]"
+                          {...field}
+                        />
                       </FormControl>
-                      <SelectContent>
-                        {mockBrands.map((brand) => (
-                          <SelectItem key={brand.id} value={brand.id}>
-                            {brand.name}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
 
-              <FormField
-                control={form.control}
-                name="discount_id"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Discount</FormLabel>
-                    <Select onValueChange={field.onChange} value={field.value}>
+                <FormField
+                  control={form.control}
+                  name="care_instructions"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Care Instructions</FormLabel>
                       <FormControl>
-                        <SelectTrigger>
-                          <SelectValue placeholder="Select discount" />
-                        </SelectTrigger>
+                        <Textarea
+                          placeholder="Enter care instructions"
+                          className="min-h-[100px]"
+                          {...field}
+                        />
                       </FormControl>
-                      <SelectContent>
-                        {mockDiscounts.map((discount) => (
-                          <SelectItem key={discount.id} value={discount.id}>
-                            {discount.name} ({discount.rate}% OFF)
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-            </div>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
 
-            <FormField
-              control={form.control}
-              name="description"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Description</FormLabel>
-                  <FormControl>
-                    <Textarea
-                      placeholder="Enter product description"
-                      className="min-h-[100px]"
-                      {...field}
+                <FormField
+                  control={form.control}
+                  name="about"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>About</FormLabel>
+                      <FormControl>
+                        <Textarea
+                          placeholder="Enter additional information"
+                          className="min-h-[100px]"
+                          {...field}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </CardContent>
+            </Card>
+
+            <Card>
+              <CardContent className="p-6">
+                <FormField
+                  control={form.control}
+                  name="is_featured"
+                  render={({ field }) => (
+                    <FormItem className="flex flex-row items-center justify-between rounded-lg border p-4">
+                      <div className="space-y-0.5">
+                        <FormLabel className="text-base">Featured Product</FormLabel>
+                        <p className="text-sm text-muted-foreground">
+                          Display this product in featured sections
+                        </p>
+                      </div>
+                      <FormControl>
+                        <Switch
+                          checked={field.value}
+                          onCheckedChange={field.onChange}
+                        />
+                      </FormControl>
+                    </FormItem>
+                  )}
+                />
+              </CardContent>
+            </Card>
+
+            <Card>
+              <CardContent className="p-6">
+                <div className="space-y-4">
+                  <div>
+                    <h3 className="text-lg font-medium mb-4">Attributes</h3>
+                    <AttributeMultiSelect
+                      control={form.control}
+                      name="attribute_options"
                     />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-
-            <FormField
-              control={form.control}
-              name="care_instructions"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Care Instructions</FormLabel>
-                  <FormControl>
-                    <Textarea
-                      placeholder="Enter care instructions"
-                      className="min-h-[100px]"
-                      {...field}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-
-            <FormField
-              control={form.control}
-              name="about"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>About</FormLabel>
-                  <FormControl>
-                    <Textarea
-                      placeholder="Enter additional information"
-                      className="min-h-[100px]"
-                      {...field}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-
-            <FormField
-              control={form.control}
-              name="is_featured"
-              render={({ field }) => (
-                <FormItem className="flex flex-row items-center justify-between rounded-lg border p-4">
-                  <div className="space-y-0.5">
-                    <FormLabel className="text-base">Featured Product</FormLabel>
-                    <FormDescription>
-                      Display this product in featured sections
-                    </FormDescription>
                   </div>
-                  <FormControl>
-                    <Switch
-                      checked={field.value}
-                      onCheckedChange={field.onChange}
+                </div>
+              </CardContent>
+            </Card>
+
+            <Card>
+              <CardContent className="p-6">
+                <div className="space-y-4">
+                  <div className="flex justify-between items-center">
+                    <h3 className="text-lg font-medium">Product Variations</h3>
+                    <Button
+                      type="button"
+                      onClick={() =>
+                        append({
+                          color_id: "",
+                          name_details: "",
+                          original_price: 0,
+                          sale_price: 0,
+                          variations: [],
+                          cart_image: null,
+                          images: [],
+                        })
+                      }
+                    >
+                      Add Variation
+                    </Button>
+                  </div>
+
+                  {fields.map((field, index) => (
+                    <ProductItemForm
+                      key={field.id}
+                      control={form.control}
+                      index={index}
+                      onRemove={() => remove(index)}
                     />
-                  </FormControl>
-                </FormItem>
-              )}
-            />
-
-            <div className="space-y-4">
-              <div>
-                <h3 className="text-lg font-medium">Attributes</h3>
-                <AttributeMultiSelect
-                  control={form.control}
-                  name="attribute_options"
-                />
-              </div>
-            </div>
-
-            <div className="space-y-4">
-              <div className="flex justify-between items-center">
-                <h3 className="text-lg font-medium">Product Variations</h3>
-                <Button
-                  type="button"
-                  onClick={() =>
-                    append({
-                      color_id: "",
-                      name_details: "",
-                      original_price: 0,
-                      sale_price: 0,
-                      variations: [],
-                      cart_image: null,
-                      images: [],
-                    })
-                  }
-                >
-                  Add Variation
-                </Button>
-              </div>
-
-              {fields.map((field, index) => (
-                <ProductItemForm
-                  key={field.id}
-                  control={form.control}
-                  index={index}
-                  onRemove={() => remove(index)}
-                />
-              ))}
-            </div>
+                  ))}
+                </div>
+              </CardContent>
+            </Card>
           </form>
         </Form>
       </div>
