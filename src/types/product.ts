@@ -46,9 +46,8 @@ export interface ProductVariation {
 }
 
 export interface ProductImage {
-  file: File;
+  path: string;
   description: string;
-  bytes?: string;
 }
 
 export interface ProductItem {
@@ -57,7 +56,7 @@ export interface ProductItem {
   original_price: number;
   sale_price: number;
   variations: ProductVariation[];
-  cart_image: ProductImage | null;
+  cart_image: string | null;
   images: ProductImage[];
 }
 
@@ -68,7 +67,6 @@ export interface ProductFormData {
   description: string;
   care_instructions: string;
   about: string;
-  is_featured: boolean;
   discount_id?: string;
   attribute_options: string[];
   product_items: ProductItem[];

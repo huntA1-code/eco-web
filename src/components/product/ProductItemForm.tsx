@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { useFieldArray, Control } from "react-hook-form";
 import {
@@ -62,48 +61,23 @@ export const ProductItemForm = ({
     setSizeOptions(category?.options || []);
   };
 
-  const handleImageToBase64 = async (file: File): Promise<string> => {
-    return new Promise((resolve, reject) => {
-      const reader = new FileReader();
-      reader.readAsDataURL(file);
-      reader.onload = () => {
-        const base64String = reader.result as string;
-        resolve(base64String.split(',')[1]);
-      };
-      reader.onerror = (error) => reject(error);
-    });
-  };
-
   const handleCartImageUpload = async (event: React.ChangeEvent<HTMLInputElement>, field: any) => {
     const file = event.target.files?.[0];
     if (file) {
-      const bytes = await handleImageToBase64(file);
-      field.onChange({
-        file,
-        description: "Cart image",
-        bytes
-      });
+      const fakePath = `/uploads/${file.name}`;
+      field.onChange(fakePath);
     }
   };
 
   const handleImagesUpload = async (event: React.ChangeEvent<HTMLInputElement>, field: any) => {
     const files = event.target.files;
     if (files) {
-      const newImages = await Promise.all(
-        Array.from(files).map(async (file) => ({
-          file,
-          description: "",
-          bytes: await handleImageToBase64(file)
-        }))
-      );
+      const newImages = Array.from(files).map((file) => ({
+        path: `/uploads/${file.name}`,
+        description: "",
+      }));
       field.onChange([...(field.value || []), ...newImages]);
     }
-  };
-
-  const removeImage = (field: any, index: number) => {
-    const newImages = [...field.value];
-    newImages.splice(index, 1);
-    field.onChange(newImages);
   };
 
   return (
@@ -220,11 +194,11 @@ export const ProductItemForm = ({
                 {field.value && (
                   <div className="flex items-center gap-2 p-2 border rounded">
                     <img
-                      src={URL.createObjectURL(field.value.file)}
+                      src={field.value}
                       alt="Cart preview"
                       className="w-16 h-16 object-cover rounded"
                     />
-                    <span className="flex-1">{field.value.file.name}</span>
+                    <span className="flex-1">{field.value}</span>
                     <Button
                       type="button"
                       variant="ghost"
@@ -359,7 +333,7 @@ export const ProductItemForm = ({
                   {field.value?.map((image: ProductImage, imageIndex: number) => (
                     <div key={imageIndex} className="p-4 border rounded flex flex-col gap-2">
                       <img
-                        src={URL.createObjectURL(image.file)}
+                        src={image.path}
                         alt={`Preview ${imageIndex + 1}`}
                         className="w-full h-40 object-cover rounded"
                       />

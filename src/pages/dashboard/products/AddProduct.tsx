@@ -1,8 +1,8 @@
+
 import { useForm, useFieldArray } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
 import { useNavigate } from "react-router-dom";
-import { Button } from "@/components/ui/button";
 import {
   Form,
   FormControl,
@@ -14,7 +14,6 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { Switch } from "@/components/ui/switch";
 import {
   Select,
   SelectContent,
@@ -46,7 +45,6 @@ const productSchema = z.object({
   description: z.string().min(1, "Description is required"),
   care_instructions: z.string(),
   about: z.string(),
-  is_featured: z.boolean().default(false),
   discount_id: z.string().optional(),
   attribute_options: z.array(z.string()),
   product_items: z.array(
@@ -61,16 +59,11 @@ const productSchema = z.object({
           qty_in_stock: z.number().min(0, "Quantity must be positive"),
         })
       ),
-      cart_image: z.object({
-        file: z.instanceof(File),
-        description: z.string(),
-        bytes: z.string().optional(),
-      }).nullable(),
+      cart_image: z.string().nullable(),
       images: z.array(
         z.object({
-          file: z.instanceof(File),
+          path: z.string(),
           description: z.string(),
-          bytes: z.string().optional(),
         })
       ),
     })
@@ -88,7 +81,6 @@ const AddProduct = () => {
       description: "",
       care_instructions: "",
       about: "",
-      is_featured: false,
       discount_id: "",
       brand_id: "",
       attribute_options: [],
@@ -106,15 +98,13 @@ const AddProduct = () => {
       console.log("Product data to be submitted:", values);
       
       // Mock successful API call
-      // In a real application, this would be a fetch call to your backend
-      await new Promise(resolve => setTimeout(resolve, 1000)); // Simulate network delay
+      await new Promise(resolve => setTimeout(resolve, 1000));
 
       toast({
         title: "Success",
         description: "Product created successfully",
       });
       
-      // Navigate to products view page
       navigate("/dashboard/products/view");
     } catch (error) {
       console.error("Error creating product:", error);
@@ -163,7 +153,7 @@ const AddProduct = () => {
                       <FormControl>
                         <SelectTrigger>
                           <SelectValue placeholder="Select brand" />
-                      </SelectTrigger>
+                        </SelectTrigger>
                       </FormControl>
                       <SelectContent>
                         {mockBrands.map((brand) => (
@@ -258,27 +248,6 @@ const AddProduct = () => {
               )}
             />
 
-            <FormField
-              control={form.control}
-              name="is_featured"
-              render={({ field }) => (
-                <FormItem className="flex flex-row items-center justify-between rounded-lg border p-4">
-                  <div className="space-y-0.5">
-                    <FormLabel className="text-base">Featured Product</FormLabel>
-                    <FormDescription>
-                      Display this product in featured sections
-                    </FormDescription>
-                  </div>
-                  <FormControl>
-                    <Switch
-                      checked={field.value}
-                      onCheckedChange={field.onChange}
-                    />
-                  </FormControl>
-                </FormItem>
-              )}
-            />
-
             <div className="space-y-4">
               <div>
                 <h3 className="text-lg font-medium">Attributes</h3>
@@ -292,7 +261,7 @@ const AddProduct = () => {
             <div className="space-y-4">
               <div className="flex justify-between items-center">
                 <h3 className="text-lg font-medium">Product Variations</h3>
-                <Button
+                <button
                   type="button"
                   onClick={() =>
                     append({
@@ -307,7 +276,7 @@ const AddProduct = () => {
                   }
                 >
                   Add Variation
-                </Button>
+                </button>
               </div>
 
               {fields.map((field, index) => (
@@ -321,14 +290,13 @@ const AddProduct = () => {
             </div>
 
             <div className="flex justify-end gap-4">
-              <Button
+              <button
                 type="button"
-                variant="outline"
                 onClick={() => navigate("/dashboard/products/view")}
               >
                 Cancel
-              </Button>
-              <Button type="submit">Create Product</Button>
+              </button>
+              <button type="submit">Create Product</button>
             </div>
           </form>
         </Form>
