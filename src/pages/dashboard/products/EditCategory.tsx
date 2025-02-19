@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { useForm } from "react-hook-form";
@@ -14,6 +15,7 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
+import { CategorySelect } from "@/components/product/CategorySelect";
 import {
   Select,
   SelectContent,
@@ -32,12 +34,6 @@ const categorySchema = z.object({
 });
 
 type CategoryFormData = z.infer<typeof categorySchema>;
-
-// Mock data - replace with API call
-const mockCategories = [
-  { id: "1", name: "Clothing", level: 0 },
-  { id: "2", name: "Men's Clothing", level: 1, parent_id: "1" },
-];
 
 const mockSizeCategories = [
   { id: "1", name: "Adult Sizes" },
@@ -141,35 +137,7 @@ const EditCategory = () => {
               )}
             />
 
-            <FormField
-              control={form.control}
-              name="parent_id"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Parent Category</FormLabel>
-                  <Select 
-                    onValueChange={field.onChange} 
-                    value={field.value || "root"}
-                    defaultValue="root"
-                  >
-                    <FormControl>
-                      <SelectTrigger>
-                        <SelectValue placeholder="Select parent category" />
-                      </SelectTrigger>
-                    </FormControl>
-                    <SelectContent>
-                      <SelectItem value="root">None (Root Category)</SelectItem>
-                      {mockCategories.map((category) => (
-                        <SelectItem key={category.id} value={category.id}>
-                          {category.name}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
+            <CategorySelect control={form.control} name="parent_id" />
 
             <FormField
               control={form.control}
@@ -179,8 +147,7 @@ const EditCategory = () => {
                   <FormLabel>Size Category</FormLabel>
                   <Select 
                     onValueChange={field.onChange} 
-                    value={field.value || "none"}
-                    defaultValue="none"
+                    value={field.value || undefined}
                   >
                     <FormControl>
                       <SelectTrigger>
@@ -188,7 +155,6 @@ const EditCategory = () => {
                       </SelectTrigger>
                     </FormControl>
                     <SelectContent>
-                      <SelectItem value="none">No Size Category</SelectItem>
                       {mockSizeCategories.map((category) => (
                         <SelectItem key={category.id} value={category.id}>
                           {category.name}

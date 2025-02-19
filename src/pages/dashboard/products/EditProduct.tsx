@@ -55,7 +55,7 @@ const EditProduct = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
   const { id } = useParams<{ id: string }>();
-  const [isLoading, setIsLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState(false);
   
   const form = useForm<ProductFormData>({
     resolver: zodResolver(productSchema),

@@ -1,4 +1,4 @@
-import { useState } from "react";
+
 import { useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -14,6 +14,7 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
+import { CategorySelect } from "@/components/product/CategorySelect";
 import {
   Select,
   SelectContent,
@@ -22,12 +23,6 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { useToast } from "@/hooks/use-toast";
-
-// Mock data - replace with API call
-const mockCategories = [
-  { id: "1", name: "Clothing", level: 0 },
-  { id: "2", name: "Men's Clothing", level: 1, parent_id: "1" },
-];
 
 const mockSizeCategories = [
   { id: "1", name: "Adult Sizes" },
@@ -114,31 +109,7 @@ const AddCategory = () => {
               )}
             />
 
-            <FormField
-              control={form.control}
-              name="parent_id"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Parent Category</FormLabel>
-                  <Select onValueChange={field.onChange} value={field.value || undefined}>
-                    <FormControl>
-                      <SelectTrigger>
-                        <SelectValue placeholder="Select parent category" />
-                      </SelectTrigger>
-                    </FormControl>
-                    <SelectContent>
-                      <SelectItem value="root">None (Root Category)</SelectItem>
-                      {mockCategories.map((category) => (
-                        <SelectItem key={category.id} value={category.id}>
-                          {category.name}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
+            <CategorySelect control={form.control} name="parent_id" />
 
             <FormField
               control={form.control}
