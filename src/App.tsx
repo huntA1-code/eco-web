@@ -104,6 +104,7 @@ function App() {
           <Route path="products/attributes/types" element={<AttributeTypes />} />
           <Route path="products/attributes/types/add" element={<AddAttributeType />} />
           <Route path="products/attributes/types/edit/:id" element={<EditAttributeType />} />
+          <Route path="orders" element={<Orders />} />
           <Route path="discounts" element={<Discounts />} />
           <Route path="discounts/add" element={<AddDiscount />} />
           <Route path="discounts/edit/:id" element={<EditDiscount />} />
