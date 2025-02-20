@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { useFieldArray, Control } from "react-hook-form";
 import {
@@ -22,6 +23,7 @@ import { Color, SizeCategory, SizeOption, ProductItem, ProductImage, ProductForm
 const mockColors: Color[] = [
   { id: "1", name: "Black", hexa: "#000000" },
   { id: "2", name: "White", hexa: "#FFFFFF" },
+  { id: "3", name: "Gray", hexa: "#808080" },
 ];
 
 const mockSizeCategories: SizeCategory[] = [
@@ -29,9 +31,10 @@ const mockSizeCategories: SizeCategory[] = [
     id: "1",
     name: "Clothing",
     options: [
-      { id: "1", name: "S", category_id: "1" },
-      { id: "2", name: "M", category_id: "1" },
-      { id: "3", name: "L", category_id: "1" },
+      { id: "1", name: "US 7", category_id: "1" },
+      { id: "2", name: "US 8", category_id: "1" },
+      { id: "3", name: "US 9", category_id: "1" },
+      { id: "4", name: "US 10", category_id: "1" },
     ],
   },
 ];
@@ -47,29 +50,26 @@ export const ProductItemForm = ({
   index,
   onRemove,
 }: ProductItemFormProps) => {
-  const [selectedSizeCategory, setSelectedSizeCategory] = useState<string>("");
-  const [sizeOptions, setSizeOptions] = useState<SizeOption[]>([]);
+  const [selectedSizeCategory, setSelectedSizeCategory] = useState<string>("1");
+  const [sizeOptions, setSizeOptions] = useState<SizeOption[]>(
+    mockSizeCategories[0].options
+  );
 
   const { fields, append, remove } = useFieldArray({
     control,
     name: `product_items.${index}.variations`,
   });
 
-  const handleSizeCategoryChange = (categoryId: string) => {
-    setSelectedSizeCategory(categoryId);
-    const category = mockSizeCategories.find((c) => c.id === categoryId);
-    setSizeOptions(category?.options || []);
-  };
-
-  const handleCartImageUpload = async (event: React.ChangeEvent<HTMLInputElement>, field: any) => {
+  const handleCartImageUpload = (event: React.ChangeEvent<HTMLInputElement>, field: any) => {
     const file = event.target.files?.[0];
     if (file) {
+      // Instead of handling the file directly, we'll use a path
       const fakePath = `/uploads/${file.name}`;
       field.onChange(fakePath);
     }
   };
 
-  const handleImagesUpload = async (event: React.ChangeEvent<HTMLInputElement>, field: any) => {
+  const handleImagesUpload = (event: React.ChangeEvent<HTMLInputElement>, field: any) => {
     const files = event.target.files;
     if (files) {
       const newImages = Array.from(files).map((file) => ({
@@ -226,8 +226,12 @@ export const ProductItemForm = ({
         <div>
           <FormLabel>Size Category</FormLabel>
           <Select
-            onValueChange={handleSizeCategoryChange}
             value={selectedSizeCategory}
+            onValueChange={(value) => {
+              setSelectedSizeCategory(value);
+              const category = mockSizeCategories.find((c) => c.id === value);
+              setSizeOptions(category?.options || []);
+            }}
           >
             <SelectTrigger>
               <SelectValue placeholder="Select size category" />
@@ -242,82 +246,80 @@ export const ProductItemForm = ({
           </Select>
         </div>
 
-        {selectedSizeCategory && (
-          <div className="space-y-4">
-            <div className="flex justify-between items-center">
-              <h4 className="font-medium">Size Variations</h4>
+        <div className="space-y-4">
+          <div className="flex justify-between items-center">
+            <h4 className="font-medium">Size Variations</h4>
+            <Button
+              type="button"
+              variant="outline"
+              size="sm"
+              onClick={() =>
+                append({ size_id: "", qty_in_stock: 0 })
+              }
+            >
+              Add Size
+            </Button>
+          </div>
+
+          {fields.map((field, sizeIndex) => (
+            <div key={field.id} className="grid grid-cols-2 gap-4 relative p-4 border rounded-lg">
+              <FormField
+                control={control}
+                name={`product_items.${index}.variations.${sizeIndex}.size_id`}
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Size</FormLabel>
+                    <Select onValueChange={field.onChange} value={field.value}>
+                      <FormControl>
+                        <SelectTrigger>
+                          <SelectValue placeholder="Select size" />
+                        </SelectTrigger>
+                      </FormControl>
+                      <SelectContent>
+                        {sizeOptions.map((size) => (
+                          <SelectItem key={size.id} value={size.id}>
+                            {size.name}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                control={control}
+                name={`product_items.${index}.variations.${sizeIndex}.qty_in_stock`}
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Quantity</FormLabel>
+                    <FormControl>
+                      <Input
+                        type="number"
+                        {...field}
+                        onChange={(e) =>
+                          field.onChange(parseInt(e.target.value))
+                        }
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
               <Button
                 type="button"
-                variant="outline"
+                variant="destructive"
                 size="sm"
-                onClick={() =>
-                  append({ size_id: "", qty_in_stock: 0 })
-                }
+                className="absolute top-2 right-2"
+                onClick={() => remove(sizeIndex)}
               >
-                Add Size
+                Remove
               </Button>
             </div>
-
-            {fields.map((field, sizeIndex) => (
-              <div key={field.id} className="grid grid-cols-2 gap-4 relative p-4 border rounded-lg">
-                <FormField
-                  control={control}
-                  name={`product_items.${index}.variations.${sizeIndex}.size_id`}
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Size</FormLabel>
-                      <Select onValueChange={field.onChange} value={field.value}>
-                        <FormControl>
-                          <SelectTrigger>
-                            <SelectValue placeholder="Select size" />
-                          </SelectTrigger>
-                        </FormControl>
-                        <SelectContent>
-                          {sizeOptions.map((size) => (
-                            <SelectItem key={size.id} value={size.id}>
-                              {size.name}
-                            </SelectItem>
-                          ))}
-                        </SelectContent>
-                      </Select>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-
-                <FormField
-                  control={control}
-                  name={`product_items.${index}.variations.${sizeIndex}.qty_in_stock`}
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Quantity</FormLabel>
-                      <FormControl>
-                        <Input
-                          type="number"
-                          {...field}
-                          onChange={(e) =>
-                            field.onChange(parseInt(e.target.value))
-                          }
-                        />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-
-                <Button
-                  type="button"
-                  variant="destructive"
-                  size="sm"
-                  className="absolute top-2 right-2"
-                  onClick={() => remove(sizeIndex)}
-                >
-                  Remove
-                </Button>
-              </div>
-            ))}
-          </div>
-        )}
+          ))}
+        </div>
       </div>
 
       <FormField
