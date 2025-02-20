@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { Star, ThumbsUp, ThumbsDown } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
@@ -18,7 +17,7 @@ import { format } from "date-fns";
 // Mock data for reviews
 const mockReviews: ReviewData[] = [
   {
-    id: "1",
+    id: 1,
     user: "John Doe",
     userImage: "https://i.pravatar.cc/150?img=1",
     rating: 5,
@@ -33,7 +32,7 @@ const mockReviews: ReviewData[] = [
     ]
   },
   {
-    id: "2",
+    id: 2,
     user: "Sarah Smith",
     userImage: "https://i.pravatar.cc/150?img=2",
     rating: 4,
@@ -45,7 +44,7 @@ const mockReviews: ReviewData[] = [
     images: []
   },
   {
-    id: "3",
+    id: 3,
     user: "Mike Johnson",
     userImage: "https://i.pravatar.cc/150?img=3",
     rating: 3,
@@ -57,7 +56,7 @@ const mockReviews: ReviewData[] = [
     images: []
   },
   {
-    id: "4",
+    id: 4,
     user: "Emily Davis",
     userImage: "https://i.pravatar.cc/150?img=4",
     rating: 5,
@@ -69,7 +68,7 @@ const mockReviews: ReviewData[] = [
     images: ["/placeholder.svg"]
   },
   {
-    id: "5",
+    id: 5,
     user: "David Wilson",
     userImage: "https://i.pravatar.cc/150?img=5",
     rating: 2,
