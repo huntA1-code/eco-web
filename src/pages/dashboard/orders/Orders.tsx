@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import {
   Table,
@@ -48,7 +49,42 @@ const Orders = () => {
       total_items: 3,
       total_amount: 150.00
     },
-    // Add more mock orders as needed
+    {
+      id: "2",
+      user: {
+        first_name: "Jane",
+        last_name: "Smith",
+        email: "jane@example.com"
+      },
+      order_date: "2024-03-09",
+      status: "shipped",
+      total_items: 2,
+      total_amount: 89.99
+    },
+    {
+      id: "3",
+      user: {
+        first_name: "Michael",
+        last_name: "Johnson",
+        email: "michael@example.com"
+      },
+      order_date: "2024-03-08",
+      status: "delivered",
+      total_items: 1,
+      total_amount: 249.99
+    },
+    {
+      id: "4",
+      user: {
+        first_name: "Sarah",
+        last_name: "Williams",
+        email: "sarah@example.com"
+      },
+      order_date: "2024-03-07",
+      status: "pending",
+      total_items: 4,
+      total_amount: 199.99
+    }
   ]);
 
   const [search, setSearch] = useState("");
@@ -56,7 +92,7 @@ const Orders = () => {
 
   const handleStatusChange = async (orderId: string, newStatus: Status) => {
     try {
-      // TODO: Implement API call to update status
+      // Simulate API call
       console.log("Updating status for order:", orderId, "to:", newStatus);
       
       // Update local state
@@ -84,9 +120,12 @@ const Orders = () => {
   });
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-4 bg-white p-6 rounded-lg">
       <div className="flex justify-between items-center">
-        <h2 className="text-2xl font-bold">Orders</h2>
+        <div>
+          <h2 className="text-2xl font-bold">Orders</h2>
+          <p className="text-muted-foreground">Manage and track customer orders</p>
+        </div>
       </div>
 
       <div className="flex gap-4 mb-4">
@@ -112,7 +151,7 @@ const Orders = () => {
         </Select>
       </div>
 
-      <div className="rounded-md border">
+      <div className="rounded-md border bg-white">
         <Table>
           <TableHeader>
             <TableRow>
