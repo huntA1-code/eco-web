@@ -14,9 +14,11 @@ import {
   ClipboardList,
   RefreshCw,
   User,
-  MapPin
+  MapPin,
+  LogOut
 } from 'lucide-react';
 import { Link, useNavigate } from 'react-router-dom';
+import { useToast } from "@/hooks/use-toast";
 
 interface MenuItem {
   title: string;
@@ -64,10 +66,39 @@ export default function Sidebar() {
     'My Concern': true
   });
   const navigate = useNavigate();
+  const { toast } = useToast();
 
   const handleMenuItemClick = (title: string, path?: string) => {
     if (path) {
       navigate(path);
+    }
+  };
+
+  const handleSignOut = async () => {
+    try {
+      const response = await fetch('/api/auth/signout', {
+        method: 'POST',
+        credentials: 'include',
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      });
+
+      if (response.ok) {
+        toast({
+          title: "Success",
+          description: "Successfully signed out",
+        });
+        navigate('/auth');
+      } else {
+        throw new Error('Failed to sign out');
+      }
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: "Failed to sign out. Please try again.",
+        variant: "destructive",
+      });
     }
   };
 
@@ -93,9 +124,9 @@ export default function Sidebar() {
       initial="expanded"
       variants={sidebarVariants}
     >
-      <div className="p-4 w-60 h-full">
+      <div className="p-4 w-60 h-full flex flex-col">
         <h2 className="text-xl font-semibold mb-6">Personal Centre</h2>
-        <nav className="h-[calc(100%-4rem)] overflow-y-auto">
+        <nav className="flex-1 h-[calc(100%-4rem)] overflow-y-auto">
           {menuItems.map((item) => (
             <div key={item.title} className="mb-2">
               {item.items ? (
@@ -141,6 +172,13 @@ export default function Sidebar() {
             </div>
           ))}
         </nav>
+        <button
+          onClick={handleSignOut}
+          className="flex items-center gap-2 p-2 mt-4 text-red-600 hover:bg-red-50 rounded-lg transition-colors w-full"
+        >
+          <LogOut className="w-4 h-4" />
+          <span>Sign Out</span>
+        </button>
       </div>
     </motion.aside>
   );
