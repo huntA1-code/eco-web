@@ -43,11 +43,11 @@ const menuItems: MenuItem[] = [
     title: 'My Orders',
     items: [
       { title: 'All Orders', icon: <FileText className="w-4 h-4" />, path: '/wishlist/my-orders' },
-      { title: 'Unpaid Orders', icon: <CreditCard className="w-4 h-4" />, path: '/wishlist/unpaid-orders' },
-      { title: 'Processing Orders', icon: <Hourglass className="w-4 h-4" />, path: '/wishlist/processing-orders' },
-      { title: 'Shipped Orders', icon: <Package className="w-4 h-4" />, path: '/wishlist/shipped-orders' },
-      { title: 'Review Orders', icon: <ClipboardList className="w-4 h-4" />, path: '/wishlist/review-orders' },
-      { title: 'Return Orders', icon: <RefreshCw className="w-4 h-4" />, path: '/wishlist/return-orders' }
+      { title: 'Unpaid Orders', icon: <CreditCard className="w-4 h-4" />, path: '/wishlist/my-orders?status=unpaid' },
+      { title: 'Processing Orders', icon: <Hourglass className="w-4 h-4" />, path: '/wishlist/my-orders?status=processing' },
+      { title: 'Shipped Orders', icon: <Package className="w-4 h-4" />, path: '/wishlist/my-orders?status=shipped' },
+      { title: 'Review Orders', icon: <ClipboardList className="w-4 h-4" />, path: '/wishlist/my-orders?status=review' },
+      { title: 'Return Orders', icon: <RefreshCw className="w-4 h-4" />, path: '/wishlist/my-orders?status=return' }
     ]
   },
   {
