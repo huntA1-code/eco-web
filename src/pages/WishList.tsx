@@ -13,7 +13,7 @@ export default function WishList() {
   return <div className="flex min-h-screen bg-gray-50">
       <Sidebar />
       <main className="flex-1 p-8 overflow-y-auto h-[calc(100vh-4rem)]">
-        <h1 className="mb-6 text-4xl font-extrabold">My Wish List</h1>
+        <h1 className="mb-6 text-4xl font-extrabold text-center">My Wish List</h1>
         <Routes>
           <Route path="recently-viewed" element={<RecentlyViewed />} />
           <Route path="my-orders" element={<MyOrders />} />
