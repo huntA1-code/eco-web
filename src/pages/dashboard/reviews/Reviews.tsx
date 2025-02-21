@@ -26,6 +26,7 @@ const mockReviews: ReviewData[] = [
     isVerifiedPurchase: true,
     likes: 12,
     dislikes: 1,
+    helpfulCount: 10,
     images: [
       "/lovable-uploads/12953fea-e1c3-468e-8ac0-1e6850517d9c.png",
       "/placeholder.svg"
@@ -41,6 +42,7 @@ const mockReviews: ReviewData[] = [
     isVerifiedPurchase: true,
     likes: 8,
     dislikes: 2,
+    helpfulCount: 6,
     images: []
   },
   {
@@ -53,6 +55,7 @@ const mockReviews: ReviewData[] = [
     isVerifiedPurchase: false,
     likes: 5,
     dislikes: 3,
+    helpfulCount: 2,
     images: []
   },
   {
@@ -65,6 +68,7 @@ const mockReviews: ReviewData[] = [
     isVerifiedPurchase: true,
     likes: 15,
     dislikes: 0,
+    helpfulCount: 12,
     images: ["/placeholder.svg"]
   },
   {
@@ -77,6 +81,7 @@ const mockReviews: ReviewData[] = [
     isVerifiedPurchase: true,
     likes: 3,
     dislikes: 7,
+    helpfulCount: 1,
     images: []
   }
 ];
