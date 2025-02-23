@@ -1,3 +1,4 @@
+
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import {
@@ -39,6 +40,10 @@ const SizeCategories = () => {
     }
   };
 
+  const handleEdit = (id: number) => {
+    navigate(`/dashboard/products/sizes/categories/edit/${id}`);
+  };
+
   return (
     <div className="space-y-6">
       <div className="flex justify-between items-center">
@@ -67,7 +72,7 @@ const SizeCategories = () => {
                     <Button
                       variant="ghost"
                       size="icon"
-                      onClick={() => navigate(`/dashboard/products/sizes/categories/edit/${category.id}`)}
+                      onClick={() => handleEdit(category.id)}
                     >
                       <Edit className="h-4 w-4" />
                     </Button>
