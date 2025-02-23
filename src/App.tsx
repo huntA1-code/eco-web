@@ -96,8 +96,10 @@ function App() {
           <Route path="products/colors/edit/:id" element={<EditColor />} />
           <Route path="products/sizes" element={<Sizes />} />
           <Route path="products/sizes/add" element={<AddSize />} />
+          <Route path="products/sizes/edit/:id" element={<EditSize />} />
           <Route path="products/sizes/categories" element={<SizeCategories />} />
           <Route path="products/sizes/categories/add" element={<AddSizeCategory />} />
+          <Route path="products/sizes/categories/edit/:id" element={<EditSizeCategory />} />
           <Route path="products/attributes" element={<Attributes />} />
           <Route path="products/attributes/add" element={<AddAttribute />} />
           <Route path="products/attributes/edit/:id" element={<EditAttribute />} />

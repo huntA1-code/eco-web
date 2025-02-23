@@ -1,3 +1,4 @@
+
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import {
@@ -28,6 +29,10 @@ const sizes = [
 
 const Sizes = () => {
   const navigate = useNavigate();
+
+  const handleEdit = (id: number) => {
+    navigate(`/dashboard/products/sizes/edit/${id}`);
+  };
 
   return (
     <div className="space-y-6">
@@ -64,7 +69,11 @@ const Sizes = () => {
                 <TableCell>{size.sortOrder}</TableCell>
                 <TableCell>
                   <div className="flex items-center gap-2">
-                    <Button variant="ghost" size="icon">
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      onClick={() => handleEdit(size.id)}
+                    >
                       <Edit className="h-4 w-4" />
                     </Button>
                     <Button variant="ghost" size="icon">

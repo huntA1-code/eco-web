@@ -1,5 +1,9 @@
+
+import { useEffect } from "react";
 import { useForm, useFieldArray } from "react-hook-form";
 import { useNavigate, useParams } from "react-router-dom";
+import type { AxiosError } from "axios";
+import axios from "axios";
 import { Button } from "@/components/ui/button";
 import {
   Form,
@@ -18,7 +22,6 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { toast } from "sonner";
-import { useEffect } from "react";
 
 // Mock data - replace with API call
 const mockSizeCategories = [
@@ -39,11 +42,11 @@ interface EditSizeFormValues {
 const EditSize = () => {
   const navigate = useNavigate();
   const { id } = useParams();
-
+  
   const form = useForm<EditSizeFormValues>({
     defaultValues: {
       size_category_id: "",
-      size_options: [{ name: "", sort_order: 0 }],
+      size_options: [],
     },
   });
 
@@ -53,37 +56,40 @@ const EditSize = () => {
   });
 
   useEffect(() => {
-    // TODO: Fetch existing size data and set form values
     const fetchSizeData = async () => {
       try {
-        // Mock data - replace with API call
+        // In a real application, this would be an API call
+        // For now, we'll use mock data
         const mockData = {
           size_category_id: "1",
           size_options: [
-            { name: "S", sort_order: 1 },
-            { name: "M", sort_order: 2 },
+            { name: "Small", sort_order: 1 },
+            { name: "Medium", sort_order: 2 },
+            { name: "Large", sort_order: 3 },
           ],
         };
+
         form.reset(mockData);
       } catch (error) {
-        console.error("Error fetching size data:", error);
+        const axiosError = error as AxiosError;
+        console.error("Error fetching size data:", axiosError);
         toast.error("Failed to fetch size data");
       }
     };
 
-    if (id) {
-      fetchSizeData();
-    }
+    fetchSizeData();
   }, [id, form]);
 
   const onSubmit = async (data: EditSizeFormValues) => {
     try {
       console.log("Updating size data:", data);
-      // TODO: Implement API call to update sizes
+      await axios.put(`/api/sizes/${id}`, data);
+      
       toast.success("Sizes updated successfully");
       navigate("/dashboard/products/sizes");
     } catch (error) {
-      console.error("Error updating sizes:", error);
+      const axiosError = error as AxiosError;
+      console.error("Error updating sizes:", axiosError);
       toast.error("Failed to update sizes");
     }
   };
