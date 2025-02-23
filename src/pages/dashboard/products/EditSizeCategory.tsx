@@ -2,6 +2,7 @@
 import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { useNavigate, useParams } from "react-router-dom";
+import type { AxiosError } from "axios";
 import axios from "axios";
 import { Button } from "@/components/ui/button";
 import {
@@ -58,7 +59,8 @@ const EditSizeCategory = () => {
       toast.success("Size category updated successfully");
       navigate("/dashboard/products/sizes/categories");
     } catch (error) {
-      console.error("Error updating size category:", error);
+      const axiosError = error as AxiosError;
+      console.error("Error updating size category:", axiosError);
       toast.error("Failed to update size category");
     }
   };
