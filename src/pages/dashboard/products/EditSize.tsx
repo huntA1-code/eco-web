@@ -22,6 +22,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { toast } from "sonner";
+import { Trash2 } from "lucide-react";
 
 // Mock data - replace with API call
 const mockSizeCategories = [
@@ -184,16 +185,15 @@ const EditSize = () => {
                     )}
                   />
 
-                  {fields.length > 1 && (
-                    <Button
-                      type="button"
-                      variant="destructive"
-                      onClick={() => remove(index)}
-                      className="col-span-2"
-                    >
-                      Remove Size Option
-                    </Button>
-                  )}
+                  <Button
+                    type="button"
+                    variant="ghost"
+                    onClick={() => remove(index)}
+                    className="col-span-2"
+                  >
+                    <Trash2 className="h-4 w-4 mr-2" />
+                    Remove Size Option
+                  </Button>
                 </div>
               ))}
             </div>
