@@ -7,9 +7,9 @@ export interface CategoryNode {
 
 export interface FilterState {
   category?: string;
-  color?: string;
-  size?: string;
+  colors?: string[];
+  sizes?: string[];
   priceRange?: number[];
   brands?: string[];
-  sleeve?: string; // Added this line to support sleeve filtering
+  sleeves?: string[];
 }

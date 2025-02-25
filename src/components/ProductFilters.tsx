@@ -1,4 +1,3 @@
-
 import { Filter } from "lucide-react";
 import { Slider } from "@/components/ui/slider";
 import { CategoryTree } from "@/components/CategoryTree";
@@ -66,7 +65,6 @@ const categoryTree: CategoryNode[] = [
   }
 ];
 
-// Mock data for new filters
 const mockColors = [
   { id: 'black', name: 'Black', hex: '#000000' },
   { id: 'white', name: 'White', hex: '#FFFFFF' },
@@ -136,17 +134,16 @@ export const ProductFilters = ({
   const visibleSleeves = showAllSleeves ? mockSleeves : mockSleeves.slice(0, INITIAL_VISIBLE_ITEMS);
   const visibleSizes = showAllSizes ? mockSizes : mockSizes.slice(0, INITIAL_VISIBLE_ITEMS);
 
-  const handleBrandChange = (brand: string) => {
-    const currentBrands = selectedFilters.brands || [];
-    const newBrands = currentBrands.includes(brand)
-      ? currentBrands.filter(b => b !== brand)
-      : [...currentBrands, brand];
-    onFilterChange('brands', newBrands);
+  const handleMultiSelect = (filterType: string, value: string) => {
+    const currentValues = selectedFilters[filterType] || [];
+    const newValues = currentValues.includes(value)
+      ? currentValues.filter(v => v !== value)
+      : [...currentValues, value];
+    onFilterChange(filterType, newValues);
   };
 
   return (
     <>
-      {/* Mobile Filter Button */}
       <div className="lg:hidden fixed bottom-4 right-4 z-50">
         <button
           onClick={() => setShowMobileFilters(true)}
@@ -178,7 +175,6 @@ export const ProductFilters = ({
           </div>
 
           <Accordion type="multiple" className="space-y-4">
-            {/* Brand Filter */}
             <AccordionItem value="brands">
               <AccordionTrigger className="text-base font-medium">
                 Brands
@@ -190,7 +186,7 @@ export const ProductFilters = ({
                       <Checkbox
                         id={`brand-${brand}`}
                         checked={selectedFilters.brands?.includes(brand)}
-                        onCheckedChange={() => handleBrandChange(brand)}
+                        onCheckedChange={() => handleMultiSelect('brands', brand)}
                       />
                       <label
                         htmlFor={`brand-${brand}`}
@@ -213,7 +209,6 @@ export const ProductFilters = ({
               </AccordionContent>
             </AccordionItem>
 
-            {/* Color Filter */}
             <AccordionItem value="colors">
               <AccordionTrigger className="text-base font-medium">
                 Colors
@@ -225,12 +220,12 @@ export const ProductFilters = ({
                       <div key={color.id} className="flex flex-col items-center space-y-1">
                         <button
                           className={`w-8 h-8 rounded-full border-2 ${
-                            selectedFilters.color === color.id
+                            selectedFilters.colors?.includes(color.id)
                               ? 'border-primary'
                               : 'border-transparent'
                           }`}
                           style={{ backgroundColor: color.hex }}
-                          onClick={() => onFilterChange('color', color.id)}
+                          onClick={() => handleMultiSelect('colors', color.id)}
                         />
                         <span className="text-xs">{color.name}</span>
                       </div>
@@ -249,7 +244,6 @@ export const ProductFilters = ({
               </AccordionContent>
             </AccordionItem>
 
-            {/* Sleeve Filter */}
             <AccordionItem value="sleeves">
               <AccordionTrigger className="text-base font-medium">
                 Sleeves
@@ -260,8 +254,8 @@ export const ProductFilters = ({
                     <div key={sleeve} className="flex items-center space-x-2">
                       <Checkbox
                         id={`sleeve-${sleeve}`}
-                        checked={selectedFilters.sleeve === sleeve}
-                        onCheckedChange={() => onFilterChange('sleeve', sleeve)}
+                        checked={selectedFilters.sleeves?.includes(sleeve)}
+                        onCheckedChange={() => handleMultiSelect('sleeves', sleeve)}
                       />
                       <label
                         htmlFor={`sleeve-${sleeve}`}
@@ -284,7 +278,6 @@ export const ProductFilters = ({
               </AccordionContent>
             </AccordionItem>
 
-            {/* Size Filter */}
             <AccordionItem value="sizes">
               <AccordionTrigger className="text-base font-medium">
                 Sizes
@@ -295,9 +288,9 @@ export const ProductFilters = ({
                     {visibleSizes.map((size) => (
                       <Button
                         key={size}
-                        variant={selectedFilters.size === size ? "default" : "outline"}
+                        variant={selectedFilters.sizes?.includes(size) ? "default" : "outline"}
                         className="w-full"
-                        onClick={() => onFilterChange('size', size)}
+                        onClick={() => handleMultiSelect('sizes', size)}
                       >
                         {size}
                       </Button>
@@ -316,7 +309,6 @@ export const ProductFilters = ({
               </AccordionContent>
             </AccordionItem>
 
-            {/* Categories */}
             <AccordionItem value="categories">
               <AccordionTrigger className="text-base font-medium">
                 Categories
@@ -335,7 +327,6 @@ export const ProductFilters = ({
               </AccordionContent>
             </AccordionItem>
 
-            {/* Price Range */}
             <AccordionItem value="price">
               <AccordionTrigger className="text-base font-medium">
                 Price Range
