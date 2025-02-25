@@ -1,18 +1,56 @@
-import { useState } from "react";
+
+import { useState, useEffect } from "react";
 import { useSearchParams } from "react-router-dom";
 import { Badge } from "@/components/ui/badge";
 import { X } from "lucide-react";
 import { ProductCard } from "@/components/ProductCard";
 import { ProductFilters } from "@/components/ProductFilters";
+import { useQuery } from "@tanstack/react-query";
+import axios from "axios";
 import {
   Pagination,
   PaginationContent,
-  PaginationEllipsis,
   PaginationItem,
   PaginationLink,
   PaginationNext,
   PaginationPrevious,
 } from "@/components/ui/pagination";
+
+// Types for API responses
+interface ProductResponse {
+  products: Product[];
+  total: number;
+  totalPages: number;
+}
+
+interface FiltersResponse {
+  categories: string[];
+  types: string[];
+  colors: { id: string; name: string; hex: string; }[];
+  sizes: string[];
+  priceRange: [number, number];
+  styles: string[];
+  occasions: string[];
+  brands: string[];
+}
+
+interface Product {
+  id: number;
+  name: string;
+  brand: string;
+  price: number;
+  image: string;
+  colors: string[];
+  sizes: string[];
+  description: string;
+  category: string;
+  rating: number;
+  reviews: number;
+  discount?: {
+    rate: number;
+    type: 'percentage' | 'fixed';
+  };
+}
 
 const Products = () => {
   const [searchParams] = useSearchParams();
@@ -22,227 +60,32 @@ const Products = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const productsPerPage = 12;
 
-  const filters = {
-    categories: ["Dresses", "Tops", "Bottoms", "Outerwear", "Accessories"],
-    types: ["Casual", "Formal", "Party", "Workwear", "Vacation"],
-    colors: ["Black", "White", "Red", "Blue", "Green", "Yellow", "Pink"],
-    sizes: ["XS", "S", "M", "L", "XL", "XXL"],
-    priceRange: [0, 200],
-    styles: ["Bohemian", "Classic", "Streetwear", "Minimalist", "Vintage"],
-    occasions: ["Daily", "Work", "Party", "Beach", "Sports"],
-    brands: ["Nike", "Adidas", "Puma", "Reebok", "Under Armour", "New Balance"], // Added brands array
-  };
+  // Fetch available filters
+  const { data: filtersData } = useQuery<FiltersResponse>({
+    queryKey: ['filters'],
+    queryFn: async () => {
+      // Replace with your actual API endpoint
+      const response = await axios.get('/api/filters');
+      return response.data;
+    },
+  });
 
-  const products = [
-    {
-      id: 1,
-      name: "Floral Summer Dress",
-      brand: "Nike", // Added brand
-      price: 49.99,
-      image: "https://images.unsplash.com/photo-1515886657613-9f3515b0c78f",
-      colors: ["Pink", "Blue"],
-      sizes: ["S", "M", "L"],
-      description: "Beautiful floral dress perfect for summer days",
-      category: "Dresses",
-      rating: 4.5,
-      reviews: 128,
+  // Fetch products with filters
+  const { data: productsData, isLoading } = useQuery<ProductResponse>({
+    queryKey: ['products', selectedFilters, currentPage],
+    queryFn: async () => {
+      // Replace with your actual API endpoint
+      const response = await axios.get('/api/products', {
+        params: {
+          page: currentPage,
+          limit: productsPerPage,
+          ...selectedFilters,
+          category: category || undefined,
+        },
+      });
+      return response.data;
     },
-    {
-      id: 2,
-      name: "Classic White Shirt",
-      brand: "Adidas", // Added brand
-      price: 29.99,
-      image: "https://images.unsplash.com/photo-1503342217505-b0a15ec3261c",
-      colors: ["White"],
-      sizes: ["XS", "S", "M", "L", "XL"],
-      description: "Timeless white shirt for any occasion",
-      category: "Tops",
-      rating: 4.8,
-      reviews: 256,
-    },
-    {
-      id: 3,
-      name: "Leather Jacket",
-      brand: "Puma", // Added brand
-      price: 89.99,
-      image: "https://images.unsplash.com/photo-1582562124811-c09040d0a901",
-      colors: ["Black", "Brown"],
-      sizes: ["S", "M", "L", "XL"],
-      description: "Classic leather jacket for a bold look",
-      category: "Outerwear",
-      rating: 4.7,
-      reviews: 189,
-    },
-    {
-      id: 4,
-      name: "Denim Jeans",
-      brand: "Reebok", // Added brand
-      price: 59.99,
-      image: "https://images.unsplash.com/photo-1466721591366-2d5fba72006d",
-      colors: ["Blue", "Black"],
-      sizes: ["28", "30", "32", "34"],
-      description: "Comfortable and stylish denim jeans",
-      category: "Bottoms",
-      rating: 4.6,
-      reviews: 312,
-    },
-    {
-      id: 5,
-      name: "Silk Evening Gown",
-      brand: "Under Armour", // Added brand
-      price: 199.99,
-      image: "https://images.unsplash.com/photo-1515886657613-9f3515b0c78f",
-      colors: ["Red", "Black", "Navy"],
-      sizes: ["XS", "S", "M", "L"],
-      description: "Elegant silk gown for special occasions",
-      category: "Dresses",
-      rating: 4.9,
-      reviews: 89,
-    },
-    {
-      id: 6,
-      name: "Casual T-Shirt",
-      brand: "New Balance", // Added brand
-      price: 19.99,
-      image: "https://images.unsplash.com/photo-1503342217505-b0a15ec3261c",
-      colors: ["White", "Gray", "Black"],
-      sizes: ["S", "M", "L", "XL"],
-      description: "Comfortable cotton t-shirt for daily wear",
-      category: "Tops",
-      rating: 4.3,
-      reviews: 427,
-    },
-    {
-      id: 7,
-      name: "Winter Coat",
-      brand: "Nike", // Added brand
-      price: 129.99,
-      image: "https://images.unsplash.com/photo-1582562124811-c09040d0a901",
-      colors: ["Black", "Gray", "Navy"],
-      sizes: ["S", "M", "L"],
-      description: "Warm winter coat with faux fur trim",
-      category: "Outerwear",
-      rating: 4.6,
-      reviews: 156,
-    },
-    {
-      id: 8,
-      name: "Pleated Skirt",
-      brand: "Adidas", // Added brand
-      price: 39.99,
-      image: "https://images.unsplash.com/photo-1466721591366-2d5fba72006d",
-      colors: ["Black", "Navy", "Beige"],
-      sizes: ["XS", "S", "M", "L"],
-      description: "Classic pleated skirt for work or casual wear",
-      category: "Bottoms",
-      rating: 4.4,
-      reviews: 203,
-    },
-    {
-      id: 9,
-      name: "Summer Maxi Dress",
-      brand: "Puma", // Added brand
-      price: 69.99,
-      image: "https://images.unsplash.com/photo-1515886657613-9f3515b0c78f",
-      colors: ["Yellow", "Green", "Blue"],
-      sizes: ["S", "M", "L"],
-      description: "Flowing maxi dress perfect for beach days",
-      category: "Dresses",
-      rating: 4.7,
-      reviews: 167,
-    },
-    {
-      id: 10,
-      name: "Silk Blouse",
-      brand: "Reebok", // Added brand
-      price: 79.99,
-      image: "https://images.unsplash.com/photo-1503342217505-b0a15ec3261c",
-      colors: ["White", "Pink", "Blue"],
-      sizes: ["XS", "S", "M", "L"],
-      description: "Elegant silk blouse for professional wear",
-      category: "Tops",
-      rating: 4.5,
-      reviews: 234,
-    },
-    {
-      id: 11,
-      name: "Denim Jacket",
-      brand: "Under Armour", // Added brand
-      price: 69.99,
-      image: "https://images.unsplash.com/photo-1582562124811-c09040d0a901",
-      colors: ["Blue", "Black"],
-      sizes: ["S", "M", "L", "XL"],
-      description: "Classic denim jacket for casual style",
-      category: "Outerwear",
-      rating: 4.6,
-      reviews: 178,
-    },
-    {
-      id: 12,
-      name: "Cargo Pants",
-      brand: "New Balance", // Added brand
-      price: 49.99,
-      image: "https://images.unsplash.com/photo-1466721591366-2d5fba72006d",
-      colors: ["Khaki", "Olive", "Black"],
-      sizes: ["28", "30", "32", "34"],
-      description: "Functional cargo pants with multiple pockets",
-      category: "Bottoms",
-      rating: 4.3,
-      reviews: 145,
-    },
-    {
-      id: 13,
-      name: "Cocktail Dress",
-      brand: "Nike", // Added brand
-      price: 119.99,
-      image: "https://images.unsplash.com/photo-1515886657613-9f3515b0c78f",
-      colors: ["Black", "Red", "Navy"],
-      sizes: ["XS", "S", "M", "L"],
-      description: "Elegant cocktail dress for parties",
-      category: "Dresses",
-      rating: 4.8,
-      reviews: 92,
-    },
-    {
-      id: 14,
-      name: "Crop Top",
-      brand: "Adidas", // Added brand
-      price: 24.99,
-      image: "https://images.unsplash.com/photo-1503342217505-b0a15ec3261c",
-      colors: ["White", "Black", "Pink"],
-      sizes: ["S", "M", "L"],
-      description: "Trendy crop top for summer style",
-      category: "Tops",
-      rating: 4.4,
-      reviews: 267,
-    },
-    {
-      id: 15,
-      name: "Raincoat",
-      brand: "Puma", // Added brand
-      price: 79.99,
-      image: "https://images.unsplash.com/photo-1582562124811-c09040d0a901",
-      colors: ["Yellow", "Blue", "Black"],
-      sizes: ["S", "M", "L", "XL"],
-      description: "Waterproof raincoat for rainy days",
-      category: "Outerwear",
-      rating: 4.5,
-      reviews: 134,
-    },
-    {
-      id: 50,
-      name: "Designer Evening Gown",
-      brand: "New Balance", // Added brand
-      price: 299.99,
-      image: "https://images.unsplash.com/photo-1515886657613-9f3515b0c78f",
-      colors: ["Gold", "Silver", "Black"],
-      sizes: ["XS", "S", "M", "L"],
-      description: "Luxurious designer evening gown for special occasions",
-      category: "Dresses",
-      rating: 5.0,
-      reviews: 45,
-    }
-  ];
+  });
 
   const handleFilterChange = (filterType: string, value: any) => {
     setSelectedFilters(prev => ({
@@ -258,23 +101,17 @@ const Products = () => {
     setSelectedFilters(newFilters);
   };
 
-  // Filter products based on selected filters
-  const filteredProducts = products.filter(product => {
-    if (selectedFilters.category && product.category !== selectedFilters.category) return false;
-    if (selectedFilters.color && !product.colors.includes(selectedFilters.color)) return false;
-    if (selectedFilters.size && !product.sizes.includes(selectedFilters.size)) return false;
-    if (selectedFilters.priceRange) {
-      const [min, max] = selectedFilters.priceRange;
-      if (product.price < min || product.price > max) return false;
-    }
-    return true;
-  });
-
-  // Calculate pagination
-  const totalPages = Math.ceil(filteredProducts.length / productsPerPage);
-  const startIndex = (currentPage - 1) * productsPerPage;
-  const endIndex = startIndex + productsPerPage;
-  const currentProducts = filteredProducts.slice(startIndex, endIndex);
+  if (isLoading) {
+    return (
+      <div className="min-h-screen bg-background">
+        <div className="container px-4 py-8">
+          <div className="flex items-center justify-center h-64">
+            Loading products...
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-background">
@@ -290,7 +127,7 @@ const Products = () => {
                 variant="secondary"
                 className="px-3 py-1 flex items-center gap-2"
               >
-                {type}: {value}
+                {type}: {Array.isArray(value) ? value.join(', ') : value}
                 <X
                   size={14}
                   className="cursor-pointer"
@@ -303,7 +140,16 @@ const Products = () => {
 
         <div className="flex gap-8">
           <ProductFilters
-            filters={filters}
+            filters={filtersData || {
+              categories: [],
+              types: [],
+              colors: [],
+              sizes: [],
+              priceRange: [0, 1000],
+              styles: [],
+              occasions: [],
+              brands: [],
+            }}
             selectedFilters={selectedFilters}
             onFilterChange={handleFilterChange}
             onClearFilter={clearFilter}
@@ -313,12 +159,12 @@ const Products = () => {
 
           <div className="flex-1">
             <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-              {currentProducts.map(product => (
+              {productsData?.products.map(product => (
                 <ProductCard key={product.id} product={product} />
               ))}
             </div>
 
-            {totalPages > 1 && (
+            {productsData && productsData.totalPages > 1 && (
               <Pagination className="mt-8">
                 <PaginationContent>
                   <PaginationItem>
@@ -328,7 +174,7 @@ const Products = () => {
                     />
                   </PaginationItem>
                   
-                  {[...Array(totalPages)].map((_, i) => (
+                  {Array.from({ length: productsData.totalPages }).map((_, i) => (
                     <PaginationItem key={i + 1}>
                       <PaginationLink
                         onClick={() => setCurrentPage(i + 1)}
@@ -341,8 +187,12 @@ const Products = () => {
                   
                   <PaginationItem>
                     <PaginationNext
-                      onClick={() => setCurrentPage(prev => Math.min(totalPages, prev + 1))}
-                      className={currentPage === totalPages ? 'pointer-events-none opacity-50' : ''}
+                      onClick={() => setCurrentPage(prev => 
+                        Math.min(productsData.totalPages, prev + 1)
+                      )}
+                      className={currentPage === productsData.totalPages ? 
+                        'pointer-events-none opacity-50' : ''
+                      }
                     />
                   </PaginationItem>
                 </PaginationContent>
