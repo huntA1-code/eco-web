@@ -52,6 +52,8 @@ interface Product {
   };
 }
 
+const API_URL = "https://your-api-url.com/api"; // Replace with your actual API URL
+
 const Products = () => {
   const [searchParams] = useSearchParams();
   const category = searchParams.get("category");
@@ -60,7 +62,53 @@ const Products = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const productsPerPage = 12;
 
-  // Create mock data since API isn't available yet
+  // Fetch filters with the current selected filters
+  const { data: filtersData = mockFilters } = useQuery<FiltersResponse>({
+    queryKey: ['filters', selectedFilters],
+    queryFn: async () => {
+      try {
+        const response = await axios.get(`${API_URL}/filters`, {
+          params: {
+            ...selectedFilters,
+          }
+        });
+        return response.data;
+      } catch (error) {
+        console.error('Error fetching filters:', error);
+        // Return mock data as fallback
+        return mockFilters;
+      }
+    },
+  });
+
+  // Fetch products with filters
+  const { data: productsData, isLoading } = useQuery<ProductResponse>({
+    queryKey: ['products', selectedFilters, currentPage],
+    queryFn: async () => {
+      try {
+        const response = await axios.get(`${API_URL}/products`, {
+          params: {
+            page: currentPage,
+            limit: productsPerPage,
+            ...selectedFilters,
+          }
+        });
+        return response.data;
+      } catch (error) {
+        console.error('Error fetching products:', error);
+        // Return mock data as fallback
+        const start = (currentPage - 1) * productsPerPage;
+        const end = start + productsPerPage;
+        return {
+          products: mockProducts.slice(start, end),
+          total: mockProducts.length,
+          totalPages: Math.ceil(mockProducts.length / productsPerPage)
+        };
+      }
+    },
+  });
+
+  // Mock data for fallback
   const mockProducts = Array.from({ length: 20 }, (_, index) => ({
     id: index + 1,
     name: `Product ${index + 1}`,
@@ -75,7 +123,6 @@ const Products = () => {
     reviews: Math.floor(Math.random() * 100)
   }));
 
-  // Mock filters data
   const mockFilters: FiltersResponse = {
     categories: ["Clothing", "Shoes", "Accessories"],
     types: ["Casual", "Sport", "Formal"],
@@ -90,32 +137,6 @@ const Products = () => {
     occasions: ["Casual", "Formal", "Sport"],
     brands: ["Nike", "Adidas", "Puma"]
   };
-
-  // Fetch filters only once, without dependencies on selected filters
-  const { data: filtersData = mockFilters } = useQuery<FiltersResponse>({
-    queryKey: ['filters'],
-    queryFn: async () => {
-      // Simulate API call
-      return Promise.resolve(mockFilters);
-    },
-    staleTime: Infinity, // Keep the data fresh indefinitely
-    gcTime: Infinity, // Never delete from cache (formerly cacheTime)
-  });
-
-  // Fetch products with filters
-  const { data: productsData, isLoading } = useQuery<ProductResponse>({
-    queryKey: ['products', selectedFilters, currentPage],
-    queryFn: async () => {
-      // Simulate API call with pagination
-      const start = (currentPage - 1) * productsPerPage;
-      const end = start + productsPerPage;
-      return Promise.resolve({
-        products: mockProducts.slice(start, end),
-        total: mockProducts.length,
-        totalPages: Math.ceil(mockProducts.length / productsPerPage)
-      });
-    },
-  });
 
   const handleFilterChange = (filterType: string, value: any) => {
     setSelectedFilters(prev => ({
