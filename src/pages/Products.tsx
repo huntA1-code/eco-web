@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { useSearchParams } from "react-router-dom";
 import { Badge } from "@/components/ui/badge";
@@ -54,6 +53,36 @@ interface Product {
 
 const API_URL = "https://your-api-url.com/api"; // Replace with your actual API URL
 
+// Mock data declarations moved to the top
+const mockProducts = Array.from({ length: 20 }, (_, index) => ({
+  id: index + 1,
+  name: `Product ${index + 1}`,
+  brand: ["Nike", "Adidas", "Puma", "Under Armour"][Math.floor(Math.random() * 4)],
+  price: 99.99 + Math.floor(Math.random() * 100),
+  image: "/placeholder.svg",
+  colors: ["Red", "Blue", "Black"],
+  sizes: ["S", "M", "L", "XL"],
+  description: "Product description",
+  category: "Category",
+  rating: 4 + Math.random(),
+  reviews: Math.floor(Math.random() * 100)
+}));
+
+const mockFilters: FiltersResponse = {
+  categories: ["Clothing", "Shoes", "Accessories"],
+  types: ["Casual", "Sport", "Formal"],
+  colors: [
+    { id: "black", name: "Black", hex: "#000000" },
+    { id: "white", name: "White", hex: "#FFFFFF" },
+    { id: "red", name: "Red", hex: "#FF0000" }
+  ],
+  sizes: ["S", "M", "L", "XL"],
+  priceRange: [0, 1000],
+  styles: ["Casual", "Formal", "Sport"],
+  occasions: ["Casual", "Formal", "Sport"],
+  brands: ["Nike", "Adidas", "Puma"]
+};
+
 const Products = () => {
   const [searchParams] = useSearchParams();
   const category = searchParams.get("category");
@@ -75,7 +104,6 @@ const Products = () => {
         return response.data;
       } catch (error) {
         console.error('Error fetching filters:', error);
-        // Return mock data as fallback
         return mockFilters;
       }
     },
@@ -96,7 +124,6 @@ const Products = () => {
         return response.data;
       } catch (error) {
         console.error('Error fetching products:', error);
-        // Return mock data as fallback
         const start = (currentPage - 1) * productsPerPage;
         const end = start + productsPerPage;
         return {
@@ -107,36 +134,6 @@ const Products = () => {
       }
     },
   });
-
-  // Mock data for fallback
-  const mockProducts = Array.from({ length: 20 }, (_, index) => ({
-    id: index + 1,
-    name: `Product ${index + 1}`,
-    brand: ["Nike", "Adidas", "Puma", "Under Armour"][Math.floor(Math.random() * 4)],
-    price: 99.99 + Math.floor(Math.random() * 100),
-    image: "/placeholder.svg",
-    colors: ["Red", "Blue", "Black"],
-    sizes: ["S", "M", "L", "XL"],
-    description: "Product description",
-    category: "Category",
-    rating: 4 + Math.random(),
-    reviews: Math.floor(Math.random() * 100)
-  }));
-
-  const mockFilters: FiltersResponse = {
-    categories: ["Clothing", "Shoes", "Accessories"],
-    types: ["Casual", "Sport", "Formal"],
-    colors: [
-      { id: "black", name: "Black", hex: "#000000" },
-      { id: "white", name: "White", hex: "#FFFFFF" },
-      { id: "red", name: "Red", hex: "#FF0000" }
-    ],
-    sizes: ["S", "M", "L", "XL"],
-    priceRange: [0, 1000],
-    styles: ["Casual", "Formal", "Sport"],
-    occasions: ["Casual", "Formal", "Sport"],
-    brands: ["Nike", "Adidas", "Puma"]
-  };
 
   const handleFilterChange = (filterType: string, value: any) => {
     setSelectedFilters(prev => ({
