@@ -7,12 +7,11 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
-import { Checkbox } from "@/components/ui/checkbox";
 import { CategoryNode, FilterState } from "@/types/filters";
-import { useState } from "react";
-import { Button } from "./ui/button";
-
-const INITIAL_VISIBLE_ITEMS = 5;
+import { BrandFilter } from "./filters/BrandFilter";
+import { ColorFilter } from "./filters/ColorFilter";
+import { SleeveFilter } from "./filters/SleeveFilter";
+import { SizeFilter } from "./filters/SizeFilter";
 
 const categoryTree: CategoryNode[] = [
   {
@@ -124,24 +123,6 @@ export const ProductFilters = ({
   setShowMobileFilters,
   filters,
 }: ProductFiltersProps) => {
-  const [showAllBrands, setShowAllBrands] = useState(false);
-  const [showAllColors, setShowAllColors] = useState(false);
-  const [showAllSleeves, setShowAllSleeves] = useState(false);
-  const [showAllSizes, setShowAllSizes] = useState(false);
-
-  const visibleBrands = showAllBrands ? filters.brands : filters.brands.slice(0, INITIAL_VISIBLE_ITEMS);
-  const visibleColors = showAllColors ? mockColors : mockColors.slice(0, INITIAL_VISIBLE_ITEMS);
-  const visibleSleeves = showAllSleeves ? mockSleeves : mockSleeves.slice(0, INITIAL_VISIBLE_ITEMS);
-  const visibleSizes = showAllSizes ? mockSizes : mockSizes.slice(0, INITIAL_VISIBLE_ITEMS);
-
-  const handleMultiSelect = (filterType: string, value: string) => {
-    const currentValues = selectedFilters[filterType] || [];
-    const newValues = currentValues.includes(value)
-      ? currentValues.filter(v => v !== value)
-      : [...currentValues, value];
-    onFilterChange(filterType, newValues);
-  };
-
   return (
     <>
       <div className="lg:hidden fixed bottom-4 right-4 z-50">
@@ -180,32 +161,11 @@ export const ProductFilters = ({
                 Brands
               </AccordionTrigger>
               <AccordionContent>
-                <div className="space-y-2">
-                  {visibleBrands.map((brand) => (
-                    <div key={brand} className="flex items-center space-x-2">
-                      <Checkbox
-                        id={`brand-${brand}`}
-                        checked={selectedFilters.brands?.includes(brand)}
-                        onCheckedChange={() => handleMultiSelect('brands', brand)}
-                      />
-                      <label
-                        htmlFor={`brand-${brand}`}
-                        className="text-sm cursor-pointer"
-                      >
-                        {brand}
-                      </label>
-                    </div>
-                  ))}
-                  {filters.brands.length > INITIAL_VISIBLE_ITEMS && (
-                    <Button
-                      variant="ghost"
-                      className="w-full mt-2 text-sm"
-                      onClick={() => setShowAllBrands(!showAllBrands)}
-                    >
-                      {showAllBrands ? 'Show Less' : `Show More (${filters.brands.length - INITIAL_VISIBLE_ITEMS})`}
-                    </Button>
-                  )}
-                </div>
+                <BrandFilter
+                  brands={filters.brands}
+                  selectedBrands={selectedFilters.brands}
+                  onFilterChange={(value) => onFilterChange('brands', value)}
+                />
               </AccordionContent>
             </AccordionItem>
 
@@ -214,33 +174,11 @@ export const ProductFilters = ({
                 Colors
               </AccordionTrigger>
               <AccordionContent>
-                <div className="space-y-2">
-                  <div className="grid grid-cols-4 gap-2">
-                    {visibleColors.map((color) => (
-                      <div key={color.id} className="flex flex-col items-center space-y-1">
-                        <button
-                          className={`w-8 h-8 rounded-full border-2 ${
-                            selectedFilters.colors?.includes(color.id)
-                              ? 'border-primary'
-                              : 'border-transparent'
-                          }`}
-                          style={{ backgroundColor: color.hex }}
-                          onClick={() => handleMultiSelect('colors', color.id)}
-                        />
-                        <span className="text-xs">{color.name}</span>
-                      </div>
-                    ))}
-                  </div>
-                  {mockColors.length > INITIAL_VISIBLE_ITEMS && (
-                    <Button
-                      variant="ghost"
-                      className="w-full mt-2 text-sm"
-                      onClick={() => setShowAllColors(!showAllColors)}
-                    >
-                      {showAllColors ? 'Show Less' : `Show More (${mockColors.length - INITIAL_VISIBLE_ITEMS})`}
-                    </Button>
-                  )}
-                </div>
+                <ColorFilter
+                  colors={mockColors}
+                  selectedColors={selectedFilters.colors}
+                  onFilterChange={(value) => onFilterChange('colors', value)}
+                />
               </AccordionContent>
             </AccordionItem>
 
@@ -249,32 +187,11 @@ export const ProductFilters = ({
                 Sleeves
               </AccordionTrigger>
               <AccordionContent>
-                <div className="space-y-2">
-                  {visibleSleeves.map((sleeve) => (
-                    <div key={sleeve} className="flex items-center space-x-2">
-                      <Checkbox
-                        id={`sleeve-${sleeve}`}
-                        checked={selectedFilters.sleeves?.includes(sleeve)}
-                        onCheckedChange={() => handleMultiSelect('sleeves', sleeve)}
-                      />
-                      <label
-                        htmlFor={`sleeve-${sleeve}`}
-                        className="text-sm cursor-pointer"
-                      >
-                        {sleeve}
-                      </label>
-                    </div>
-                  ))}
-                  {mockSleeves.length > INITIAL_VISIBLE_ITEMS && (
-                    <Button
-                      variant="ghost"
-                      className="w-full mt-2 text-sm"
-                      onClick={() => setShowAllSleeves(!showAllSleeves)}
-                    >
-                      {showAllSleeves ? 'Show Less' : `Show More (${mockSleeves.length - INITIAL_VISIBLE_ITEMS})`}
-                    </Button>
-                  )}
-                </div>
+                <SleeveFilter
+                  sleeves={mockSleeves}
+                  selectedSleeves={selectedFilters.sleeves}
+                  onFilterChange={(value) => onFilterChange('sleeves', value)}
+                />
               </AccordionContent>
             </AccordionItem>
 
@@ -283,29 +200,11 @@ export const ProductFilters = ({
                 Sizes
               </AccordionTrigger>
               <AccordionContent>
-                <div className="space-y-2">
-                  <div className="grid grid-cols-3 gap-2">
-                    {visibleSizes.map((size) => (
-                      <Button
-                        key={size}
-                        variant={selectedFilters.sizes?.includes(size) ? "default" : "outline"}
-                        className="w-full"
-                        onClick={() => handleMultiSelect('sizes', size)}
-                      >
-                        {size}
-                      </Button>
-                    ))}
-                  </div>
-                  {mockSizes.length > INITIAL_VISIBLE_ITEMS && (
-                    <Button
-                      variant="ghost"
-                      className="w-full mt-2 text-sm"
-                      onClick={() => setShowAllSizes(!showAllSizes)}
-                    >
-                      {showAllSizes ? 'Show Less' : `Show More (${mockSizes.length - INITIAL_VISIBLE_ITEMS})`}
-                    </Button>
-                  )}
-                </div>
+                <SizeFilter
+                  sizes={mockSizes}
+                  selectedSizes={selectedFilters.sizes}
+                  onFilterChange={(value) => onFilterChange('sizes', value)}
+                />
               </AccordionContent>
             </AccordionItem>
 
