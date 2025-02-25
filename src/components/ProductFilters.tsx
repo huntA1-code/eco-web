@@ -1,4 +1,3 @@
-
 import { Filter } from "lucide-react";
 import { Slider } from "@/components/ui/slider";
 import { CategoryTree } from "@/components/CategoryTree";
@@ -42,6 +41,20 @@ export const ProductFilters = ({
   setShowMobileFilters,
   filters,
 }: ProductFiltersProps) => {
+  const allAccordionValues = [
+    "categories",
+    "brands",
+    "colors",
+    "sizes",
+    "types",
+    "styles",
+    "occasions",
+    "price",
+    "sleeves",
+    "neckline",
+    "height"
+  ];
+
   return (
     <>
       <div className="lg:hidden fixed bottom-4 right-4 z-50">
@@ -66,7 +79,11 @@ export const ProductFilters = ({
             </button>
           </div>
 
-          <Accordion type="multiple" className="space-y-4">
+          <Accordion 
+            type="multiple" 
+            className="space-y-4"
+            defaultValue={allAccordionValues}
+          >
             <AccordionItem value="categories">
               <AccordionTrigger className="text-base font-medium">
                 Categories
