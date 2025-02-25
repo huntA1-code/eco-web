@@ -91,22 +91,20 @@ const Products = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const productsPerPage = 12;
 
-  // Fetch filters with the current selected filters
+  // Fetch filters only once, without dependencies on selected filters
   const { data: filtersData = mockFilters } = useQuery<FiltersResponse>({
-    queryKey: ['filters', selectedFilters],
+    queryKey: ['filters'],
     queryFn: async () => {
       try {
-        const response = await axios.get(`${API_URL}/filters`, {
-          params: {
-            ...selectedFilters,
-          }
-        });
+        const response = await axios.get(`${API_URL}/filters`);
         return response.data;
       } catch (error) {
         console.error('Error fetching filters:', error);
         return mockFilters;
       }
     },
+    staleTime: Infinity, // Keep the data fresh indefinitely
+    gcTime: Infinity, // Never delete from cache
   });
 
   // Fetch products with filters
