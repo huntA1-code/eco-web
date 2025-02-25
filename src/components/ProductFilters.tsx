@@ -108,7 +108,7 @@ interface ProductFiltersProps {
   filters: {
     categories: string[];
     types: string[];
-    colors: string[];
+    colors: Array<{ id: string; name: string; hex: string; }>;
     sizes: string[];
     priceRange: number[];
     styles: string[];
