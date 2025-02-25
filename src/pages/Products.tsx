@@ -91,15 +91,18 @@ const Products = () => {
     brands: ["Nike", "Adidas", "Puma"]
   };
 
-  // Mock API responses
+  // Fetch filters only once, without dependencies on selected filters
   const { data: filtersData } = useQuery<FiltersResponse>({
     queryKey: ['filters'],
     queryFn: async () => {
       // Simulate API call
       return Promise.resolve(mockFilters);
     },
+    staleTime: Infinity, // Keep the data fresh indefinitely
+    cacheTime: Infinity, // Never delete from cache
   });
 
+  // Fetch products with filters
   const { data: productsData, isLoading } = useQuery<ProductResponse>({
     queryKey: ['products', selectedFilters, currentPage],
     queryFn: async () => {
