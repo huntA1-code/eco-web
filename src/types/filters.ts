@@ -14,4 +14,8 @@ export interface FilterState {
   sleeves?: string[];
   neckline?: string[];
   height?: string[];
+  types?: string[];
+  styles?: string[];
+  occasions?: string[];
 }
+

@@ -23,7 +23,7 @@ interface ProductFiltersProps {
   showMobileFilters: boolean;
   setShowMobileFilters: (show: boolean) => void;
   filters: {
-    categories: string[];
+    categories: CategoryNode[];
     types: string[];
     colors: Array<{ id: string; name: string; hex: string; }>;
     sizes: string[];
@@ -73,7 +73,7 @@ export const ProductFilters = ({
               </AccordionTrigger>
               <AccordionContent>
                 <div className="pt-2">
-                  {categoryTree.map((node) => (
+                  {filters.categories.map((node) => (
                     <CategoryTree
                       key={node.id}
                       node={node}
@@ -131,7 +131,7 @@ export const ProductFilters = ({
               <AccordionContent>
                 <GenericFilter
                   queryKey="types"
-                  options={filters.types.map(type => ({ id: type, name: type }))}
+                  fetchFn={async () => filters.types.map(type => ({ id: type, name: type }))}
                   selectedOptions={selectedFilters.types}
                   onFilterChange={(value) => onFilterChange('types', value)}
                 />
@@ -145,7 +145,7 @@ export const ProductFilters = ({
               <AccordionContent>
                 <GenericFilter
                   queryKey="styles"
-                  options={filters.styles.map(style => ({ id: style, name: style }))}
+                  fetchFn={async () => filters.styles.map(style => ({ id: style, name: style }))}
                   selectedOptions={selectedFilters.styles}
                   onFilterChange={(value) => onFilterChange('styles', value)}
                 />
@@ -159,7 +159,7 @@ export const ProductFilters = ({
               <AccordionContent>
                 <GenericFilter
                   queryKey="occasions"
-                  options={filters.occasions.map(occasion => ({ id: occasion, name: occasion }))}
+                  fetchFn={async () => filters.occasions.map(occasion => ({ id: occasion, name: occasion }))}
                   selectedOptions={selectedFilters.occasions}
                   onFilterChange={(value) => onFilterChange('occasions', value)}
                 />
