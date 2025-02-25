@@ -1,3 +1,4 @@
+
 import { Filter } from "lucide-react";
 import { Slider } from "@/components/ui/slider";
 import { CategoryTree } from "@/components/CategoryTree";
@@ -12,7 +13,7 @@ import { CategoryNode, FilterState } from "@/types/filters";
 import { useState } from "react";
 import { Button } from "./ui/button";
 
-const INITIAL_VISIBLE_BRANDS = 5;
+const INITIAL_VISIBLE_ITEMS = 5;
 
 const categoryTree: CategoryNode[] = [
   {
@@ -65,6 +66,40 @@ const categoryTree: CategoryNode[] = [
   }
 ];
 
+// Mock data for new filters
+const mockColors = [
+  { id: 'black', name: 'Black', hex: '#000000' },
+  { id: 'white', name: 'White', hex: '#FFFFFF' },
+  { id: 'red', name: 'Red', hex: '#FF0000' },
+  { id: 'blue', name: 'Blue', hex: '#0000FF' },
+  { id: 'green', name: 'Green', hex: '#00FF00' },
+  { id: 'yellow', name: 'Yellow', hex: '#FFFF00' },
+  { id: 'purple', name: 'Purple', hex: '#800080' },
+  { id: 'orange', name: 'Orange', hex: '#FFA500' },
+];
+
+const mockSleeves = [
+  'Short Sleeve',
+  'Long Sleeve',
+  'Sleeveless',
+  'Three-Quarter Sleeve',
+  'Cap Sleeve',
+  'Butterfly Sleeve',
+  'Bell Sleeve',
+  'Rolled-Up Sleeve',
+];
+
+const mockSizes = [
+  'XS',
+  'S',
+  'M',
+  'L',
+  'XL',
+  'XXL',
+  '2XL',
+  '3XL',
+];
+
 interface ProductFiltersProps {
   selectedFilters: FilterState;
   onFilterChange: (filterType: string, value: any) => void;
@@ -92,7 +127,14 @@ export const ProductFilters = ({
   filters,
 }: ProductFiltersProps) => {
   const [showAllBrands, setShowAllBrands] = useState(false);
-  const visibleBrands = showAllBrands ? filters.brands : filters.brands.slice(0, INITIAL_VISIBLE_BRANDS);
+  const [showAllColors, setShowAllColors] = useState(false);
+  const [showAllSleeves, setShowAllSleeves] = useState(false);
+  const [showAllSizes, setShowAllSizes] = useState(false);
+
+  const visibleBrands = showAllBrands ? filters.brands : filters.brands.slice(0, INITIAL_VISIBLE_ITEMS);
+  const visibleColors = showAllColors ? mockColors : mockColors.slice(0, INITIAL_VISIBLE_ITEMS);
+  const visibleSleeves = showAllSleeves ? mockSleeves : mockSleeves.slice(0, INITIAL_VISIBLE_ITEMS);
+  const visibleSizes = showAllSizes ? mockSizes : mockSizes.slice(0, INITIAL_VISIBLE_ITEMS);
 
   const handleBrandChange = (brand: string) => {
     const currentBrands = selectedFilters.brands || [];
@@ -158,13 +200,116 @@ export const ProductFilters = ({
                       </label>
                     </div>
                   ))}
-                  {filters.brands.length > INITIAL_VISIBLE_BRANDS && (
+                  {filters.brands.length > INITIAL_VISIBLE_ITEMS && (
                     <Button
                       variant="ghost"
                       className="w-full mt-2 text-sm"
                       onClick={() => setShowAllBrands(!showAllBrands)}
                     >
-                      {showAllBrands ? 'Show Less' : `Show More (${filters.brands.length - INITIAL_VISIBLE_BRANDS})`}
+                      {showAllBrands ? 'Show Less' : `Show More (${filters.brands.length - INITIAL_VISIBLE_ITEMS})`}
+                    </Button>
+                  )}
+                </div>
+              </AccordionContent>
+            </AccordionItem>
+
+            {/* Color Filter */}
+            <AccordionItem value="colors">
+              <AccordionTrigger className="text-base font-medium">
+                Colors
+              </AccordionTrigger>
+              <AccordionContent>
+                <div className="space-y-2">
+                  <div className="grid grid-cols-4 gap-2">
+                    {visibleColors.map((color) => (
+                      <div key={color.id} className="flex flex-col items-center space-y-1">
+                        <button
+                          className={`w-8 h-8 rounded-full border-2 ${
+                            selectedFilters.color === color.id
+                              ? 'border-primary'
+                              : 'border-transparent'
+                          }`}
+                          style={{ backgroundColor: color.hex }}
+                          onClick={() => onFilterChange('color', color.id)}
+                        />
+                        <span className="text-xs">{color.name}</span>
+                      </div>
+                    ))}
+                  </div>
+                  {mockColors.length > INITIAL_VISIBLE_ITEMS && (
+                    <Button
+                      variant="ghost"
+                      className="w-full mt-2 text-sm"
+                      onClick={() => setShowAllColors(!showAllColors)}
+                    >
+                      {showAllColors ? 'Show Less' : `Show More (${mockColors.length - INITIAL_VISIBLE_ITEMS})`}
+                    </Button>
+                  )}
+                </div>
+              </AccordionContent>
+            </AccordionItem>
+
+            {/* Sleeve Filter */}
+            <AccordionItem value="sleeves">
+              <AccordionTrigger className="text-base font-medium">
+                Sleeves
+              </AccordionTrigger>
+              <AccordionContent>
+                <div className="space-y-2">
+                  {visibleSleeves.map((sleeve) => (
+                    <div key={sleeve} className="flex items-center space-x-2">
+                      <Checkbox
+                        id={`sleeve-${sleeve}`}
+                        checked={selectedFilters.sleeve === sleeve}
+                        onCheckedChange={() => onFilterChange('sleeve', sleeve)}
+                      />
+                      <label
+                        htmlFor={`sleeve-${sleeve}`}
+                        className="text-sm cursor-pointer"
+                      >
+                        {sleeve}
+                      </label>
+                    </div>
+                  ))}
+                  {mockSleeves.length > INITIAL_VISIBLE_ITEMS && (
+                    <Button
+                      variant="ghost"
+                      className="w-full mt-2 text-sm"
+                      onClick={() => setShowAllSleeves(!showAllSleeves)}
+                    >
+                      {showAllSleeves ? 'Show Less' : `Show More (${mockSleeves.length - INITIAL_VISIBLE_ITEMS})`}
+                    </Button>
+                  )}
+                </div>
+              </AccordionContent>
+            </AccordionItem>
+
+            {/* Size Filter */}
+            <AccordionItem value="sizes">
+              <AccordionTrigger className="text-base font-medium">
+                Sizes
+              </AccordionTrigger>
+              <AccordionContent>
+                <div className="space-y-2">
+                  <div className="grid grid-cols-3 gap-2">
+                    {visibleSizes.map((size) => (
+                      <Button
+                        key={size}
+                        variant={selectedFilters.size === size ? "default" : "outline"}
+                        className="w-full"
+                        onClick={() => onFilterChange('size', size)}
+                      >
+                        {size}
+                      </Button>
+                    ))}
+                  </div>
+                  {mockSizes.length > INITIAL_VISIBLE_ITEMS && (
+                    <Button
+                      variant="ghost"
+                      className="w-full mt-2 text-sm"
+                      onClick={() => setShowAllSizes(!showAllSizes)}
+                    >
+                      {showAllSizes ? 'Show Less' : `Show More (${mockSizes.length - INITIAL_VISIBLE_ITEMS})`}
                     </Button>
                   )}
                 </div>
