@@ -1,8 +1,8 @@
-
 import { Routes, Route } from "react-router-dom";
 import { Navbar } from "./components/Navbar";
 import { SubNavbar } from "./components/SubNavbar";
 import { useLocation } from "react-router-dom";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import Index from "./pages/Index";
 import Products from "./pages/Products";
 import ProductPage from "./pages/ProductPage";
@@ -49,6 +49,9 @@ import OTPVerification from "./pages/OTPVerification";
 import StoreReview from "./pages/StoreReview";
 import Reviews from "./pages/dashboard/reviews/Reviews";
 
+// Create a client
+const queryClient = new QueryClient();
+
 function App() {
   const location = useLocation();
   
@@ -65,7 +68,7 @@ function App() {
   const isDashboardPage = location.pathname.startsWith('/dashboard');
 
   return (
-    <>
+    <QueryClientProvider client={queryClient}>
       {!isDashboardPage && !shouldHideNavbar && <Navbar />}
       {!isDashboardPage && shouldShowSubNavbar && <SubNavbar />}
       <Routes>
@@ -115,7 +118,7 @@ function App() {
           <Route path="discounts/:id/products" element={<DiscountProducts />} />
         </Route>
       </Routes>
-    </>
+    </QueryClientProvider>
   );
 }
 
