@@ -92,14 +92,14 @@ const Products = () => {
   };
 
   // Fetch filters only once, without dependencies on selected filters
-  const { data: filtersData } = useQuery<FiltersResponse>({
+  const { data: filtersData = mockFilters } = useQuery<FiltersResponse>({
     queryKey: ['filters'],
     queryFn: async () => {
       // Simulate API call
       return Promise.resolve(mockFilters);
     },
     staleTime: Infinity, // Keep the data fresh indefinitely
-    cacheTime: Infinity, // Never delete from cache
+    gcTime: Infinity, // Never delete from cache (formerly cacheTime)
   });
 
   // Fetch products with filters
@@ -170,7 +170,7 @@ const Products = () => {
 
         <div className="flex gap-8">
           <ProductFilters
-            filters={filtersData || mockFilters}
+            filters={filtersData}
             selectedFilters={selectedFilters}
             onFilterChange={handleFilterChange}
             onClearFilter={clearFilter}
