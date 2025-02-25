@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { useSearchParams } from "react-router-dom";
 import { Badge } from "@/components/ui/badge";
@@ -14,6 +15,7 @@ import {
   PaginationNext,
   PaginationPrevious,
 } from "@/components/ui/pagination";
+import { CategoryNode } from "@/types/filters";
 
 // Types for API responses
 interface ProductResponse {
@@ -23,7 +25,7 @@ interface ProductResponse {
 }
 
 export interface FiltersResponse {
-  categories: { id: string; name: string }[];
+  categories: CategoryNode[];
   types: string[];
   colors: Array<{ id: string; name: string; hex: string; }>;
   sizes: string[];
@@ -70,8 +72,36 @@ const mockProducts = Array.from({ length: 20 }, (_, index) => ({
 
 const mockFilters: FiltersResponse = {
   categories: [
-    { id: "clothing", name: "Clothing" },
-    { id: "shoes", name: "Shoes" },
+    {
+      id: "clothing",
+      name: "Clothing",
+      children: [
+        {
+          id: "mens",
+          name: "Men's Clothing",
+          children: [
+            { id: "shirts", name: "Shirts" },
+            { id: "pants", name: "Pants" }
+          ]
+        },
+        {
+          id: "womens",
+          name: "Women's Clothing",
+          children: [
+            { id: "dresses", name: "Dresses" },
+            { id: "tops", name: "Tops" }
+          ]
+        }
+      ]
+    },
+    {
+      id: "shoes",
+      name: "Shoes",
+      children: [
+        { id: "running", name: "Running Shoes" },
+        { id: "casual", name: "Casual Shoes" }
+      ]
+    },
     { id: "accessories", name: "Accessories" }
   ],
   types: ["Casual", "Sport", "Formal"],

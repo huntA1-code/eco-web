@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { Header } from '../components/header/Header';
 import { ProductFilters } from '../components/ProductFilters';
@@ -46,7 +45,6 @@ const Store = () => {
     setSelectedFilters(newFilters);
   };
 
-  // Calculate pagination
   const totalPages = Math.ceil(products.length / productsPerPage);
   const startIndex = (currentPage - 1) * productsPerPage;
   const endIndex = startIndex + productsPerPage;
@@ -66,9 +64,23 @@ const Store = () => {
               setShowMobileFilters={setShowMobileFilters}
               filters={{
                 categories: [
-                  { id: "running", name: "Running" },
-                  { id: "training", name: "Training" },
-                  { id: "basketball", name: "Basketball" }
+                  {
+                    id: "sports",
+                    name: "Sports",
+                    children: [
+                      { id: "running", name: "Running" },
+                      { id: "training", name: "Training" },
+                      { id: "basketball", name: "Basketball" }
+                    ]
+                  },
+                  {
+                    id: "casual",
+                    name: "Casual Wear",
+                    children: [
+                      { id: "streetwear", name: "Streetwear" },
+                      { id: "lifestyle", name: "Lifestyle" }
+                    ]
+                  }
                 ],
                 types: ["Shoes", "Clothing", "Accessories"],
                 colors: [
