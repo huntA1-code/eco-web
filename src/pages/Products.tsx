@@ -60,28 +60,57 @@ const Products = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const productsPerPage = 12;
 
-  // Fetch available filters
+  // Create mock data since API isn't available yet
+  const mockProducts = Array.from({ length: 20 }, (_, index) => ({
+    id: index + 1,
+    name: `Product ${index + 1}`,
+    brand: ["Nike", "Adidas", "Puma", "Under Armour"][Math.floor(Math.random() * 4)],
+    price: 99.99 + Math.floor(Math.random() * 100),
+    image: "/placeholder.svg",
+    colors: ["Red", "Blue", "Black"],
+    sizes: ["S", "M", "L", "XL"],
+    description: "Product description",
+    category: "Category",
+    rating: 4 + Math.random(),
+    reviews: Math.floor(Math.random() * 100)
+  }));
+
+  // Mock filters data
+  const mockFilters: FiltersResponse = {
+    categories: ["Clothing", "Shoes", "Accessories"],
+    types: ["Casual", "Sport", "Formal"],
+    colors: [
+      { id: "black", name: "Black", hex: "#000000" },
+      { id: "white", name: "White", hex: "#FFFFFF" },
+      { id: "red", name: "Red", hex: "#FF0000" }
+    ],
+    sizes: ["S", "M", "L", "XL"],
+    priceRange: [0, 1000],
+    styles: ["Casual", "Formal", "Sport"],
+    occasions: ["Casual", "Formal", "Sport"],
+    brands: ["Nike", "Adidas", "Puma"]
+  };
+
+  // Mock API responses
   const { data: filtersData } = useQuery<FiltersResponse>({
     queryKey: ['filters'],
     queryFn: async () => {
-      const response = await axios.get('/api/filters');
-      return response.data;
+      // Simulate API call
+      return Promise.resolve(mockFilters);
     },
   });
 
-  // Fetch products with filters
   const { data: productsData, isLoading } = useQuery<ProductResponse>({
     queryKey: ['products', selectedFilters, currentPage],
     queryFn: async () => {
-      const response = await axios.get('/api/products', {
-        params: {
-          page: currentPage,
-          limit: productsPerPage,
-          ...selectedFilters,
-          category: category || undefined,
-        },
+      // Simulate API call with pagination
+      const start = (currentPage - 1) * productsPerPage;
+      const end = start + productsPerPage;
+      return Promise.resolve({
+        products: mockProducts.slice(start, end),
+        total: mockProducts.length,
+        totalPages: Math.ceil(mockProducts.length / productsPerPage)
       });
-      return response.data;
     },
   });
 
@@ -90,7 +119,7 @@ const Products = () => {
       ...prev,
       [filterType]: value
     }));
-    setCurrentPage(1); // Reset to first page when filters change
+    setCurrentPage(1);
   };
 
   const clearFilter = (filterType: string) => {
@@ -110,17 +139,6 @@ const Products = () => {
       </div>
     );
   }
-
-  const defaultFilters: FiltersResponse = {
-    categories: [],
-    types: [],
-    colors: [],
-    sizes: [],
-    priceRange: [0, 1000],
-    styles: [],
-    occasions: [],
-    brands: [],
-  };
 
   return (
     <div className="min-h-screen bg-background">
@@ -149,7 +167,7 @@ const Products = () => {
 
         <div className="flex gap-8">
           <ProductFilters
-            filters={filtersData || defaultFilters}
+            filters={filtersData || mockFilters}
             selectedFilters={selectedFilters}
             onFilterChange={handleFilterChange}
             onClearFilter={clearFilter}
