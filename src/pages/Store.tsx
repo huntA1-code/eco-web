@@ -67,7 +67,12 @@ const Store = () => {
               filters={{
                 categories: ["Running", "Training", "Basketball"],
                 types: ["Shoes", "Clothing", "Accessories"],
-                colors: ["Black", "White", "Red", "Blue"],
+                colors: [
+                  { id: "black", name: "Black", hex: "#000000" },
+                  { id: "white", name: "White", hex: "#FFFFFF" },
+                  { id: "red", name: "Red", hex: "#FF0000" },
+                  { id: "blue", name: "Blue", hex: "#0000FF" }
+                ],
                 sizes: ["S", "M", "L", "XL"],
                 priceRange: [0, 200],
                 styles: ["Casual", "Athletic", "Professional"],
