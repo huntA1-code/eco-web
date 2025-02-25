@@ -12,6 +12,8 @@ import { BrandFilter } from "./filters/BrandFilter";
 import { ColorFilter } from "./filters/ColorFilter";
 import { SleeveFilter } from "./filters/SleeveFilter";
 import { SizeFilter } from "./filters/SizeFilter";
+import { GenericFilter } from "./filters/GenericFilter";
+import { fetchNeckOptions, fetchHeightOptions } from "@/data/mockFilters";
 
 const categoryTree: CategoryNode[] = [
   {
@@ -135,15 +137,7 @@ export const ProductFilters = ({
         </button>
       </div>
 
-      <div
-        className={`
-          fixed inset-0 lg:static lg:block
-          ${showMobileFilters ? 'block' : 'hidden'}
-          lg:w-64 bg-background lg:bg-transparent
-          z-50 lg:z-0 overflow-auto
-          scrollbar-hide
-        `}
-      >
+      <div className={`fixed inset-0 lg:static lg:block ${showMobileFilters ? 'block' : 'hidden'} lg:w-64 bg-background lg:bg-transparent z-50 lg:z-0 overflow-auto scrollbar-hide`}>
         <div className="p-4 lg:p-0">
           <div className="flex items-center justify-between lg:hidden mb-4">
             <h2 className="text-xl font-semibold">Filters</h2>
@@ -240,6 +234,34 @@ export const ProductFilters = ({
                   <span>${selectedFilters.priceRange?.[0] || 0}</span>
                   <span>${selectedFilters.priceRange?.[1] || 200}</span>
                 </div>
+              </AccordionContent>
+            </AccordionItem>
+
+            <AccordionItem value="neckline">
+              <AccordionTrigger className="text-base font-medium">
+                Neckline
+              </AccordionTrigger>
+              <AccordionContent>
+                <GenericFilter
+                  queryKey="neck-options"
+                  fetchFn={fetchNeckOptions}
+                  selectedOptions={selectedFilters.neckline}
+                  onFilterChange={(value) => onFilterChange('neckline', value)}
+                />
+              </AccordionContent>
+            </AccordionItem>
+
+            <AccordionItem value="height">
+              <AccordionTrigger className="text-base font-medium">
+                Height
+              </AccordionTrigger>
+              <AccordionContent>
+                <GenericFilter
+                  queryKey="height-options"
+                  fetchFn={fetchHeightOptions}
+                  selectedOptions={selectedFilters.height}
+                  onFilterChange={(value) => onFilterChange('height', value)}
+                />
               </AccordionContent>
             </AccordionItem>
           </Accordion>

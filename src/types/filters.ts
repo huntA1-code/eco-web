@@ -12,4 +12,6 @@ export interface FilterState {
   priceRange?: number[];
   brands?: string[];
   sleeves?: string[];
+  neckline?: string[];
+  height?: string[];
 }

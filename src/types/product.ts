@@ -82,3 +82,27 @@ export interface SleeveOption {
   name: string;
   sleeve_type_id: string;
 }
+
+export interface NeckType {
+  id: string;
+  name: string;
+  options: NeckOption[];
+}
+
+export interface NeckOption {
+  id: string;
+  name: string;
+  neck_type_id: string;
+}
+
+export interface HeightType {
+  id: string;
+  name: string;
+  options: HeightOption[];
+}
+
+export interface HeightOption {
+  id: string;
+  name: string;
+  height_type_id: string;
+}
