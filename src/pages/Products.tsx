@@ -1,5 +1,3 @@
-
-// ... copy of the entire code you provided
 import { useState } from "react";
 import { useSearchParams } from "react-router-dom";
 import { Badge } from "@/components/ui/badge";
@@ -25,7 +23,7 @@ interface ProductResponse {
 }
 
 export interface FiltersResponse {
-  categories: string[];
+  categories: { id: string; name: string }[];
   types: string[];
   colors: Array<{ id: string; name: string; hex: string; }>;
   sizes: string[];
@@ -71,7 +69,11 @@ const mockProducts = Array.from({ length: 20 }, (_, index) => ({
 }));
 
 const mockFilters: FiltersResponse = {
-  categories: ["Clothing", "Shoes", "Accessories"],
+  categories: [
+    { id: "clothing", name: "Clothing" },
+    { id: "shoes", name: "Shoes" },
+    { id: "accessories", name: "Accessories" }
+  ],
   types: ["Casual", "Sport", "Formal"],
   colors: [
     { id: "black", name: "Black", hex: "#000000" },
