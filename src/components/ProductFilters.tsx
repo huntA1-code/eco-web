@@ -188,7 +188,6 @@ export const ProductFilters = ({
               </AccordionTrigger>
               <AccordionContent>
                 <SleeveFilter
-                  sleeves={mockSleeves}
                   selectedSleeves={selectedFilters.sleeves}
                   onFilterChange={(value) => onFilterChange('sleeves', value)}
                 />

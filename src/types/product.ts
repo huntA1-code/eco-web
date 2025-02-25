@@ -1,4 +1,3 @@
-
 export interface Category {
   id: string;
   name: string;
@@ -70,4 +69,16 @@ export interface ProductFormData {
   discount_id?: string;
   attribute_options: string[];
   product_items: ProductItem[];
+}
+
+export interface SleeveType {
+  id: string;
+  name: string;
+  options: SleeveOption[];
+}
+
+export interface SleeveOption {
+  id: string;
+  name: string;
+  sleeve_type_id: string;
 }
