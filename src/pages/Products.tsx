@@ -1,5 +1,5 @@
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useSearchParams } from "react-router-dom";
 import { Badge } from "@/components/ui/badge";
 import { X } from "lucide-react";
@@ -23,10 +23,10 @@ interface ProductResponse {
   totalPages: number;
 }
 
-interface FiltersResponse {
+export interface FiltersResponse {
   categories: string[];
   types: string[];
-  colors: { id: string; name: string; hex: string; }[];
+  colors: Array<{ id: string; name: string; hex: string; }>;
   sizes: string[];
   priceRange: [number, number];
   styles: string[];
@@ -64,7 +64,6 @@ const Products = () => {
   const { data: filtersData } = useQuery<FiltersResponse>({
     queryKey: ['filters'],
     queryFn: async () => {
-      // Replace with your actual API endpoint
       const response = await axios.get('/api/filters');
       return response.data;
     },
@@ -74,7 +73,6 @@ const Products = () => {
   const { data: productsData, isLoading } = useQuery<ProductResponse>({
     queryKey: ['products', selectedFilters, currentPage],
     queryFn: async () => {
-      // Replace with your actual API endpoint
       const response = await axios.get('/api/products', {
         params: {
           page: currentPage,
@@ -113,6 +111,17 @@ const Products = () => {
     );
   }
 
+  const defaultFilters: FiltersResponse = {
+    categories: [],
+    types: [],
+    colors: [],
+    sizes: [],
+    priceRange: [0, 1000],
+    styles: [],
+    occasions: [],
+    brands: [],
+  };
+
   return (
     <div className="min-h-screen bg-background">
       <div className="container px-4 py-8">
@@ -140,16 +149,7 @@ const Products = () => {
 
         <div className="flex gap-8">
           <ProductFilters
-            filters={filtersData || {
-              categories: [],
-              types: [],
-              colors: [],
-              sizes: [],
-              priceRange: [0, 1000],
-              styles: [],
-              occasions: [],
-              brands: [],
-            }}
+            filters={filtersData || defaultFilters}
             selectedFilters={selectedFilters}
             onFilterChange={handleFilterChange}
             onClearFilter={clearFilter}
