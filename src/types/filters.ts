@@ -1,3 +1,4 @@
+
 export interface CategoryNode {
   id: string;
   name: string;
@@ -9,6 +10,6 @@ export interface FilterState {
   color?: string;
   size?: string;
   priceRange?: number[];
-  brands?: string[]; // Changed to array to support multiple selections
-  type?: string;
+  brands?: string[];
+  sleeve?: string; // Added this line to support sleeve filtering
 }
