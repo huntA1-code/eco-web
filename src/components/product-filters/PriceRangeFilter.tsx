@@ -15,7 +15,7 @@ export const PriceRangeFilter = ({
   return (
     <div>
       <Slider
-        defaultValue={priceRange}
+        defaultValue={selectedPriceRange || priceRange}
         min={priceRange[0]}
         max={priceRange[1]}
         step={1}
