@@ -1,11 +1,13 @@
 
 import React, { useState } from 'react';
-import { Truck, Trash2 } from 'lucide-react';
+import { Truck, Trash2, ShoppingCart, Package, CreditCard, CheckCircle, Circle } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Checkbox } from '@/components/ui/checkbox';
+import { Progress } from '@/components/ui/progress';
 import { useNavigate } from 'react-router-dom';
 
+// API interface placeholders (for future integration)
 interface CartItem {
   id: number;
   name: string;
@@ -15,8 +17,17 @@ interface CartItem {
   image: string;
 }
 
+interface CartApiResponse {
+  items: CartItem[];
+  subtotal: number;
+  shippingFee: number;
+  total: number;
+}
+
 const Cart = () => {
   const navigate = useNavigate();
+  
+  // State for cart items (prepared for API integration)
   const [cartItems, setCartItems] = useState<CartItem[]>([
     {
       id: 1,
@@ -46,6 +57,7 @@ const Cart = () => {
 
   const [selectedItems, setSelectedItems] = useState<number[]>([]);
 
+  // Handlers for cart operations (prepared for API integration)
   const handleSelectAll = (checked: boolean) => {
     if (checked) {
       setSelectedItems(cartItems.map(item => item.id));
@@ -73,6 +85,7 @@ const Cart = () => {
   };
 
   const removeItem = (itemId: number) => {
+    // In a real implementation, this would call an API
     setCartItems(prev => prev.filter(item => item.id !== itemId));
     setSelectedItems(prev => prev.filter(id => id !== itemId));
   };
@@ -87,11 +100,43 @@ const Cart = () => {
     if (selectedItems.length === 0) {
       return;
     }
+    // This would normally save cart state to an API before navigation
     navigate('/place-order');
   };
 
   return (
     <div className="container mx-auto px-4 py-8 mt-20">
+      {/* Order Progress with icons */}
+      <div className="mb-6">
+        <div className="flex items-center justify-between mb-2">
+          <div className="flex flex-col items-center">
+            <div className="bg-primary text-white p-2 rounded-full">
+              <ShoppingCart className="h-5 w-5" />
+            </div>
+            <span className="text-sm mt-1 font-semibold">Cart</span>
+          </div>
+          <div className="flex flex-col items-center">
+            <div className="bg-muted text-muted-foreground p-2 rounded-full">
+              <Package className="h-5 w-5" />
+            </div>
+            <span className="text-sm mt-1 text-muted-foreground">Place Order</span>
+          </div>
+          <div className="flex flex-col items-center">
+            <div className="bg-muted text-muted-foreground p-2 rounded-full">
+              <CreditCard className="h-5 w-5" />
+            </div>
+            <span className="text-sm mt-1 text-muted-foreground">Pay</span>
+          </div>
+          <div className="flex flex-col items-center">
+            <div className="bg-muted text-muted-foreground p-2 rounded-full">
+              <CheckCircle className="h-5 w-5" />
+            </div>
+            <span className="text-sm mt-1 text-muted-foreground">Complete</span>
+          </div>
+        </div>
+        <Progress value={25} className="h-2" />
+      </div>
+      
       <div className="bg-neutral-light p-4 rounded-lg shadow-sm mb-8 flex items-center gap-3">
         <Truck className="w-6 h-6 text-primary" />
         <div>
@@ -189,18 +234,18 @@ const Cart = () => {
 
             <div className="mt-8 pt-6 border-t">
               <h3 className="text-sm font-medium mb-4">We Accept:</h3>
-              <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
+              <div className="grid grid-cols-4 gap-4">
                 <div className="bg-neutral-light rounded p-3 flex items-center justify-center">
-                  <img src="/visa.svg" alt="Visa" className="h-6" />
+                  <CreditCard className="h-6 w-6" />
                 </div>
                 <div className="bg-neutral-light rounded p-3 flex items-center justify-center">
-                  <img src="/mastercard.svg" alt="Mastercard" className="h-6" />
+                  <CreditCard className="h-6 w-6" />
                 </div>
                 <div className="bg-neutral-light rounded p-3 flex items-center justify-center">
-                  <img src="/paypal.svg" alt="PayPal" className="h-6" />
+                  <CreditCard className="h-6 w-6" />
                 </div>
                 <div className="bg-neutral-light rounded p-3 flex items-center justify-center">
-                  <img src="/apple-pay.svg" alt="Apple Pay" className="h-6" />
+                  <CreditCard className="h-6 w-6" />
                 </div>
               </div>
             </div>
