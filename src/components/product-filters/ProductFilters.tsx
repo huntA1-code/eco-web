@@ -1,5 +1,5 @@
 
-import { FilterState } from "@/types/filters";
+import { FilterState, CategoryNode } from "@/types/filters";
 import { MobileFilterTrigger } from "./MobileFilterTrigger";
 import { MobileFilterHeader } from "./MobileFilterHeader";
 import { FilterAccordion, FilterSection } from "./FilterAccordion";
