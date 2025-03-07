@@ -1,5 +1,6 @@
 
 import { FilterState, CategoryNode } from "@/types/filters";
+import { useEffect, useState, useCallback } from "react";
 import { MobileFilterTrigger } from "./MobileFilterTrigger";
 import { MobileFilterHeader } from "./MobileFilterHeader";
 import { FilterAccordion, FilterSection } from "./FilterAccordion";
@@ -38,6 +39,8 @@ export const ProductFilters = ({
   setShowMobileFilters,
   filters,
 }: ProductFiltersProps) => {
+  const [pendingFilters, setPendingFilters] = useState<{type: string, value: any} | null>(null);
+  
   const allAccordionValues = [
     "categories",
     "brands",
@@ -52,12 +55,32 @@ export const ProductFilters = ({
     "height"
   ];
 
+  // Handle delayed filter changes
+  useEffect(() => {
+    if (pendingFilters) {
+      const timer = setTimeout(() => {
+        onFilterChange(pendingFilters.type, pendingFilters.value);
+        setPendingFilters(null);
+      }, 300); // 300ms delay for a professional feel
+      
+      return () => clearTimeout(timer);
+    }
+  }, [pendingFilters, onFilterChange]);
+
+  const handleDelayedFilterChange = useCallback((type: string, value: any) => {
+    setPendingFilters({ type, value });
+  }, []);
+
   return (
     <>
       <MobileFilterTrigger onClick={() => setShowMobileFilters(true)} />
 
-      <div className={`fixed inset-0 lg:static lg:block ${showMobileFilters ? 'block' : 'hidden'} lg:w-64 bg-background lg:bg-transparent z-50 lg:z-0 overflow-auto scrollbar-hide`}>
-        <div className="p-4 lg:p-0">
+      <div 
+        className={`fixed inset-0 lg:static lg:block ${
+          showMobileFilters ? 'opacity-100 translate-x-0' : 'opacity-0 translate-x-full lg:opacity-100 lg:translate-x-0'
+        } lg:w-64 bg-background lg:bg-transparent z-50 lg:z-0 overflow-auto scrollbar-hide transition-all duration-300 ease-in-out`}
+      >
+        <div className="p-4 lg:p-0 h-full">
           <MobileFilterHeader onClose={() => setShowMobileFilters(false)} />
 
           <FilterAccordion defaultValues={allAccordionValues}>
@@ -65,7 +88,7 @@ export const ProductFilters = ({
               <CategoriesFilter
                 categories={filters.categories}
                 selectedCategory={selectedFilters.category}
-                onSelect={(categoryId) => onFilterChange('category', categoryId)}
+                onSelect={(categoryId) => handleDelayedFilterChange('category', categoryId)}
               />
             </FilterSection>
 
@@ -73,7 +96,7 @@ export const ProductFilters = ({
               <BrandFilter
                 brands={filters.brands}
                 selectedBrands={selectedFilters.brands}
-                onFilterChange={(value) => onFilterChange('brands', value)}
+                onFilterChange={(value) => handleDelayedFilterChange('brands', value)}
               />
             </FilterSection>
 
@@ -81,7 +104,7 @@ export const ProductFilters = ({
               <ColorFilter
                 colors={filters.colors}
                 selectedColors={selectedFilters.colors}
-                onFilterChange={(value) => onFilterChange('colors', value)}
+                onFilterChange={(value) => handleDelayedFilterChange('colors', value)}
               />
             </FilterSection>
 
@@ -89,7 +112,7 @@ export const ProductFilters = ({
               <SizeFilter
                 sizes={filters.sizes}
                 selectedSizes={selectedFilters.sizes}
-                onFilterChange={(value) => onFilterChange('sizes', value)}
+                onFilterChange={(value) => handleDelayedFilterChange('sizes', value)}
               />
             </FilterSection>
 
@@ -98,7 +121,7 @@ export const ProductFilters = ({
                 queryKey="types"
                 fetchFn={async () => filters.types.map(type => ({ id: type, name: type }))}
                 selectedOptions={selectedFilters.types}
-                onFilterChange={(value) => onFilterChange('types', value)}
+                onFilterChange={(value) => handleDelayedFilterChange('types', value)}
               />
             </FilterSection>
 
@@ -107,7 +130,7 @@ export const ProductFilters = ({
                 queryKey="styles"
                 fetchFn={async () => filters.styles.map(style => ({ id: style, name: style }))}
                 selectedOptions={selectedFilters.styles}
-                onFilterChange={(value) => onFilterChange('styles', value)}
+                onFilterChange={(value) => handleDelayedFilterChange('styles', value)}
               />
             </FilterSection>
 
@@ -116,7 +139,7 @@ export const ProductFilters = ({
                 queryKey="occasions"
                 fetchFn={async () => filters.occasions.map(occasion => ({ id: occasion, name: occasion }))}
                 selectedOptions={selectedFilters.occasions}
-                onFilterChange={(value) => onFilterChange('occasions', value)}
+                onFilterChange={(value) => handleDelayedFilterChange('occasions', value)}
               />
             </FilterSection>
 
@@ -124,14 +147,14 @@ export const ProductFilters = ({
               <PriceRangeFilter
                 priceRange={filters.priceRange}
                 selectedPriceRange={selectedFilters.priceRange}
-                onFilterChange={(value) => onFilterChange('priceRange', value)}
+                onFilterChange={(value) => handleDelayedFilterChange('priceRange', value)}
               />
             </FilterSection>
 
             <FilterSection title="Sleeves" value="sleeves">
               <SleeveFilter
                 selectedSleeves={selectedFilters.sleeves}
-                onFilterChange={(value) => onFilterChange('sleeves', value)}
+                onFilterChange={(value) => handleDelayedFilterChange('sleeves', value)}
               />
             </FilterSection>
 
@@ -140,7 +163,7 @@ export const ProductFilters = ({
                 queryKey="neck-options"
                 fetchFn={fetchNeckOptions}
                 selectedOptions={selectedFilters.neckline}
-                onFilterChange={(value) => onFilterChange('neckline', value)}
+                onFilterChange={(value) => handleDelayedFilterChange('neckline', value)}
               />
             </FilterSection>
 
@@ -149,7 +172,7 @@ export const ProductFilters = ({
                 queryKey="height-options"
                 fetchFn={fetchHeightOptions}
                 selectedOptions={selectedFilters.height}
-                onFilterChange={(value) => onFilterChange('height', value)}
+                onFilterChange={(value) => handleDelayedFilterChange('height', value)}
               />
             </FilterSection>
           </FilterAccordion>

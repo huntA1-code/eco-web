@@ -1,5 +1,5 @@
 
-import { Filter } from "lucide-react";
+import { X } from "lucide-react";
 
 interface MobileFilterHeaderProps {
   onClose: () => void;
@@ -7,13 +7,14 @@ interface MobileFilterHeaderProps {
 
 export const MobileFilterHeader = ({ onClose }: MobileFilterHeaderProps) => {
   return (
-    <div className="flex items-center justify-between lg:hidden mb-4">
+    <div className="flex items-center justify-between lg:hidden mb-4 pb-2 border-b">
       <h2 className="text-xl font-semibold">Filters</h2>
       <button
         onClick={onClose}
-        className="text-muted-foreground"
+        className="rounded-full p-2 hover:bg-muted transition-colors"
+        aria-label="Close filters"
       >
-        <Filter size={24} />
+        <X size={20} />
       </button>
     </div>
   );
