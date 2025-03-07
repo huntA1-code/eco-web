@@ -1,3 +1,4 @@
+
 import { Filter } from "lucide-react";
 import { Slider } from "@/components/ui/slider";
 import { CategoryTree } from "@/components/CategoryTree";
@@ -194,6 +195,8 @@ export const ProductFilters = ({
                   max={filters.priceRange[1]}
                   step={1}
                   onValueChange={(value) => onFilterChange('priceRange', value)}
+                  showTooltip={true}
+                  tooltipContent={(value) => `$${value}`}
                 />
                 <div className="flex justify-between mt-2 text-sm text-muted-foreground">
                   <span>${selectedFilters.priceRange?.[0] || filters.priceRange[0]}</span>
