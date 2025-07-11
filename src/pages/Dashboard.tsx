@@ -95,51 +95,65 @@ const Dashboard = () => {
         </div>
 
         {/* Navigation */}
-        <nav className="flex-1 overflow-y-auto p-4 scrollbar-hide space-y-2">
+        <nav className={`flex-1 overflow-y-auto scrollbar-hide transition-all duration-300 ${sidebarOpen ? 'p-4 space-y-2' : 'p-2 space-y-3'}`}>
           {sidebarLinks.map((link, index) => (
             <div 
               key={link.path} 
-              className="group"
+              className="group relative"
               style={{ animationDelay: `${index * 50}ms` }}
             >
               {link.submenu ? (
                 <div className="space-y-1">
-                  <button
-                    onClick={() => toggleSubmenu(link.label)}
-                    className={`
-                      w-full flex items-center justify-between gap-3 px-4 py-3 rounded-xl 
-                      transition-all duration-200 hover:scale-[1.02] group relative overflow-hidden
-                      ${isSubmenuItemActive(link.submenu)
-                        ? "bg-gradient-to-r from-primary to-accent text-white shadow-lg shadow-primary/25"
-                        : "text-gray-700 hover:bg-gray-100/80 hover:shadow-md"
-                      }
-                    `}
-                  >
-                    <div className="flex items-center gap-3 z-10 relative">
+                  <div className="relative group/tooltip">
+                    <button
+                      onClick={() => toggleSubmenu(link.label)}
+                      className={`
+                        w-full flex items-center gap-3 rounded-xl 
+                        transition-all duration-300 hover:scale-[1.02] group relative overflow-hidden
+                        ${sidebarOpen ? 'px-4 py-3' : 'px-2 py-3 justify-center'}
+                        ${isSubmenuItemActive(link.submenu)
+                          ? "bg-gradient-to-r from-primary to-accent text-white shadow-lg shadow-primary/25"
+                          : "text-gray-700 hover:bg-gray-100/80 hover:shadow-md"
+                        }
+                      `}
+                    >
                       <div className={`
-                        p-2 rounded-lg transition-all duration-200
+                        rounded-lg transition-all duration-200 z-10 relative
+                        ${sidebarOpen ? 'p-2' : 'p-3'}
                         ${isSubmenuItemActive(link.submenu) 
                           ? "bg-white/20" 
                           : "bg-primary/10 group-hover:bg-primary/15"
                         }
                       `}>
-                        <link.icon className="w-5 h-5" />
+                        <link.icon className={`transition-all duration-200 ${sidebarOpen ? 'w-5 h-5' : 'w-6 h-6'}`} />
                       </div>
-                      <span className={`font-medium transition-all duration-300 ${sidebarOpen ? 'opacity-100' : 'opacity-0 lg:opacity-0'}`}>
+                      
+                      {sidebarOpen && (
+                        <>
+                          <span className="font-medium transition-all duration-300 z-10 relative flex-1 text-left">
+                            {link.label}
+                          </span>
+                          <ChevronDown
+                            className={`w-4 h-4 transition-transform duration-200 z-10 ${
+                              openSubmenu === link.label ? "rotate-180" : ""
+                            }`}
+                          />
+                        </>
+                      )}
+                      
+                      {isSubmenuItemActive(link.submenu) && (
+                        <div className="absolute inset-0 bg-gradient-to-r from-primary/20 to-accent/20 animate-pulse" />
+                      )}
+                    </button>
+
+                    {/* Tooltip for collapsed state */}
+                    {!sidebarOpen && (
+                      <div className="absolute left-full ml-2 top-1/2 -translate-y-1/2 px-3 py-2 bg-gray-900 text-white text-sm rounded-lg opacity-0 invisible group-hover/tooltip:opacity-100 group-hover/tooltip:visible transition-all duration-200 whitespace-nowrap z-50 shadow-lg">
                         {link.label}
-                      </span>
-                    </div>
-                    
-                    <ChevronDown
-                      className={`w-4 h-4 transition-transform duration-200 z-10 ${
-                        openSubmenu === link.label ? "rotate-180" : ""
-                      } ${sidebarOpen ? 'opacity-100' : 'opacity-0 lg:opacity-0'}`}
-                    />
-                    
-                    {isSubmenuItemActive(link.submenu) && (
-                      <div className="absolute inset-0 bg-gradient-to-r from-primary/20 to-accent/20 animate-pulse" />
+                        <div className="absolute top-1/2 -left-1 -translate-y-1/2 w-2 h-2 bg-gray-900 rotate-45"></div>
+                      </div>
                     )}
-                  </button>
+                  </div>
 
                   {/* Submenu */}
                   <div
@@ -176,34 +190,49 @@ const Dashboard = () => {
                   </div>
                 </div>
               ) : (
-                <button
-                  onClick={() => handleNavigation(link.path)}
-                  className={`
-                    w-full flex items-center gap-3 px-4 py-3 rounded-xl 
-                    transition-all duration-200 hover:scale-[1.02] group relative overflow-hidden
-                    ${location.pathname === link.path
-                      ? "bg-gradient-to-r from-primary to-accent text-white shadow-lg shadow-primary/25"
-                      : "text-gray-700 hover:bg-gray-100/80 hover:shadow-md"
-                    }
-                  `}
-                >
-                  <div className={`
-                    p-2 rounded-lg transition-all duration-200 z-10 relative
-                    ${location.pathname === link.path 
-                      ? "bg-white/20" 
-                      : "bg-primary/10 group-hover:bg-primary/15"
-                    }
-                  `}>
-                    <link.icon className="w-5 h-5" />
-                  </div>
-                  <span className={`font-medium transition-all duration-300 z-10 relative ${sidebarOpen ? 'opacity-100' : 'opacity-0 lg:opacity-0'}`}>
-                    {link.label}
-                  </span>
-                  
-                  {location.pathname === link.path && (
-                    <div className="absolute inset-0 bg-gradient-to-r from-primary/20 to-accent/20 animate-pulse" />
+                <div className="relative group/tooltip">
+                  <button
+                    onClick={() => handleNavigation(link.path)}
+                    className={`
+                      w-full flex items-center gap-3 rounded-xl 
+                      transition-all duration-300 hover:scale-[1.02] group relative overflow-hidden
+                      ${sidebarOpen ? 'px-4 py-3' : 'px-2 py-3 justify-center'}
+                      ${location.pathname === link.path
+                        ? "bg-gradient-to-r from-primary to-accent text-white shadow-lg shadow-primary/25"
+                        : "text-gray-700 hover:bg-gray-100/80 hover:shadow-md"
+                      }
+                    `}
+                  >
+                    <div className={`
+                      rounded-lg transition-all duration-200 z-10 relative
+                      ${sidebarOpen ? 'p-2' : 'p-3'}
+                      ${location.pathname === link.path 
+                        ? "bg-white/20" 
+                        : "bg-primary/10 group-hover:bg-primary/15"
+                      }
+                    `}>
+                      <link.icon className={`transition-all duration-200 ${sidebarOpen ? 'w-5 h-5' : 'w-6 h-6'}`} />
+                    </div>
+                    
+                    {sidebarOpen && (
+                      <span className="font-medium transition-all duration-300 z-10 relative">
+                        {link.label}
+                      </span>
+                    )}
+                    
+                    {location.pathname === link.path && (
+                      <div className="absolute inset-0 bg-gradient-to-r from-primary/20 to-accent/20 animate-pulse" />
+                    )}
+                  </button>
+
+                  {/* Tooltip for collapsed state */}
+                  {!sidebarOpen && (
+                    <div className="absolute left-full ml-2 top-1/2 -translate-y-1/2 px-3 py-2 bg-gray-900 text-white text-sm rounded-lg opacity-0 invisible group-hover/tooltip:opacity-100 group-hover/tooltip:visible transition-all duration-200 whitespace-nowrap z-50 shadow-lg">
+                      {link.label}
+                      <div className="absolute top-1/2 -left-1 -translate-y-1/2 w-2 h-2 bg-gray-900 rotate-45"></div>
+                    </div>
                   )}
-                </button>
+                </div>
               )}
             </div>
           ))}
