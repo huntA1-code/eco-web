@@ -1,3 +1,4 @@
+
 import React from "react";
 import { Link, useNavigate } from "react-router-dom";
 import {
@@ -9,7 +10,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
-import { Edit, Plus, Trash2 } from "lucide-react";
+import { Edit, Plus, Trash2, Settings } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 
 // Mock data type
@@ -63,6 +64,10 @@ const ViewProducts = () => {
 
   const handleEdit = () => {
     navigate(`/dashboard/products/edit`);
+  };
+
+  const handleManageVariations = (id: number) => {
+    navigate(`/dashboard/products/${id}/variations`);
   };
 
   return (
@@ -124,6 +129,14 @@ const ViewProducts = () => {
                 <TableCell>{product.category}</TableCell>
                 <TableCell className="text-right">
                   <div className="flex items-center justify-end gap-2">
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      onClick={() => handleManageVariations(product.id)}
+                      title="Manage Variations"
+                    >
+                      <Settings className="h-4 w-4" />
+                    </Button>
                     <Button
                       variant="ghost"
                       size="icon"

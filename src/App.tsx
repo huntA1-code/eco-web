@@ -1,3 +1,4 @@
+
 import { Routes, Route } from "react-router-dom";
 import { Navbar } from "./components/Navbar";
 import { SubNavbar } from "./components/SubNavbar";
@@ -17,6 +18,7 @@ import Overview from "./pages/dashboard/Overview";
 import ViewProducts from "./pages/dashboard/products/ViewProducts";
 import AddProduct from "./pages/dashboard/products/AddProduct";
 import EditProduct from "./pages/dashboard/products/EditProduct";
+import ProductVariations from "./pages/dashboard/products/ProductVariations";
 import Categories from "./pages/dashboard/products/Categories";
 import AddCategory from "./pages/dashboard/products/AddCategory";
 import EditCategory from "./pages/dashboard/products/EditCategory";
@@ -90,6 +92,7 @@ function App() {
           <Route path="products/view" element={<ViewProducts />} />
           <Route path="products/add" element={<AddProduct />} />
           <Route path="products/edit" element={<EditProduct />} />
+          <Route path="products/:id/variations" element={<ProductVariations />} />
           <Route path="products/categories" element={<Categories />} />
           <Route path="products/categories/add" element={<AddCategory />} />
           <Route path="products/categories/edit/:id" element={<EditCategory />} />

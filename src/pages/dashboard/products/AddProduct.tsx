@@ -1,12 +1,11 @@
 
-import { useForm, useFieldArray } from "react-hook-form";
+import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
 import { useNavigate } from "react-router-dom";
 import {
   Form,
   FormControl,
-  FormDescription,
   FormField,
   FormItem,
   FormLabel,
@@ -24,8 +23,6 @@ import {
 import { useToast } from "@/hooks/use-toast";
 import { CategorySelect } from "@/components/product/CategorySelect";
 import { AttributeMultiSelect } from "@/components/product/AttributeMultiSelect";
-import { ProductItemForm } from "@/components/product/ProductItemForm";
-import { ProductFormData } from "@/types/product";
 
 const mockDiscounts = [
   { id: "1", name: "Summer Sale 20% OFF", rate: 20 },
@@ -47,34 +44,15 @@ const productSchema = z.object({
   about: z.string(),
   discount_id: z.string().optional(),
   attribute_options: z.array(z.string()),
-  product_items: z.array(
-    z.object({
-      color_id: z.string().min(1, "Color is required"),
-      name_details: z.string().min(1, "Name details are required"),
-      original_price: z.number().min(0, "Price must be positive"),
-      sale_price: z.number().min(0, "Price must be positive"),
-      variations: z.array(
-        z.object({
-          size_id: z.string().min(1, "Size is required"),
-          qty_in_stock: z.number().min(0, "Quantity must be positive"),
-        })
-      ),
-      cart_image: z.string().nullable(),
-      images: z.array(
-        z.object({
-          path: z.string(),
-          description: z.string(),
-        })
-      ),
-    })
-  ),
 });
+
+type BasicProductFormData = z.infer<typeof productSchema>;
 
 const AddProduct = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
 
-  const form = useForm<ProductFormData>({
+  const form = useForm<BasicProductFormData>({
     resolver: zodResolver(productSchema),
     defaultValues: {
       name: "",
@@ -84,16 +62,10 @@ const AddProduct = () => {
       discount_id: "",
       brand_id: "",
       attribute_options: [],
-      product_items: [],
     },
   });
 
-  const { fields, append, remove } = useFieldArray({
-    control: form.control,
-    name: "product_items",
-  });
-
-  const onSubmit = async (values: ProductFormData) => {
+  const onSubmit = async (values: BasicProductFormData) => {
     try {
       console.log("Product data to be submitted:", values);
       
@@ -256,37 +228,6 @@ const AddProduct = () => {
                   name="attribute_options"
                 />
               </div>
-            </div>
-
-            <div className="space-y-4">
-              <div className="flex justify-between items-center">
-                <h3 className="text-lg font-medium">Product Variations</h3>
-                <button
-                  type="button"
-                  onClick={() =>
-                    append({
-                      color_id: "",
-                      name_details: "",
-                      original_price: 0,
-                      sale_price: 0,
-                      variations: [],
-                      cart_image: null,
-                      images: [],
-                    })
-                  }
-                >
-                  Add Variation
-                </button>
-              </div>
-
-              {fields.map((field, index) => (
-                <ProductItemForm
-                  key={field.id}
-                  control={form.control}
-                  index={index}
-                  onRemove={() => remove(index)}
-                />
-              ))}
             </div>
 
             <div className="flex justify-end gap-4">
