@@ -9,9 +9,12 @@ import { BrandFilter } from "@/components/filters/BrandFilter";
 import { ColorFilter } from "@/components/filters/ColorFilter";
 import { SizeFilter } from "@/components/filters/SizeFilter";
 import { GenericFilter } from "@/components/filters/GenericFilter";
+import { DropdownFilter } from "@/components/filters/DropdownFilter";
 import { PriceRangeFilter } from "./PriceRangeFilter";
 import { SleeveFilter } from "@/components/filters/SleeveFilter";
 import { fetchNeckOptions, fetchHeightOptions } from "@/data/mockFilters";
+import { fetchAllDropdownFilters, DropdownFilterData } from "@/data/mockDropdownFilters";
+import { useQuery } from "@tanstack/react-query";
 
 interface ProductFiltersProps {
   selectedFilters: FilterState;
@@ -41,6 +44,12 @@ export const ProductFilters = ({
 }: ProductFiltersProps) => {
   const [pendingFilters, setPendingFilters] = useState<{type: string, value: any} | null>(null);
   
+  // Fetch dynamic dropdown filters
+  const { data: dropdownFilters = [], isLoading: isLoadingDropdowns } = useQuery({
+    queryKey: ['dropdown-filters'],
+    queryFn: fetchAllDropdownFilters,
+  });
+  
   const allAccordionValues = [
     "categories",
     "brands",
@@ -52,7 +61,8 @@ export const ProductFilters = ({
     "price",
     "sleeves",
     "neckline",
-    "height"
+    "height",
+    ...dropdownFilters.map(filter => filter.id)
   ];
 
   // Handle delayed filter changes
@@ -61,7 +71,7 @@ export const ProductFilters = ({
       const timer = setTimeout(() => {
         onFilterChange(pendingFilters.type, pendingFilters.value);
         setPendingFilters(null);
-      }, 300); // 300ms delay for a professional feel
+      }, 300);
       
       return () => clearTimeout(timer);
     }
@@ -115,6 +125,25 @@ export const ProductFilters = ({
                 onFilterChange={(value) => handleDelayedFilterChange('sizes', value)}
               />
             </FilterSection>
+
+            {/* Dynamic Dropdown Filters */}
+            {dropdownFilters.map((dropdownFilter) => (
+              <FilterSection 
+                key={dropdownFilter.id} 
+                title={dropdownFilter.title} 
+                value={dropdownFilter.id}
+              >
+                <DropdownFilter
+                  title=""
+                  options={dropdownFilter.options}
+                  selectedOptions={selectedFilters[dropdownFilter.id] || []}
+                  onFilterChange={(value) => handleDelayedFilterChange(dropdownFilter.id, value)}
+                  placeholder={`Select ${dropdownFilter.title.toLowerCase()}`}
+                  isLoading={isLoadingDropdowns}
+                  showCounts={true}
+                />
+              </FilterSection>
+            ))}
 
             <FilterSection title="Types" value="types">
               <GenericFilter

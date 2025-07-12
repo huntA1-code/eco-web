@@ -17,5 +17,11 @@ export interface FilterState {
   types?: string[];
   styles?: string[];
   occasions?: string[];
+  // Dynamic dropdown filter properties
+  material?: string[];
+  pattern?: string[];
+  fit?: string[];
+  length?: string[];
+  season?: string[];
+  [key: string]: any; // Allow additional dynamic properties
 }
-
