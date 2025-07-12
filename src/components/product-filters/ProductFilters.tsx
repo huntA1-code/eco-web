@@ -1,3 +1,4 @@
+
 import { FilterState, CategoryNode } from "@/types/filters";
 import { useEffect, useState, useCallback } from "react";
 import { MobileFilterTrigger } from "./MobileFilterTrigger";
@@ -80,10 +81,6 @@ export const ProductFilters = ({
     setPendingFilters({ type, value });
   }, []);
 
-  // Get filters from dropdown filters
-  const colorsFilter = dropdownFilters.find(filter => filter.id === 'colors');
-  const sizesFilter = dropdownFilters.find(filter => filter.id === 'sizes');
-
   return (
     <>
       <MobileFilterTrigger onClick={() => setShowMobileFilters(true)} />
@@ -113,35 +110,24 @@ export const ProductFilters = ({
               />
             </FilterSection>
 
-            {/* Dynamic Colors Filter */}
             <FilterSection title="Colors" value="colors">
-              <DropdownFilter
-                title=""
-                options={colorsFilter?.options || []}
-                selectedOptions={selectedFilters.colors || []}
+              <ColorFilter
+                colors={filters.colors}
+                selectedColors={selectedFilters.colors}
                 onFilterChange={(value) => handleDelayedFilterChange('colors', value)}
-                placeholder="Select colors"
-                isLoading={isLoadingDropdowns}
-                showCounts={true}
-                showColors={true}
               />
             </FilterSection>
 
-            {/* Dynamic Sizes Filter */}
             <FilterSection title="Sizes" value="sizes">
-              <DropdownFilter
-                title=""
-                options={sizesFilter?.options || []}
-                selectedOptions={selectedFilters.sizes || []}
+              <SizeFilter
+                sizes={filters.sizes}
+                selectedSizes={selectedFilters.sizes}
                 onFilterChange={(value) => handleDelayedFilterChange('sizes', value)}
-                placeholder="Select sizes"
-                isLoading={isLoadingDropdowns}
-                showCounts={true}
               />
             </FilterSection>
 
-            {/* Dynamic Dropdown Filters (excluding colors and sizes since they're handled above) */}
-            {dropdownFilters.filter(filter => !['colors', 'sizes'].includes(filter.id)).map((dropdownFilter) => (
+            {/* Dynamic Dropdown Filters */}
+            {dropdownFilters.map((dropdownFilter) => (
               <FilterSection 
                 key={dropdownFilter.id} 
                 title={dropdownFilter.title} 
