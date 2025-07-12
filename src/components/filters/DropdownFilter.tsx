@@ -14,6 +14,7 @@ interface DropdownFilterOption {
   id: string;
   name: string;
   count?: number;
+  hex?: string; // For color options
 }
 
 interface DropdownFilterProps {
@@ -25,6 +26,7 @@ interface DropdownFilterProps {
   showCounts?: boolean;
   maxDisplayItems?: number;
   isLoading?: boolean;
+  showColors?: boolean; // New prop to enable color display
 }
 
 export const DropdownFilter = ({
@@ -36,6 +38,7 @@ export const DropdownFilter = ({
   showCounts = true,
   maxDisplayItems = 3,
   isLoading = false,
+  showColors = false,
 }: DropdownFilterProps) => {
   const [open, setOpen] = useState(false);
 
@@ -55,10 +58,31 @@ export const DropdownFilter = ({
 
   const renderTriggerContent = () => {
     const selectedNames = getSelectedNames();
+    const selectedOptionsData = options.filter(option => selectedOptions.includes(option.id));
     
     if (selectedNames.length === 0) {
       return (
         <span className="text-muted-foreground">{placeholder}</span>
+      );
+    }
+
+    if (showColors && selectedOptionsData.length <= maxDisplayItems) {
+      return (
+        <div className="flex flex-wrap gap-1">
+          {selectedOptionsData.map((option) => (
+            <div key={option.id} className="flex items-center gap-1">
+              {option.hex && (
+                <div
+                  className="w-3 h-3 rounded-full border border-gray-300"
+                  style={{ backgroundColor: option.hex }}
+                />
+              )}
+              <Badge variant="secondary" className="text-xs">
+                {option.name}
+              </Badge>
+            </div>
+          ))}
+        </div>
       );
     }
 
@@ -140,7 +164,15 @@ export const DropdownFilter = ({
                 className="cursor-pointer hover:bg-accent/50 transition-colors"
               >
                 <div className="flex items-center justify-between w-full">
-                  <span className="truncate">{option.name}</span>
+                  <div className="flex items-center gap-2">
+                    {showColors && option.hex && (
+                      <div
+                        className="w-4 h-4 rounded-full border border-gray-300 flex-shrink-0"
+                        style={{ backgroundColor: option.hex }}
+                      />
+                    )}
+                    <span className="truncate">{option.name}</span>
+                  </div>
                   {showCounts && option.count !== undefined && (
                     <Badge variant="secondary" className="text-xs ml-2">
                       {option.count}

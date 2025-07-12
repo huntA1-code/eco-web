@@ -1,4 +1,3 @@
-
 import { FilterState, CategoryNode } from "@/types/filters";
 import { useEffect, useState, useCallback } from "react";
 import { MobileFilterTrigger } from "./MobileFilterTrigger";
@@ -81,6 +80,9 @@ export const ProductFilters = ({
     setPendingFilters({ type, value });
   }, []);
 
+  // Get the colors filter from dropdown filters
+  const colorsFilter = dropdownFilters.find(filter => filter.id === 'colors');
+
   return (
     <>
       <MobileFilterTrigger onClick={() => setShowMobileFilters(true)} />
@@ -110,11 +112,17 @@ export const ProductFilters = ({
               />
             </FilterSection>
 
+            {/* Dynamic Colors Filter */}
             <FilterSection title="Colors" value="colors">
-              <ColorFilter
-                colors={filters.colors}
-                selectedColors={selectedFilters.colors}
+              <DropdownFilter
+                title=""
+                options={colorsFilter?.options || []}
+                selectedOptions={selectedFilters.colors || []}
                 onFilterChange={(value) => handleDelayedFilterChange('colors', value)}
+                placeholder="Select colors"
+                isLoading={isLoadingDropdowns}
+                showCounts={true}
+                showColors={true}
               />
             </FilterSection>
 
@@ -126,8 +134,8 @@ export const ProductFilters = ({
               />
             </FilterSection>
 
-            {/* Dynamic Dropdown Filters */}
-            {dropdownFilters.map((dropdownFilter) => (
+            {/* Dynamic Dropdown Filters (excluding colors since it's handled above) */}
+            {dropdownFilters.filter(filter => filter.id !== 'colors').map((dropdownFilter) => (
               <FilterSection 
                 key={dropdownFilter.id} 
                 title={dropdownFilter.title} 

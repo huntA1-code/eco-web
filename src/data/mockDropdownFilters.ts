@@ -6,10 +6,29 @@ export interface DropdownFilterData {
     id: string;
     name: string;
     count?: number;
+    hex?: string; // Add hex property for color filters
   }>;
 }
 
 export const mockDropdownFilters: DropdownFilterData[] = [
+  {
+    id: "colors",
+    title: "Colors",
+    options: [
+      { id: "black", name: "Black", hex: "#000000", count: 234 },
+      { id: "white", name: "White", hex: "#FFFFFF", count: 189 },
+      { id: "red", name: "Red", hex: "#FF0000", count: 156 },
+      { id: "blue", name: "Blue", hex: "#0000FF", count: 145 },
+      { id: "green", name: "Green", hex: "#008000", count: 123 },
+      { id: "yellow", name: "Yellow", hex: "#FFFF00", count: 98 },
+      { id: "pink", name: "Pink", hex: "#FFC0CB", count: 87 },
+      { id: "purple", name: "Purple", hex: "#800080", count: 76 },
+      { id: "orange", name: "Orange", hex: "#FFA500", count: 65 },
+      { id: "brown", name: "Brown", hex: "#A52A2A", count: 54 },
+      { id: "gray", name: "Gray", hex: "#808080", count: 43 },
+      { id: "navy", name: "Navy", hex: "#000080", count: 32 },
+    ]
+  },
   {
     id: "material",
     title: "Material",
