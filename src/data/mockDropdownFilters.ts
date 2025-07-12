@@ -30,6 +30,26 @@ export const mockDropdownFilters: DropdownFilterData[] = [
     ]
   },
   {
+    id: "sizes",
+    title: "Sizes",
+    options: [
+      { id: "xs", name: "XS", count: 45 },
+      { id: "s", name: "S", count: 123 },
+      { id: "m", name: "M", count: 167 },
+      { id: "l", name: "L", count: 134 },
+      { id: "xl", name: "XL", count: 89 },
+      { id: "xxl", name: "XXL", count: 56 },
+      { id: "xxxl", name: "XXXL", count: 23 },
+      { id: "28", name: "28", count: 67 },
+      { id: "30", name: "30", count: 78 },
+      { id: "32", name: "32", count: 89 },
+      { id: "34", name: "34", count: 76 },
+      { id: "36", name: "36", count: 54 },
+      { id: "38", name: "38", count: 43 },
+      { id: "40", name: "40", count: 32 },
+    ]
+  },
+  {
     id: "material",
     title: "Material",
     options: [

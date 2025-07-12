@@ -80,8 +80,9 @@ export const ProductFilters = ({
     setPendingFilters({ type, value });
   }, []);
 
-  // Get the colors filter from dropdown filters
+  // Get filters from dropdown filters
   const colorsFilter = dropdownFilters.find(filter => filter.id === 'colors');
+  const sizesFilter = dropdownFilters.find(filter => filter.id === 'sizes');
 
   return (
     <>
@@ -126,16 +127,21 @@ export const ProductFilters = ({
               />
             </FilterSection>
 
+            {/* Dynamic Sizes Filter */}
             <FilterSection title="Sizes" value="sizes">
-              <SizeFilter
-                sizes={filters.sizes}
-                selectedSizes={selectedFilters.sizes}
+              <DropdownFilter
+                title=""
+                options={sizesFilter?.options || []}
+                selectedOptions={selectedFilters.sizes || []}
                 onFilterChange={(value) => handleDelayedFilterChange('sizes', value)}
+                placeholder="Select sizes"
+                isLoading={isLoadingDropdowns}
+                showCounts={true}
               />
             </FilterSection>
 
-            {/* Dynamic Dropdown Filters (excluding colors since it's handled above) */}
-            {dropdownFilters.filter(filter => filter.id !== 'colors').map((dropdownFilter) => (
+            {/* Dynamic Dropdown Filters (excluding colors and sizes since they're handled above) */}
+            {dropdownFilters.filter(filter => !['colors', 'sizes'].includes(filter.id)).map((dropdownFilter) => (
               <FilterSection 
                 key={dropdownFilter.id} 
                 title={dropdownFilter.title} 
