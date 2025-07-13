@@ -10,18 +10,21 @@ import ProfileUpdate from './dashboard/profile/ProfileUpdate';
 import Address from './dashboard/profile/Address';
 export default function WishList() {
   const [isSignedIn] = useState(true);
-  return <div className="flex min-h-screen bg-gray-50">
+  return (
+    <div className="flex min-h-screen bg-gradient-to-br from-background via-muted/30 to-primary/5">
       <Sidebar />
-      <main className="flex-1 p-8 overflow-y-auto h-[calc(100vh-4rem)]">
-        
-        <Routes>
-          <Route path="recently-viewed" element={<RecentlyViewed />} />
-          <Route path="my-orders" element={<MyOrders />} />
-          <Route path="follow" element={<FollowedStores />} />
-          <Route path="account/profile" element={<ProfileUpdate />} />
-          <Route path="account/address" element={<Address />} />
-          <Route path="/" element={isSignedIn ? <SignedInWishlist /> : <SignedOutWishlist />} />
-        </Routes>
+      <main className="flex-1 p-4 md:p-8 overflow-y-auto">
+        <div className="max-w-7xl mx-auto">
+          <Routes>
+            <Route path="recently-viewed" element={<RecentlyViewed />} />
+            <Route path="my-orders" element={<MyOrders />} />
+            <Route path="follow" element={<FollowedStores />} />
+            <Route path="account/profile" element={<ProfileUpdate />} />
+            <Route path="account/address" element={<Address />} />
+            <Route path="/" element={isSignedIn ? <SignedInWishlist /> : <SignedOutWishlist />} />
+          </Routes>
+        </div>
       </main>
-    </div>;
+    </div>
+  );
 }

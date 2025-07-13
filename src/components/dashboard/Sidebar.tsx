@@ -120,43 +120,50 @@ export default function Sidebar() {
 
   return (
     <motion.aside 
-      className="fixed left-0 top-16 h-[calc(100vh-4rem)] bg-white shadow-lg z-20 md:relative overflow-y-auto"
+      className="fixed left-0 top-0 h-screen bg-white/95 backdrop-blur-md border-r border-border/50 shadow-xl z-20 md:relative md:min-h-screen overflow-y-auto"
       initial="expanded"
       variants={sidebarVariants}
     >
-      <div className="p-4 w-60 h-full flex flex-col">
-        <h2 className="text-xl font-semibold mb-6">Personal Centre</h2>
-        <nav className="flex-1 h-[calc(100%-4rem)] overflow-y-auto">
+      <div className="p-6 w-64 h-full flex flex-col">
+        <div className="mb-8">
+          <h2 className="text-2xl font-bold bg-gradient-primary bg-clip-text text-transparent mb-2">Personal Centre</h2>
+          <div className="h-1 w-12 bg-gradient-primary rounded-full"></div>
+        </div>
+        <nav className="flex-1 space-y-3 overflow-y-auto">
           {menuItems.map((item) => (
-            <div key={item.title} className="mb-2">
+            <div key={item.title} className="group">
               {item.items ? (
                 <div>
                   <button
                     onClick={() => toggleSection(item.title)}
-                    className="flex items-center justify-between w-full p-2 hover:bg-gray-100 rounded-lg transition-colors"
+                    className="flex items-center justify-between w-full p-3 text-left font-medium text-foreground/80 hover:text-foreground hover:bg-muted/50 rounded-xl transition-all duration-200"
                   >
-                    <span>{item.title}</span>
-                    {expandedSections[item.title] ? 
-                      <ChevronDown className="w-4 h-4" /> : 
+                    <span className="font-semibold">{item.title}</span>
+                    <motion.div
+                      animate={{ rotate: expandedSections[item.title] ? 90 : 0 }}
+                      transition={{ duration: 0.2 }}
+                    >
                       <ChevronRight className="w-4 h-4" />
-                    }
+                    </motion.div>
                   </button>
                   {expandedSections[item.title] && (
                     <motion.div
-                      initial={{ height: 0 }}
-                      animate={{ height: "auto" }}
-                      exit={{ height: 0 }}
-                      className="overflow-hidden ml-7"
+                      initial={{ height: 0, opacity: 0 }}
+                      animate={{ height: "auto", opacity: 1 }}
+                      exit={{ height: 0, opacity: 0 }}
+                      transition={{ duration: 0.3, ease: "easeInOut" }}
+                      className="overflow-hidden mt-2 space-y-1"
                     >
                       {item.items.map((subItem) => (
-                        <button
+                        <motion.button
                           key={subItem.title}
+                          whileHover={{ x: 4 }}
                           onClick={() => handleMenuItemClick(subItem.title, subItem.path)}
-                          className="flex items-center gap-2 py-2 px-4 text-sm hover:text-primary transition-colors w-full text-left"
+                          className="flex items-center gap-3 py-2.5 px-4 ml-4 text-sm text-muted-foreground hover:text-primary hover:bg-primary/5 rounded-lg transition-all duration-200 w-full text-left border-l-2 border-transparent hover:border-primary/30"
                         >
-                          {subItem.icon}
+                          <div className="text-primary/70">{subItem.icon}</div>
                           <span>{subItem.title}</span>
-                        </button>
+                        </motion.button>
                       ))}
                     </motion.div>
                   )}
@@ -164,21 +171,23 @@ export default function Sidebar() {
               ) : (
                 <Link
                   to={item.path || '#'}
-                  className="flex items-center gap-3 p-2 hover:bg-gray-100 rounded-lg transition-colors"
+                  className="flex items-center gap-3 p-3 hover:bg-muted/50 rounded-xl transition-all duration-200 hover:text-primary"
                 >
-                  <span>{item.title}</span>
+                  <span className="font-medium">{item.title}</span>
                 </Link>
               )}
             </div>
           ))}
         </nav>
-        <button
+        <motion.button
+          whileHover={{ scale: 1.02 }}
+          whileTap={{ scale: 0.98 }}
           onClick={handleSignOut}
-          className="flex items-center gap-2 p-2 mt-4 text-red-600 hover:bg-red-50 rounded-lg transition-colors w-full"
+          className="flex items-center justify-center gap-3 p-3 mt-6 text-destructive hover:text-white bg-destructive/10 hover:bg-destructive rounded-xl transition-all duration-200 w-full font-medium border border-destructive/20 hover:border-destructive"
         >
           <LogOut className="w-4 h-4" />
           <span>Sign Out</span>
-        </button>
+        </motion.button>
       </div>
     </motion.aside>
   );

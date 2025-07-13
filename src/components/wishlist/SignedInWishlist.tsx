@@ -58,15 +58,34 @@ const products = [{
 
 export default function SignedInWishlist() {
   return (
-    <div className="container mx-auto">
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-        {products.map(product => (
+    <div className="space-y-8">
+      {/* Header Section */}
+      <div className="bg-white/70 backdrop-blur-sm rounded-2xl p-6 border border-border/50 shadow-sm">
+        <div className="flex items-center justify-between">
+          <div>
+            <h1 className="text-3xl font-bold bg-gradient-primary bg-clip-text text-transparent">My Wishlist</h1>
+            <p className="text-muted-foreground mt-2">Save your favorite items for later</p>
+          </div>
+          <div className="text-right">
+            <p className="text-2xl font-bold text-foreground">{products.length}</p>
+            <p className="text-sm text-muted-foreground">Items saved</p>
+          </div>
+        </div>
+      </div>
+
+      {/* Products Grid */}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+        {products.map((product, index) => (
           <motion.div
             key={product.id}
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: index * 0.1, duration: 0.4 }}
+            className="group"
           >
-            <ProductCard product={product} />
+            <div className="bg-white/80 backdrop-blur-sm rounded-2xl border border-border/50 shadow-sm hover:shadow-lg transition-all duration-300 hover:-translate-y-1">
+              <ProductCard product={product} />
+            </div>
           </motion.div>
         ))}
       </div>
