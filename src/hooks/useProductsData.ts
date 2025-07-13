@@ -16,14 +16,14 @@ export const useProductsData = () => {
   const productsPerPage = 12;
   const { toast } = useToast();
 
-  // Fetch filters with enhanced error handling
+  // Fetch filters once on first load only
   const { 
     data: filtersData = mockFilters, 
     isLoading: isLoadingFilters,
     error: filtersError,
     refetch: refetchFilters
   } = useQuery<FiltersResponse, ApiError>({
-    queryKey: ['filters', selectedFilters],
+    queryKey: ['filters'],
     queryFn: async () => {
       try {
         return await fetchFilters(selectedFilters);
