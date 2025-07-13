@@ -17,7 +17,7 @@ import {
   MapPin,
   LogOut
 } from 'lucide-react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { useToast } from "@/hooks/use-toast";
 
 interface MenuItem {
@@ -66,7 +66,15 @@ export default function Sidebar() {
     'My Concern': true
   });
   const navigate = useNavigate();
+  const location = useLocation();
   const { toast } = useToast();
+
+  const isActiveRoute = (path?: string) => {
+    if (!path) return false;
+    const currentPath = location.pathname + location.search;
+    const targetPath = path;
+    return currentPath === targetPath;
+  };
 
   const handleMenuItemClick = (title: string, path?: string) => {
     if (path) {
@@ -154,17 +162,35 @@ export default function Sidebar() {
                       transition={{ duration: 0.3, ease: "easeInOut" }}
                       className="overflow-hidden mt-2 space-y-1"
                     >
-                      {item.items.map((subItem) => (
-                        <motion.button
-                          key={subItem.title}
-                          whileHover={{ x: 4 }}
-                          onClick={() => handleMenuItemClick(subItem.title, subItem.path)}
-                          className="flex items-center gap-3 py-2.5 px-4 ml-4 text-sm text-muted-foreground hover:text-primary hover:bg-primary/5 rounded-lg transition-all duration-200 w-full text-left border-l-2 border-transparent hover:border-primary/30"
-                        >
-                          <div className="text-primary/70">{subItem.icon}</div>
-                          <span>{subItem.title}</span>
-                        </motion.button>
-                      ))}
+                      {item.items.map((subItem) => {
+                        const isActive = isActiveRoute(subItem.path);
+                        return (
+                          <motion.button
+                            key={subItem.title}
+                            whileHover={{ x: 4 }}
+                            onClick={() => handleMenuItemClick(subItem.title, subItem.path)}
+                            className={`flex items-center gap-3 py-2.5 px-4 ml-4 text-sm rounded-lg transition-all duration-200 w-full text-left border-l-2 ${
+                              isActive 
+                                ? 'text-primary bg-primary/10 border-primary font-medium shadow-sm' 
+                                : 'text-muted-foreground hover:text-primary hover:bg-primary/5 border-transparent hover:border-primary/30'
+                            }`}
+                          >
+                            <div className={`${isActive ? 'text-primary' : 'text-primary/70'}`}>
+                              {subItem.icon}
+                            </div>
+                            <span>{subItem.title}</span>
+                            {isActive && (
+                              <motion.div
+                                layoutId="activeIndicator"
+                                className="ml-auto w-2 h-2 bg-primary rounded-full"
+                                initial={{ scale: 0 }}
+                                animate={{ scale: 1 }}
+                                transition={{ duration: 0.2 }}
+                              />
+                            )}
+                          </motion.button>
+                        );
+                      })}
                     </motion.div>
                   )}
                 </div>
