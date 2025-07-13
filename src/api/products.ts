@@ -2,12 +2,11 @@
 import axios, { AxiosError } from "axios";
 import { ProductResponse, ApiError } from "@/types/products";
 import { FiltersResponse } from "@/pages/Products";
-import { mockProducts } from "@/data/mockProducts";
-import { mockFilters } from "@/data/mockFilters";
+import { mockProducts, mockFilters } from "@/data/mockProductData";
 
-const API_URL = process.env.REACT_APP_API_URL || "https://your-api-url.com/api";
-const REQUEST_TIMEOUT = 5000; // 5 seconds
-const USE_MOCK_DATA = !process.env.REACT_APP_API_URL || process.env.REACT_APP_USE_MOCK === 'true';
+const API_URL = "https://your-api-url.com/api";
+const REQUEST_TIMEOUT = 3000; // 3 seconds
+const USE_MOCK_DATA = true; // Always use mock data for now
 
 // Create axios instance with default config
 export const apiClient = axios.create({
@@ -85,9 +84,10 @@ const getMockProducts = (
   return {
     products: paginatedProducts,
     total: filteredProducts.length,
-    page: currentPage,
-    limit: productsPerPage,
-    totalPages: Math.ceil(filteredProducts.length / productsPerPage)
+    currentPage: currentPage,
+    totalPages: Math.ceil(filteredProducts.length / productsPerPage),
+    hasNextPage: currentPage < Math.ceil(filteredProducts.length / productsPerPage),
+    hasPreviousPage: currentPage > 1
   };
 };
 
@@ -103,7 +103,7 @@ export const fetchProducts = async (
   selectedFilters: Record<string, any>
 ): Promise<ProductResponse> => {
   console.log('Fetching products:', {
-    page: currentPage,
+    currentPage: currentPage,
     limit: productsPerPage,
     filters: selectedFilters,
     usingMockData: USE_MOCK_DATA
