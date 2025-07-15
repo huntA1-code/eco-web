@@ -3,9 +3,9 @@ import { useState } from "react";
 import { useSearchParams } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { useToast } from "@/hooks/use-toast";
-import { fetchProducts, fetchDynamicFilters, handleApiError } from "@/api/products";
+import { fetchProductsWithFilters, handleApiError } from "@/api/products";
 import { mockFilters, getMockProductsPage } from "@/data/mockProductData";
-import { ProductResponse, ApiError } from "@/types/products";
+import { ProductsWithFiltersResponse, ApiError } from "@/types/products";
 import { FiltersResponse } from "@/pages/Products";
 
 export const useProductsData = () => {
@@ -16,32 +16,37 @@ export const useProductsData = () => {
   const productsPerPage = 12;
   const { toast } = useToast();
 
-  // Fetch products first
+  // Fetch products and filters in one call
   const { 
-    data: productsData, 
-    isLoading: isLoadingProducts,
-    error: productsError,
-    refetch: refetchProducts,
-    isFetching: isFetchingProducts
-  } = useQuery<ProductResponse, ApiError>({
-    queryKey: ['products', selectedFilters, currentPage, category],
+    data: productsWithFiltersData, 
+    isLoading: isLoadingData,
+    error: dataError,
+    refetch: refetchData,
+    isFetching: isFetchingData
+  } = useQuery<ProductsWithFiltersResponse, ApiError>({
+    queryKey: ['products-with-filters', selectedFilters, currentPage, category],
     queryFn: async () => {
       try {
-        console.log('Fetching products with filters:', { selectedFilters, currentPage, category });
-        return await fetchProducts(currentPage, productsPerPage, category, selectedFilters);
+        console.log('Fetching products with filters in one call:', { selectedFilters, currentPage, category });
+        return await fetchProductsWithFilters(currentPage, productsPerPage, category, selectedFilters);
       } catch (error) {
         const apiError = handleApiError(error);
-        console.error('Products API Error:', apiError);
+        console.error('Products with Filters API Error:', apiError);
         
         if (apiError.code !== 'NETWORK_ERROR' && apiError.code !== 'TIMEOUT') {
           toast({
-            title: "فشل في تحميل المنتجات",
+            title: "فشل في تحميل البيانات",
             description: apiError.message,
             variant: "destructive",
           });
         }
         
-        return getMockProductsPage(currentPage, productsPerPage);
+        // Fallback to mock data
+        const mockProductsData = getMockProductsPage(currentPage, productsPerPage);
+        return {
+          ...mockProductsData,
+          filters: mockFilters
+        };
       }
     },
     retry: (failureCount, error) => {
@@ -54,50 +59,22 @@ export const useProductsData = () => {
     retryDelay: (attemptIndex) => Math.min(1000 * 2 ** attemptIndex, 30000),
   });
 
-  // Fetch dynamic filters based on current products and applied filters
-  const { 
-    data: filtersData = mockFilters, 
-    isLoading: isLoadingFilters,
-    error: filtersError,
-    refetch: refetchFilters
-  } = useQuery<FiltersResponse, ApiError>({
-    queryKey: ['dynamic-filters', selectedFilters, category, productsData?.products?.length],
-    queryFn: async () => {
-      try {
-        console.log('Fetching dynamic filters based on current context:', {
-          selectedFilters,
-          category,
-          productsCount: productsData?.products?.length
-        });
-        
-        // Pass current filters and category to get contextual filters
-        return await fetchDynamicFilters(selectedFilters, category, productsData?.products);
-      } catch (error) {
-        const apiError = handleApiError(error);
-        console.error('Dynamic Filters API Error:', apiError);
-        
-        if (apiError.code !== 'TIMEOUT') {
-          toast({
-            title: "فشل في تحميل الفلاتر",
-            description: apiError.message,
-            variant: "destructive",
-          });
-        }
-        
-        return mockFilters;
-      }
-    },
-    // Only fetch filters after we have products data
-    enabled: !!productsData,
-    retry: (failureCount, error) => {
-      const apiError = handleApiError(error);
-      if (apiError.code === '404' || apiError.code?.startsWith('4')) {
-        return false;
-      }
-      return failureCount < 3;
-    },
-    retryDelay: (attemptIndex) => Math.min(1000 * 2 ** attemptIndex, 30000),
-  });
+  // Extract products and filters from combined data
+  const productsData = productsWithFiltersData ? {
+    products: productsWithFiltersData.products,
+    total: productsWithFiltersData.total,
+    currentPage: productsWithFiltersData.currentPage,
+    totalPages: productsWithFiltersData.totalPages,
+    hasNextPage: productsWithFiltersData.hasNextPage,
+    hasPreviousPage: productsWithFiltersData.hasPreviousPage,
+  } : undefined;
+
+  const filtersData = productsWithFiltersData?.filters || mockFilters;
+  const isLoadingProducts = isLoadingData;
+  const isLoadingFilters = isLoadingData;
+  const isFetchingProducts = isFetchingData;
+  const productsError = dataError;
+  const filtersError = dataError;
 
   const handleFilterChange = (filterType: string, value: any) => {
     console.log('Filter changed:', { filterType, value });
@@ -140,8 +117,7 @@ export const useProductsData = () => {
 
   const handleRetry = () => {
     console.log('Retrying data fetch');
-    refetchProducts();
-    refetchFilters();
+    refetchData();
   };
 
   return {
