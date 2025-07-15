@@ -1,14 +1,13 @@
-
 import axios, { AxiosError } from "axios";
 import { ProductResponse, ApiError } from "@/types/products";
 import { FiltersResponse } from "@/pages/Products";
 import { mockProducts, mockFilters } from "@/data/mockProductData";
+import { Product } from "@/types/products";
 
 const API_URL = "https://your-api-url.com/api";
-const REQUEST_TIMEOUT = 3000; // 3 seconds
-const USE_MOCK_DATA = true; // Always use mock data for now
+const REQUEST_TIMEOUT = 3000;
+const USE_MOCK_DATA = true;
 
-// Create axios instance with default config
 export const apiClient = axios.create({
   baseURL: API_URL,
   timeout: REQUEST_TIMEOUT,
@@ -17,7 +16,6 @@ export const apiClient = axios.create({
   },
 });
 
-// Error handling utility
 export const handleApiError = (error: unknown): ApiError => {
   if (axios.isAxiosError(error)) {
     const axiosError = error as AxiosError<ApiError>;
@@ -27,34 +25,39 @@ export const handleApiError = (error: unknown): ApiError => {
     }
     
     if (axiosError.code === 'ECONNABORTED') {
-      return { message: 'Request timeout. Please try again.', code: 'TIMEOUT' };
+      return { message: 'انتهت مهلة الطلب. يرجى المحاولة مرة أخرى.', code: 'TIMEOUT' };
     }
     
     if (axiosError.code === 'ERR_NETWORK') {
-      return { message: 'Network error. Using offline mode.', code: 'NETWORK_ERROR' };
+      return { message: 'خطأ في الشبكة. يتم استخدام البيانات المحلية.', code: 'NETWORK_ERROR' };
     }
     
     return { 
-      message: axiosError.message || 'An unexpected error occurred', 
+      message: axiosError.message || 'حدث خطأ غير متوقع', 
       code: axiosError.code || 'UNKNOWN_ERROR' 
     };
   }
   
   return { 
-    message: 'An unexpected error occurred', 
+    message: 'حدث خطأ غير متوقع', 
     code: 'UNKNOWN_ERROR',
     details: error 
   };
 };
 
-// Mock data functions
+// Enhanced mock data function for dynamic filtering
 const getMockProducts = (
   currentPage: number,
   productsPerPage: number,
   category: string | null,
   selectedFilters: Record<string, any>
 ): ProductResponse => {
-  console.log('Using mock products data');
+  console.log('Generating mock products with dynamic filtering:', {
+    currentPage,
+    productsPerPage,
+    category,
+    selectedFilters
+  });
   
   let filteredProducts = [...mockProducts];
   
@@ -65,14 +68,44 @@ const getMockProducts = (
     );
   }
   
-  // Apply other filters
+  // Apply dynamic filters
   Object.entries(selectedFilters).forEach(([filterType, value]) => {
-    if (value && value.length > 0) {
-      // Apply basic filtering logic for demonstration
-      filteredProducts = filteredProducts.filter(product => {
-        // This is a simplified filter - you can enhance based on your needs
-        return true;
-      });
+    if (value && (Array.isArray(value) ? value.length > 0 : value)) {
+      console.log(`Applying ${filterType} filter:`, value);
+      
+      switch (filterType) {
+        case 'brands':
+          if (Array.isArray(value)) {
+            filteredProducts = filteredProducts.filter(product =>
+              value.includes(product.brand)
+            );
+          }
+          break;
+        case 'colors':
+          if (Array.isArray(value)) {
+            filteredProducts = filteredProducts.filter(product =>
+              product.colors.some(color => value.includes(color))
+            );
+          }
+          break;
+        case 'sizes':
+          if (Array.isArray(value)) {
+            filteredProducts = filteredProducts.filter(product =>
+              product.sizes.some(size => value.includes(size))
+            );
+          }
+          break;
+        case 'priceRange':
+          if (Array.isArray(value) && value.length === 2) {
+            filteredProducts = filteredProducts.filter(product =>
+              product.price >= value[0] && product.price <= value[1]
+            );
+          }
+          break;
+        default:
+          // Handle other dynamic filters
+          break;
+      }
     }
   });
   
@@ -91,9 +124,61 @@ const getMockProducts = (
   };
 };
 
-const getMockFilters = (): FiltersResponse => {
-  console.log('Using mock filters data');
-  return mockFilters;
+// Dynamic filters based on current product results
+const getMockDynamicFilters = (
+  selectedFilters: Record<string, any>,
+  category: string | null,
+  currentProducts?: Product[]
+): FiltersResponse => {
+  console.log('Generating dynamic filters based on:', {
+    selectedFilters,
+    category,
+    productsCount: currentProducts?.length
+  });
+  
+  // If no products provided, get all products with current filters (excluding the filter we're generating)
+  if (!currentProducts) {
+    const allProducts = getMockProducts(1, 1000, category, selectedFilters).products;
+    currentProducts = allProducts;
+  }
+  
+  // Extract unique values from current products for dynamic filtering
+  const availableBrands = [...new Set(currentProducts.map(p => p.brand))];
+  const availableColors = [...new Set(currentProducts.flatMap(p => p.colors))];
+  const availableSizes = [...new Set(currentProducts.flatMap(p => p.sizes))];
+  const availableCategories = [...new Set(currentProducts.map(p => p.category))];
+  
+  // Calculate price range from current products
+  const prices = currentProducts.map(p => p.price);
+  const priceRange: [number, number] = [
+    Math.min(...prices),
+    Math.max(...prices)
+  ];
+  
+  // Convert to expected format
+  const dynamicFilters: FiltersResponse = {
+    categories: availableCategories.map(cat => ({ id: cat, name: cat })),
+    types: ['قميص', 'بنطلون', 'فستان', 'جاكيت'].filter(type => 
+      currentProducts.some(p => p.category.includes(type))
+    ),
+    colors: availableColors.map((color, index) => ({
+      id: color,
+      name: color,
+      hex: ['#FF0000', '#00FF00', '#0000FF', '#FFFF00', '#FF00FF'][index % 5]
+    })),
+    sizes: availableSizes,
+    priceRange,
+    styles: ['كاجوال', 'رسمي', 'رياضي', 'عصري'].filter(style =>
+      currentProducts.some(p => p.description.includes(style))
+    ),
+    occasions: ['يومي', 'عمل', 'مناسبات', 'رياضة'].filter(occasion =>
+      currentProducts.some(p => p.description.includes(occasion))
+    ),
+    brands: availableBrands
+  };
+  
+  console.log('Generated dynamic filters:', dynamicFilters);
+  return dynamicFilters;
 };
 
 export const fetchProducts = async (
@@ -103,18 +188,18 @@ export const fetchProducts = async (
   selectedFilters: Record<string, any>
 ): Promise<ProductResponse> => {
   console.log('Fetching products:', {
-    currentPage: currentPage,
+    currentPage,
     limit: productsPerPage,
+    category,
     filters: selectedFilters,
     usingMockData: USE_MOCK_DATA
   });
   
-  // Use mock data if API is not available or if explicitly configured
   if (USE_MOCK_DATA) {
     return new Promise((resolve) => {
       setTimeout(() => {
         resolve(getMockProducts(currentPage, productsPerPage, category, selectedFilters));
-      }, 500); // Simulate network delay
+      }, 800);
     });
   }
   
@@ -128,7 +213,6 @@ export const fetchProducts = async (
       }
     });
     
-    // Validate response structure
     if (!response.data || !Array.isArray(response.data.products)) {
       throw new Error('Invalid products response format');
     }
@@ -140,31 +224,47 @@ export const fetchProducts = async (
   }
 };
 
-export const fetchFilters = async (selectedFilters: Record<string, any>): Promise<FiltersResponse> => {
-  console.log('Fetching filters with params:', selectedFilters, 'usingMockData:', USE_MOCK_DATA);
+// New function for fetching dynamic filters
+export const fetchDynamicFilters = async (
+  selectedFilters: Record<string, any>,
+  category: string | null,
+  currentProducts?: Product[]
+): Promise<FiltersResponse> => {
+  console.log('Fetching dynamic filters:', {
+    selectedFilters,
+    category,
+    productsCount: currentProducts?.length,
+    usingMockData: USE_MOCK_DATA
+  });
   
-  // Use mock data if API is not available or if explicitly configured
   if (USE_MOCK_DATA) {
     return new Promise((resolve) => {
       setTimeout(() => {
-        resolve(getMockFilters());
-      }, 300); // Simulate network delay
+        resolve(getMockDynamicFilters(selectedFilters, category, currentProducts));
+      }, 400);
     });
   }
   
   try {
-    const response = await apiClient.get('/filters', {
-      params: selectedFilters
+    const response = await apiClient.post('/filters/dynamic', {
+      filters: selectedFilters,
+      category,
+      products: currentProducts?.map(p => p.id) // Send product IDs for backend processing
     });
     
-    // Validate response structure
     if (!response.data || typeof response.data !== 'object') {
       throw new Error('Invalid filters response format');
     }
     
     return response.data;
   } catch (error) {
-    console.warn('API request failed, falling back to mock data:', error);
-    return getMockFilters();
+    console.warn('Dynamic filters API request failed, falling back to mock data:', error);
+    return getMockDynamicFilters(selectedFilters, category, currentProducts);
   }
+};
+
+// Keep the old fetchFilters function for backward compatibility
+export const fetchFilters = async (selectedFilters: Record<string, any>): Promise<FiltersResponse> => {
+  console.log('Fetching static filters (deprecated):', selectedFilters);
+  return fetchDynamicFilters(selectedFilters, null);
 };
