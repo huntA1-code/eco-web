@@ -1,5 +1,6 @@
 
 import { useState, useRef } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Search, Image, X, Upload } from 'lucide-react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
@@ -11,6 +12,7 @@ interface SearchModalProps {
 }
 
 export const SearchModal = ({ isOpen, onClose }: SearchModalProps) => {
+  const navigate = useNavigate();
   const [searchText, setSearchText] = useState('');
   const [searchMode, setSearchMode] = useState<'text' | 'image'>('text');
   const [selectedImage, setSelectedImage] = useState<File | null>(null);
@@ -31,11 +33,18 @@ export const SearchModal = ({ isOpen, onClose }: SearchModalProps) => {
 
   const handleSearch = () => {
     if (searchMode === 'text' && searchText.trim()) {
-      console.log('Searching for text:', searchText);
-      // TODO: Implement text search logic
+      // Navigate to search results with text query
+      navigate(`/search?q=${encodeURIComponent(searchText)}&type=text`);
     } else if (searchMode === 'image' && selectedImage) {
-      console.log('Searching with image:', selectedImage);
-      // TODO: Implement image search logic
+      // Navigate to search results with image
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        const imageDataUrl = e.target?.result as string;
+        navigate('/search?type=image', { 
+          state: { searchImage: imageDataUrl } 
+        });
+      };
+      reader.readAsDataURL(selectedImage);
     }
     onClose();
   };

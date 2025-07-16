@@ -6,6 +6,7 @@ import { useLocation } from "react-router-dom";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import Index from "./pages/Index";
 import Products from "./pages/Products";
+import SearchResults from "./pages/SearchResults";
 import ProductPage from "./pages/ProductPage";
 import Cart from "./pages/Cart";
 import PlaceOrder from "./pages/PlaceOrder";
@@ -57,7 +58,7 @@ const queryClient = new QueryClient();
 function App() {
   const location = useLocation();
   
-  const showSubNavbarPaths = ['/', '/products', '/product', '/store'];
+  const showSubNavbarPaths = ['/', '/products', '/search', '/product', '/store'];
   const shouldShowSubNavbar = showSubNavbarPaths.some(path => 
     location.pathname === path || location.pathname.startsWith(path + '/')
   );
@@ -76,6 +77,7 @@ function App() {
       <Routes>
         <Route path="/" element={<Index />} />
         <Route path="/products" element={<Products />} />
+        <Route path="/search" element={<SearchResults />} />
         <Route path="/product/:productName" element={<ProductPage />} />
         <Route path="/cart" element={<Cart />} />
         <Route path="/wishlist/*" element={<WishList />} />

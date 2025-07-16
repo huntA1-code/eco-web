@@ -168,3 +168,110 @@ export const fetchFilters = async (selectedFilters: Record<string, any>): Promis
     return getMockFilters();
   }
 };
+
+// Mock search data function
+const getMockSearchResults = (
+  query: string,
+  searchType: string,
+  searchImage: string | null,
+  currentPage: number,
+  productsPerPage: number,
+  selectedFilters: Record<string, any>
+): { products: ProductResponse; filters: FiltersResponse } => {
+  console.log('Using mock search data for:', { query, searchType, searchImage });
+  
+  let filteredProducts = [...mockProducts];
+  
+  // Apply search filtering
+  if (searchType === 'text' && query) {
+    filteredProducts = filteredProducts.filter(product => 
+      product.name.toLowerCase().includes(query.toLowerCase()) ||
+      product.description.toLowerCase().includes(query.toLowerCase()) ||
+      product.category.toLowerCase().includes(query.toLowerCase())
+    );
+  }
+  
+  // For image search, return random subset for demo purposes
+  if (searchType === 'image' && searchImage) {
+    // In real implementation, this would use image recognition API
+    filteredProducts = filteredProducts.slice(0, Math.floor(Math.random() * 10) + 5);
+  }
+  
+  // Apply other filters
+  Object.entries(selectedFilters).forEach(([filterType, value]) => {
+    if (value && value.length > 0) {
+      // Apply basic filtering logic for demonstration
+      filteredProducts = filteredProducts.filter(product => {
+        // This is a simplified filter - you can enhance based on your needs
+        return true;
+      });
+    }
+  });
+  
+  // Pagination
+  const startIndex = (currentPage - 1) * productsPerPage;
+  const endIndex = startIndex + productsPerPage;
+  const paginatedProducts = filteredProducts.slice(startIndex, endIndex);
+  
+  const products: ProductResponse = {
+    products: paginatedProducts,
+    total: filteredProducts.length,
+    currentPage: currentPage,
+    totalPages: Math.ceil(filteredProducts.length / productsPerPage),
+    hasNextPage: currentPage < Math.ceil(filteredProducts.length / productsPerPage),
+    hasPreviousPage: currentPage > 1
+  };
+  
+  const filters = getMockFilters();
+  
+  return { products, filters };
+};
+
+export const searchProducts = async (
+  query: string,
+  searchType: string,
+  searchImage: string | null,
+  currentPage: number,
+  productsPerPage: number,
+  selectedFilters: Record<string, any>
+): Promise<{ products: ProductResponse; filters: FiltersResponse }> => {
+  console.log('Searching products:', {
+    query,
+    searchType,
+    searchImage: !!searchImage,
+    currentPage,
+    limit: productsPerPage,
+    filters: selectedFilters,
+    usingMockData: USE_MOCK_DATA
+  });
+  
+  // Use mock data if API is not available or if explicitly configured
+  if (USE_MOCK_DATA) {
+    return new Promise((resolve) => {
+      setTimeout(() => {
+        resolve(getMockSearchResults(query, searchType, searchImage, currentPage, productsPerPage, selectedFilters));
+      }, 800); // Simulate network delay
+    });
+  }
+  
+  try {
+    const response = await apiClient.post('/search', {
+      query,
+      searchType,
+      searchImage,
+      page: currentPage,
+      limit: productsPerPage,
+      filters: selectedFilters,
+    });
+    
+    // Validate response structure
+    if (!response.data || !response.data.products || !response.data.filters) {
+      throw new Error('Invalid search response format');
+    }
+    
+    return response.data;
+  } catch (error) {
+    console.warn('API request failed, falling back to mock data:', error);
+    return getMockSearchResults(query, searchType, searchImage, currentPage, productsPerPage, selectedFilters);
+  }
+};
