@@ -5,6 +5,7 @@ import { useState } from "react";
 import { useToast } from "@/hooks/use-toast";
 import { AboutStore } from "@/components/AboutStore";
 import { CustomerReviews } from "@/components/CustomerReviews";
+import { RecommendedProducts } from "@/components/RecommendedProducts";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 
 const SIZES = [{
@@ -372,5 +373,8 @@ export default function ProductPage() {
       <div className="mt-16">
         <AboutStore storeName="MIMAOYIGOU" rating={4.86} itemCount={23} followerCount={119} logo="https://images.unsplash.com/photo-1472851294608-062f824d29cc" />
       </div>
+      
+      {/* Recommended Products Section */}
+      <RecommendedProducts productId={product.name} />
     </div>;
 }
