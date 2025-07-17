@@ -1,148 +1,97 @@
 import { useState } from "react";
 import { Header } from '../components/header/Header';
 import { ProductFilters } from '../components/ProductFilters';
-import { ProductCard } from '../components/ProductCard';
 import { StoreReviews } from '../components/StoreReviews';
-import {
-  Pagination,
-  PaginationContent,
-  PaginationItem,
-  PaginationLink,
-  PaginationNext,
-  PaginationPrevious,
-} from "@/components/ui/pagination";
+import { ProductsLoading } from '@/components/products/ProductsLoading';
+import { ProductsError } from '@/components/products/ProductsError';
+import { StoreHeader } from '@/components/store/StoreHeader';
+import { ProductsGrid } from '@/components/products/ProductsGrid';
+import { ProductsPagination } from '@/components/products/ProductsPagination';
+import { useStoreData } from '@/hooks/useStoreData';
 
 const Store = () => {
-  const [selectedFilters, setSelectedFilters] = useState<Record<string, any>>({});
   const [showMobileFilters, setShowMobileFilters] = useState(false);
-  const [currentPage, setCurrentPage] = useState(1);
-  const productsPerPage = 20;
+  
+  const {
+    storeName,
+    selectedFilters,
+    currentPage,
+    productsPerPage,
+    filtersData,
+    productsData,
+    isLoadingFilters,
+    isLoadingProducts,
+    isFetchingProducts,
+    filtersError,
+    productsError,
+    handleFilterChange,
+    clearFilter,
+    clearAllFilters,
+    setCurrentPage,
+    handleRetry,
+  } = useStoreData();
 
-  const products = Array.from({ length: 100 }, (_, index) => ({
-    id: index + 1,
-    name: `Sport Running Shoes ${index + 1}`,
-    brand: ["Nike", "Adidas", "Puma", "Under Armour"][Math.floor(Math.random() * 4)],
-    price: 99.99 + Math.floor(Math.random() * 100),
-    image: "/placeholder.svg",
-    colors: ["Black", "White", "Red"],
-    sizes: ["US 7", "US 8", "US 9", "US 10"],
-    description: "Premium running shoes with advanced cushioning technology.",
-    category: "Footwear",
-    rating: 4 + Math.random(),
-    reviews: 50 + Math.floor(Math.random() * 200)
-  }));
+  // Loading state
+  if (isLoadingProducts && isLoadingFilters) {
+    return <ProductsLoading />;
+  }
 
-  const handleFilterChange = (filterType: string, value: any) => {
-    setSelectedFilters(prev => ({
-      ...prev,
-      [filterType]: value
-    }));
-    setCurrentPage(1);
-  };
-
-  const handleClearFilter = (filterType: string) => {
-    const newFilters = { ...selectedFilters };
-    delete newFilters[filterType];
-    setSelectedFilters(newFilters);
-  };
-
-  const totalPages = Math.ceil(products.length / productsPerPage);
-  const startIndex = (currentPage - 1) * productsPerPage;
-  const endIndex = startIndex + productsPerPage;
-  const currentProducts = products.slice(startIndex, endIndex);
+  // Error state
+  if ((productsError || filtersError) && !productsData && !filtersData) {
+    return (
+      <ProductsError 
+        productsError={productsError}
+        filtersError={filtersError}
+        onRetry={handleRetry}
+      />
+    );
+  }
 
   return (
     <div className="min-h-screen bg-background">
       <Header />
       <main className="max-w-[1400px] mx-auto px-4 py-8">
-        <div className="grid grid-cols-1 lg:grid-cols-5 gap-8">
-          <aside className="lg:col-span-1">
-            <ProductFilters
-              selectedFilters={selectedFilters}
-              onFilterChange={handleFilterChange}
-              onClearFilter={handleClearFilter}
-              showMobileFilters={showMobileFilters}
-              setShowMobileFilters={setShowMobileFilters}
-              filters={{
-                categories: [
-                  {
-                    id: "sports",
-                    name: "Sports",
-                    children: [
-                      { id: "running", name: "Running" },
-                      { id: "training", name: "Training" },
-                      { id: "basketball", name: "Basketball" }
-                    ]
-                  },
-                  {
-                    id: "casual",
-                    name: "Casual Wear",
-                    children: [
-                      { id: "streetwear", name: "Streetwear" },
-                      { id: "lifestyle", name: "Lifestyle" }
-                    ]
-                  }
-                ],
-                types: ["Shoes", "Clothing", "Accessories"],
-                colors: [
-                  { id: "black", name: "Black", hex: "#000000" },
-                  { id: "white", name: "White", hex: "#FFFFFF" },
-                  { id: "red", name: "Red", hex: "#0000FF" }
-                ],
-                sizes: ["S", "M", "L", "XL"],
-                priceRange: [0, 200],
-                styles: ["Casual", "Athletic", "Professional"],
-                occasions: ["Sport", "Casual", "Training"],
-                brands: ["Nike", "Adidas", "Puma", "Under Armour"]
-              }}
-            />
-          </aside>
-          <div className="lg:col-span-4">
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-4">
-              {currentProducts.map(product => (
-                <ProductCard key={product.id} product={product} />
-              ))}
-            </div>
+        <StoreHeader
+          storeName={storeName}
+          selectedFilters={selectedFilters}
+          isFetchingProducts={isFetchingProducts}
+          onClearFilter={clearFilter}
+        />
 
-            {totalPages > 1 && (
-              <div className="mt-8 flex justify-center">
-                <Pagination>
-                  <PaginationContent>
-                    <PaginationItem>
-                      <PaginationPrevious
-                        onClick={() => setCurrentPage(prev => Math.max(1, prev - 1))}
-                        className={currentPage === 1 ? 'pointer-events-none opacity-50' : ''}
-                      />
-                    </PaginationItem>
-                    
-                    {[...Array(totalPages)].map((_, i) => (
-                      <PaginationItem key={i + 1}>
-                        <PaginationLink
-                          onClick={() => setCurrentPage(i + 1)}
-                          isActive={currentPage === i + 1}
-                        >
-                          {i + 1}
-                        </PaginationLink>
-                      </PaginationItem>
-                    ))}
-                    
-                    <PaginationItem>
-                      <PaginationNext
-                        onClick={() => setCurrentPage(prev => Math.min(totalPages, prev + 1))}
-                        className={currentPage === totalPages ? 'pointer-events-none opacity-50' : ''}
-                      />
-                    </PaginationItem>
-                  </PaginationContent>
-                </Pagination>
-              </div>
+        <div className="flex gap-8">
+          <ProductFilters
+            filters={filtersData}
+            selectedFilters={selectedFilters}
+            onFilterChange={handleFilterChange}
+            onClearFilter={clearFilter}
+            showMobileFilters={showMobileFilters}
+            setShowMobileFilters={setShowMobileFilters}
+          />
+
+          <div className="flex-1">
+            <ProductsGrid
+              products={productsData?.products || []}
+              isFetchingProducts={isFetchingProducts}
+              onClearAllFilters={clearAllFilters}
+            />
+
+            {productsData && (
+              <ProductsPagination
+                productsData={productsData}
+                currentPage={currentPage}
+                productsPerPage={productsPerPage}
+                onPageChange={setCurrentPage}
+              />
             )}
           </div>
         </div>
         
         {/* Store Reviews Section */}
         <StoreReviews 
-          storeId="store-1" 
-          storeName="Athletic Pro Store" 
+          storeId={storeName || "store-1"} 
+          storeName={storeName ? storeName.split('-').map(word => 
+            word.charAt(0).toUpperCase() + word.slice(1)
+          ).join(' ') : "Athletic Pro Store"} 
         />
       </main>
     </div>
