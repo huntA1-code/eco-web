@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Header } from '../components/header/Header';
 import { ProductFilters } from '../components/ProductFilters';
 import { ProductCard } from '../components/ProductCard';
+import { StoreReviews } from '../components/StoreReviews';
 import {
   Pagination,
   PaginationContent,
@@ -137,6 +138,12 @@ const Store = () => {
             )}
           </div>
         </div>
+        
+        {/* Store Reviews Section */}
+        <StoreReviews 
+          storeId="store-1" 
+          storeName="Athletic Pro Store" 
+        />
       </main>
     </div>
   );
