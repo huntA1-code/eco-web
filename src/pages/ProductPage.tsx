@@ -16,8 +16,22 @@ export default function ProductPage() {
   const { productName } = useParams();
   const { toast } = useToast();
   
-  // Extract product ID from URL (assuming it's in the format /product/:productId)
-  const productId = productName || '';
+  // Extract product ID from product name (e.g., "Product 5" -> "5")
+  const extractProductId = (name: string): string => {
+    if (!name) return '1'; // Default to first product
+    
+    // If it's already a number, return it
+    if (/^\d+$/.test(name)) return name;
+    
+    // Extract number from "Product X" format
+    const match = name.match(/Product\s+(\d+)/i);
+    if (match) return match[1];
+    
+    // If it's a slug format, try to find the product by name
+    return name;
+  };
+  
+  const productId = extractProductId(productName || '');
   
   // Use the custom hook for API data
   const {

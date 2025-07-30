@@ -281,16 +281,20 @@ export const fetchProductDetails = async (productId: string): Promise<any> => {
   console.log('Fetching product details for:', productId, 'usingMockData:', USE_MOCK_DATA);
   
   if (USE_MOCK_DATA) {
-    return new Promise((resolve) => {
+    return new Promise((resolve, reject) => {
       setTimeout(() => {
         // Find product by ID or name in mock data
         const product = mockProducts.find(p => 
           p.id.toString() === productId || 
-          p.name.toLowerCase().replace(/\s+/g, '-') === productId.toLowerCase()
+          p.name.toLowerCase().replace(/\s+/g, '-') === productId.toLowerCase() ||
+          p.name === productId
         );
         
         if (!product) {
-          throw new Error('Product not found');
+          console.error('Product not found in mock data:', productId);
+          console.log('Available products:', mockProducts.map(p => ({ id: p.id, name: p.name })));
+          reject(new Error('Product not found'));
+          return;
         }
         
         // Enhanced product details
