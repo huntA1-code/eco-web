@@ -212,10 +212,7 @@ export default function ProductPage() {
               {selectedSize && currentSizes.find(s => s.label === selectedSize)?.quantity === 0 && <div className="text-red-500 text-sm font-medium">
                   SOLD OUT
                 </div>}
-              {selectedSize && (() => {
-                const selectedSizeData = currentSizes.find(s => s.label === selectedSize);
-                return selectedSizeData && selectedSizeData.quantity < 10 && selectedSizeData.quantity > 0;
-              })() && <div className="text-red-500 text-sm font-medium">
+              {selectedSize && currentSizes.find(s => s.label === selectedSize)?.quantity! < 10 && currentSizes.find(s => s.label === selectedSize)?.quantity! > 0 && <div className="text-red-500 text-sm font-medium">
                   {currentSizes.find(s => s.label === selectedSize)?.quantity} items left
                 </div>}
               <div className="flex gap-3">
