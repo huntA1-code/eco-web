@@ -78,7 +78,7 @@ function App() {
         <Route path="/" element={<Index />} />
         <Route path="/products" element={<Products />} />
         <Route path="/search" element={<SearchResults />} />
-        <Route path="/product/:productName" element={<ProductPage />} />
+        <Route path="/product/:productId" element={<ProductPage />} />
         <Route path="/cart" element={<Cart />} />
         <Route path="/wishlist/*" element={<WishList />} />
         <Route path="/place-order" element={<PlaceOrder />} />

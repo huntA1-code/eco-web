@@ -16,6 +16,9 @@ export default function ProductPage() {
   const { productId } = useParams();
   const { toast } = useToast();
   
+  // Use default product ID if not provided
+  const finalProductId = productId || '1';
+  
   // Use the custom hook for API data
   const {
     product,
@@ -28,7 +31,7 @@ export default function ProductPage() {
     isError,
     error,
     refetchAll
-  } = useProductDetails(productId);
+  } = useProductDetails(finalProductId);
 
   // Local state for UI interactions
   const [selectedImage, setSelectedImage] = useState(0);
