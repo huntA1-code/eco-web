@@ -96,7 +96,7 @@ const Slider = React.forwardRef<
         <SliderPrimitive.Range className="absolute bg-primary data-[orientation=horizontal]:h-full data-[orientation=vertical]:w-full" />
       </SliderPrimitive.Track>
       {internalValue?.map((value, index) => (
-        <React.Fragment key={index}>{renderThumb(value)}</React.Fragment>
+        <div key={index}>{renderThumb(value)}</div>
       ))}
     </SliderPrimitive.Root>
   );
