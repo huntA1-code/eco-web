@@ -159,6 +159,7 @@ export default function ProductPage() {
   const [isLiked, setIsLiked] = useState(false);
   const [openDescription, setOpenDescription] = useState(true);
   const [openSizeFit, setOpenSizeFit] = useState(false);
+  const [openStore, setOpenStore] = useState(false);
 
   const handleColorSelect = (color: typeof COLORS[0]) => {
     setSelectedColor(color.name);
@@ -366,12 +367,19 @@ export default function ProductPage() {
                   </div>
                 </CollapsibleContent>
               </Collapsible>
+
+              <Collapsible open={openStore} onOpenChange={setOpenStore} className="border-b pb-4">
+                <CollapsibleTrigger className="flex items-center justify-between w-full">
+                  <h3 className="text-lg font-medium">Store Information</h3>
+                  <ChevronDown className={`w-5 h-5 transition-transform duration-200 ${openStore ? 'rotate-180' : ''}`} />
+                </CollapsibleTrigger>
+                <CollapsibleContent className="pt-4">
+                  <AboutStore storeName="MIMAOYIGOU" rating={4.86} itemCount={23} followerCount={119} logo="https://images.unsplash.com/photo-1472851294608-062f824d29cc" />
+                </CollapsibleContent>
+              </Collapsible>
             </div>
           </div>
         </div>
-      </div>
-      <div className="mt-16">
-        <AboutStore storeName="MIMAOYIGOU" rating={4.86} itemCount={23} followerCount={119} logo="https://images.unsplash.com/photo-1472851294608-062f824d29cc" />
       </div>
       
       {/* Recommended Products Section */}
