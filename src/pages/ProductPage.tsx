@@ -1,173 +1,72 @@
 import { useParams } from "react-router-dom";
 import { Badge } from "@/components/ui/badge";
 import { Heart, Award, TrendingUp, ChevronLeft, ChevronRight, ChevronDown } from "lucide-react";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useToast } from "@/hooks/use-toast";
 import { AboutStore } from "@/components/AboutStore";
 import { CustomerReviews } from "@/components/CustomerReviews";
 import { RecommendedProducts } from "@/components/RecommendedProducts";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
+import { useProductDetails, ProductColor } from "@/hooks/useProductDetails";
+import { ProductSkeleton } from "@/components/ProductSkeleton";
+import { ProductError } from "@/components/ProductError";
 
-const SIZES = [{
-  label: '8Y',
-  dimensions: '122-128CM',
-  quantity: 5
-}, {
-  label: '9Y',
-  dimensions: '128-134CM',
-  quantity: 15
-}, {
-  label: '10Y',
-  dimensions: '134-140CM',
-  quantity: 0
-}, {
-  label: '11Y',
-  dimensions: '140-146CM',
-  quantity: 8
-}, {
-  label: '12Y',
-  dimensions: '146-152CM',
-  quantity: 3
-}];
-
-const COLORS = [{
-  name: 'Hot Pink',
-  hex: '#FF69B4',
-  isHot: true,
-  price: 49.99,
-  originalPrice: 89.99,
-  sizes: [{
-    label: '8Y',
-    dimensions: '122-128CM',
-    quantity: 2
-  }, {
-    label: '9Y',
-    dimensions: '128-134CM',
-    quantity: 8
-  }, {
-    label: '10Y',
-    dimensions: '134-140CM',
-    quantity: 0
-  }, {
-    label: '11Y',
-    dimensions: '140-146CM',
-    quantity: 5
-  }, {
-    label: '12Y',
-    dimensions: '146-152CM',
-    quantity: 1
-  }],
-  images: ["/placeholder.svg", "/placeholder.svg", "/placeholder.svg", "/placeholder.svg"]
-}, {
-  name: 'Navy',
-  hex: '#000080',
-  isHot: true,
-  price: 39.99,
-  originalPrice: 79.99,
-  sizes: [{
-    label: '8Y',
-    dimensions: '122-128CM',
-    quantity: 10
-  }, {
-    label: '9Y',
-    dimensions: '128-134CM',
-    quantity: 12
-  }, {
-    label: '10Y',
-    dimensions: '134-140CM',
-    quantity: 5
-  }, {
-    label: '11Y',
-    dimensions: '140-146CM',
-    quantity: 3
-  }, {
-    label: '12Y',
-    dimensions: '146-152CM',
-    quantity: 0
-  }],
-  images: ["/placeholder.svg", "/placeholder.svg", "/placeholder.svg", "/placeholder.svg"]
-}, {
-  name: 'Forest Green',
-  hex: '#228B22',
-  price: 44.99,
-  originalPrice: 84.99,
-  sizes: [{
-    label: '8Y',
-    dimensions: '122-128CM',
-    quantity: 7
-  }, {
-    label: '9Y',
-    dimensions: '128-134CM',
-    quantity: 4
-  }, {
-    label: '10Y',
-    dimensions: '134-140CM',
-    quantity: 2
-  }, {
-    label: '11Y',
-    dimensions: '140-146CM',
-    quantity: 0
-  }, {
-    label: '12Y',
-    dimensions: '146-152CM',
-    quantity: 8
-  }],
-  images: ["/placeholder.svg", "/placeholder.svg", "/placeholder.svg", "/placeholder.svg"]
-}, {
-  name: 'Black',
-  hex: '#000000',
-  price: 54.99,
-  originalPrice: 94.99,
-  sizes: [{
-    label: '8Y',
-    dimensions: '122-128CM',
-    quantity: 3
-  }, {
-    label: '9Y',
-    dimensions: '128-134CM',
-    quantity: 6
-  }, {
-    label: '10Y',
-    dimensions: '134-140CM',
-    quantity: 4
-  }, {
-    label: '11Y',
-    dimensions: '140-146CM',
-    quantity: 2
-  }, {
-    label: '12Y',
-    dimensions: '146-152CM',
-    quantity: 1
-  }],
-  images: ["/placeholder.svg", "/placeholder.svg", "/placeholder.svg", "/placeholder.svg"]
-}];
 
 export default function ProductPage() {
+  const { productName } = useParams();
+  const { toast } = useToast();
+  
+  // Extract product ID from URL (assuming it's in the format /product/:productId)
+  const productId = productName || '';
+  
+  // Use the custom hook for API data
   const {
-    productName
-  } = useParams();
-  const {
-    toast
-  } = useToast();
+    product,
+    reviews,
+    recommendedProducts,
+    productLoading,
+    reviewsLoading,
+    recommendedLoading,
+    isLoading,
+    isError,
+    error,
+    refetchAll
+  } = useProductDetails(productId);
+
+  // Local state for UI interactions
   const [selectedImage, setSelectedImage] = useState(0);
   const [selectedSize, setSelectedSize] = useState('');
-  const [selectedColor, setSelectedColor] = useState(COLORS[0].name);
-  const [currentImages, setCurrentImages] = useState(COLORS[0].images);
-  const [currentSizes, setCurrentSizes] = useState(COLORS[0].sizes);
-  const [currentPrice, setCurrentPrice] = useState(COLORS[0].price);
-  const [currentOriginalPrice, setCurrentOriginalPrice] = useState(COLORS[0].originalPrice);
+  const [selectedColorIndex, setSelectedColorIndex] = useState(0);
   const [isLiked, setIsLiked] = useState(false);
   const [openDescription, setOpenDescription] = useState(true);
   const [openSizeFit, setOpenSizeFit] = useState(false);
   const [openStore, setOpenStore] = useState(false);
-
-  const handleColorSelect = (color: typeof COLORS[0]) => {
-    setSelectedColor(color.name);
-    setCurrentImages(color.images);
+  
+  // Reset selected image when color changes
+  useEffect(() => {
     setSelectedImage(0);
-    setCurrentSizes(color.sizes);
-    setCurrentPrice(color.price);
-    setCurrentOriginalPrice(color.originalPrice);
+  }, [selectedColorIndex]);
+  
+  // Show loading skeleton
+  if (isLoading || productLoading) {
+    return <ProductSkeleton />;
+  }
+  
+  // Show error state
+  if (isError || !product) {
+    return <ProductError error={error} onRetry={refetchAll} />;
+  }
+  
+  // Get current color data
+  const currentColor = product.colors[selectedColorIndex];
+  const currentImages = currentColor?.images || [product.image];
+  const currentSizes = currentColor?.sizes || [];
+  const currentPrice = currentColor?.price || product.price;
+  const currentOriginalPrice = currentColor?.originalPrice || product.price;
+
+  const handleColorSelect = (colorIndex: number) => {
+    setSelectedColorIndex(colorIndex);
+    setSelectedSize(''); // Reset selected size when changing color
   };
 
   const handleAddToCart = () => {
@@ -179,9 +78,20 @@ export default function ProductPage() {
       });
       return;
     }
+    
+    const selectedSizeData = currentSizes.find(s => s.label === selectedSize);
+    if (selectedSizeData?.quantity === 0) {
+      toast({
+        title: "Size out of stock",
+        description: "Please select a different size",
+        variant: "destructive"
+      });
+      return;
+    }
+    
     toast({
       title: "Added to cart",
-      description: `${productName} has been added to your cart.`
+      description: `${product.name} has been added to your cart.`
     });
   };
 
@@ -201,14 +111,6 @@ export default function ProductPage() {
     setSelectedImage(prev => (prev - 1 + currentImages.length) % currentImages.length);
   };
 
-  const product = {
-    name: decodeURIComponent(productName || ""),
-    sku: `SK${Math.random().toString(36).substr(2, 8)}`,
-    rating: 4.8,
-    reviews: 128,
-    isTrending: true,
-    isBestSeller: true
-  };
 
   return <div className="container max-w-[1100px] mx-auto px-4 py-8">
       <div className="grid grid-cols-1 md:grid-cols-12 gap-8">
@@ -235,27 +137,21 @@ export default function ProductPage() {
           </div>
 
           <div className="mt-8">
-            <CustomerReviews reviews={[{
-            id: 1,
-            user: "Sarah M.",
-            rating: 5,
-            comment: "Absolutely love this product! The quality is outstanding.",
-            date: "2024-02-15",
-            helpfulCount: 8,
-            overallFit: "True to Size",
-            size: "M",
-            color: "Black"
-          }, {
-            id: 2,
-            user: "John D.",
-            rating: 4,
-            comment: "Great fit and comfortable. Would buy again.",
-            date: "2024-02-10",
-            helpfulCount: 3,
-            overallFit: "Runs Small",
-            size: "L",
-            color: "Navy"
-          }]} availableSizes={SIZES.map(size => size.label)} availableColors={COLORS.map(color => color.name)} />
+            {reviewsLoading ? (
+              <div className="space-y-4">
+                <div className="h-6 bg-gray-200 rounded animate-pulse"></div>
+                <div className="space-y-2">
+                  <div className="h-20 bg-gray-200 rounded animate-pulse"></div>
+                  <div className="h-20 bg-gray-200 rounded animate-pulse"></div>
+                </div>
+              </div>
+            ) : (
+              <CustomerReviews 
+                reviews={reviews || []} 
+                availableSizes={currentSizes.map(size => size.label)} 
+                availableColors={product.colors.map(color => color.name)} 
+              />
+            )}
           </div>
         </div>
 
@@ -286,16 +182,23 @@ export default function ProductPage() {
                   </Badge>}
               </div>
               <div>
-                <h3 className="font-medium mb-2">Color{selectedColor ? `: ${selectedColor}` : ''}</h3>
+                <h3 className="font-medium mb-2">Color{currentColor ? `: ${currentColor.name}` : ''}</h3>
                 <div className="flex flex-wrap gap-3">
-                  {COLORS.map(color => <div key={color.name} className="relative">
-                      <button onClick={() => handleColorSelect(color)} className={`w-10 h-10 rounded-full transition-all ${selectedColor === color.name ? 'ring-2 ring-primary ring-offset-2' : ''}`} style={{
-                    backgroundColor: color.hex
-                  }} title={color.name} />
-                      {color.isHot && <Badge className="absolute -top-2 -right-2 px-1.5 py-0.5 bg-red-500" variant="secondary">
+                  {product.colors.map((color, index) => (
+                    <div key={color.name} className="relative">
+                      <button 
+                        onClick={() => handleColorSelect(index)} 
+                        className={`w-10 h-10 rounded-full transition-all ${selectedColorIndex === index ? 'ring-2 ring-primary ring-offset-2' : ''}`} 
+                        style={{ backgroundColor: color.hex }} 
+                        title={color.name} 
+                      />
+                      {color.isHot && (
+                        <Badge className="absolute -top-2 -right-2 px-1.5 py-0.5 bg-red-500" variant="secondary">
                           Hot
-                        </Badge>}
-                    </div>)}
+                        </Badge>
+                      )}
+                    </div>
+                  ))}
                 </div>
               </div>
               <div>
@@ -331,23 +234,23 @@ export default function ProductPage() {
                   <div className="grid grid-cols-2 gap-4">
                     <div>
                       <p className="text-sm font-medium text-foreground">Color</p>
-                      <p className="text-sm">{selectedColor}</p>
+                      <p className="text-sm">{currentColor?.name}</p>
                     </div>
                     <div>
                       <p className="text-sm font-medium text-foreground">Material</p>
-                      <p className="text-sm">Premium Leather</p>
+                      <p className="text-sm">{product.specifications.material}</p>
                     </div>
                     <div>
                       <p className="text-sm font-medium text-foreground">Outsole Material</p>
-                      <p className="text-sm">Rubber</p>
+                      <p className="text-sm">{product.specifications.outsoleMaterial}</p>
                     </div>
                     <div>
                       <p className="text-sm font-medium text-foreground">Upper Material</p>
-                      <p className="text-sm">Genuine Leather</p>
+                      <p className="text-sm">{product.specifications.upperMaterial}</p>
                     </div>
                     <div>
                       <p className="text-sm font-medium text-foreground">Activity Type</p>
-                      <p className="text-sm">Casual Wear</p>
+                      <p className="text-sm">{product.specifications.activityType}</p>
                     </div>
                   </div>
                 </CollapsibleContent>
@@ -362,8 +265,8 @@ export default function ProductPage() {
                   <div className="space-y-2">
                     <p className="text-sm">• True to size, order your normal size</p>
                     <p className="text-sm">• Regular fit</p>
-                    <p className="text-sm">• Heel height: 1.5 inches</p>
-                    <p className="text-sm">• Available in standard width</p>
+                    <p className="text-sm">• Heel height: {product.specifications.heelHeight}</p>
+                    <p className="text-sm">• Available in {product.specifications.width.toLowerCase()} width</p>
                   </div>
                 </CollapsibleContent>
               </Collapsible>
@@ -374,7 +277,13 @@ export default function ProductPage() {
                   <ChevronDown className={`w-5 h-5 transition-transform duration-200 ${openStore ? 'rotate-180' : ''}`} />
                 </CollapsibleTrigger>
                 <CollapsibleContent className="pt-4">
-                  <AboutStore storeName="MIMAOYIGOU" rating={4.86} itemCount={23} followerCount={119} logo="https://images.unsplash.com/photo-1472851294608-062f824d29cc" />
+                  <AboutStore 
+                    storeName={product.store.name} 
+                    rating={product.store.rating} 
+                    itemCount={product.store.itemCount} 
+                    followerCount={product.store.followerCount} 
+                    logo={product.store.logo} 
+                  />
                 </CollapsibleContent>
               </Collapsible>
             </div>
@@ -383,6 +292,21 @@ export default function ProductPage() {
       </div>
       
       {/* Recommended Products Section */}
-      <RecommendedProducts productId={product.name} />
+      {recommendedLoading ? (
+        <div className="mt-16">
+          <div className="h-8 bg-gray-200 rounded animate-pulse mb-6 w-48"></div>
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+            {[...Array(4)].map((_, index) => (
+              <div key={index} className="space-y-2">
+                <div className="aspect-square bg-gray-200 rounded-lg animate-pulse"></div>
+                <div className="h-4 bg-gray-200 rounded animate-pulse"></div>
+                <div className="h-4 bg-gray-200 rounded animate-pulse w-3/4"></div>
+              </div>
+            ))}
+          </div>
+        </div>
+      ) : (
+        <RecommendedProducts productId={product.id.toString()} />
+      )}
     </div>;
 }

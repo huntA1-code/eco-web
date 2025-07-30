@@ -275,3 +275,206 @@ export const searchProducts = async (
     return getMockSearchResults(query, searchType, searchImage, currentPage, productsPerPage, selectedFilters);
   }
 };
+
+// Product Details API Functions
+export const fetchProductDetails = async (productId: string): Promise<any> => {
+  console.log('Fetching product details for:', productId, 'usingMockData:', USE_MOCK_DATA);
+  
+  if (USE_MOCK_DATA) {
+    return new Promise((resolve) => {
+      setTimeout(() => {
+        // Find product by ID or name in mock data
+        const product = mockProducts.find(p => 
+          p.id.toString() === productId || 
+          p.name.toLowerCase().replace(/\s+/g, '-') === productId.toLowerCase()
+        );
+        
+        if (!product) {
+          throw new Error('Product not found');
+        }
+        
+        // Enhanced product details
+        const productDetails = {
+          ...product,
+          sku: `SK${Math.random().toString(36).substr(2, 8)}`,
+          isTrending: Math.random() > 0.5,
+          isBestSeller: Math.random() > 0.6,
+          colors: [
+            {
+              name: 'Hot Pink',
+              hex: '#FF69B4',
+              isHot: true,
+              price: product.price * 0.8,
+              originalPrice: product.price,
+              sizes: [
+                { label: '8Y', dimensions: '122-128CM', quantity: 2 },
+                { label: '9Y', dimensions: '128-134CM', quantity: 8 },
+                { label: '10Y', dimensions: '134-140CM', quantity: 0 },
+                { label: '11Y', dimensions: '140-146CM', quantity: 5 },
+                { label: '12Y', dimensions: '146-152CM', quantity: 1 }
+              ],
+              images: [product.image, product.image, product.image, product.image]
+            },
+            {
+              name: 'Navy',
+              hex: '#000080',
+              isHot: true,
+              price: product.price * 0.85,
+              originalPrice: product.price,
+              sizes: [
+                { label: '8Y', dimensions: '122-128CM', quantity: 10 },
+                { label: '9Y', dimensions: '128-134CM', quantity: 12 },
+                { label: '10Y', dimensions: '134-140CM', quantity: 5 },
+                { label: '11Y', dimensions: '140-146CM', quantity: 3 },
+                { label: '12Y', dimensions: '146-152CM', quantity: 0 }
+              ],
+              images: [product.image, product.image, product.image, product.image]
+            },
+            {
+              name: 'Forest Green',
+              hex: '#228B22',
+              price: product.price * 0.9,
+              originalPrice: product.price,
+              sizes: [
+                { label: '8Y', dimensions: '122-128CM', quantity: 7 },
+                { label: '9Y', dimensions: '128-134CM', quantity: 4 },
+                { label: '10Y', dimensions: '134-140CM', quantity: 2 },
+                { label: '11Y', dimensions: '140-146CM', quantity: 0 },
+                { label: '12Y', dimensions: '146-152CM', quantity: 8 }
+              ],
+              images: [product.image, product.image, product.image, product.image]
+            },
+            {
+              name: 'Black',
+              hex: '#000000',
+              price: product.price * 1.1,
+              originalPrice: product.price * 1.2,
+              sizes: [
+                { label: '8Y', dimensions: '122-128CM', quantity: 3 },
+                { label: '9Y', dimensions: '128-134CM', quantity: 6 },
+                { label: '10Y', dimensions: '134-140CM', quantity: 4 },
+                { label: '11Y', dimensions: '140-146CM', quantity: 2 },
+                { label: '12Y', dimensions: '146-152CM', quantity: 1 }
+              ],
+              images: [product.image, product.image, product.image, product.image]
+            }
+          ],
+          specifications: {
+            material: 'Premium Leather',
+            outsoleMaterial: 'Rubber',
+            upperMaterial: 'Genuine Leather',
+            activityType: 'Casual Wear',
+            color: 'Multi-Color',
+            heelHeight: '1.5 inches',
+            width: 'Standard'
+          },
+          store: {
+            name: 'MIMAOYIGOU',
+            rating: 4.86,
+            itemCount: 23,
+            followerCount: 119,
+            logo: 'https://images.unsplash.com/photo-1472851294608-062f824d29cc'
+          }
+        };
+        
+        resolve(productDetails);
+      }, 600); // Simulate network delay
+    });
+  }
+  
+  try {
+    const response = await apiClient.get(`/products/${productId}`);
+    
+    if (!response.data) {
+      throw new Error('Invalid product response format');
+    }
+    
+    return response.data;
+  } catch (error) {
+    console.warn('API request failed for product details, falling back to mock data:', error);
+    throw handleApiError(error);
+  }
+};
+
+export const fetchProductReviews = async (productId: string): Promise<any[]> => {
+  console.log('Fetching reviews for product:', productId, 'usingMockData:', USE_MOCK_DATA);
+  
+  if (USE_MOCK_DATA) {
+    return new Promise((resolve) => {
+      setTimeout(() => {
+        const mockReviews = [
+          {
+            id: 1,
+            user: "Sarah M.",
+            rating: 5,
+            comment: "Absolutely love this product! The quality is outstanding.",
+            date: "2024-02-15",
+            helpfulCount: 8,
+            overallFit: "True to Size",
+            size: "M",
+            color: "Black"
+          },
+          {
+            id: 2,
+            user: "John D.",
+            rating: 4,
+            comment: "Great fit and comfortable. Would buy again.",
+            date: "2024-02-10",
+            helpfulCount: 3,
+            overallFit: "Runs Small",
+            size: "L",
+            color: "Navy"
+          },
+          {
+            id: 3,
+            user: "Emma W.",
+            rating: 5,
+            comment: "Perfect quality and fast shipping!",
+            date: "2024-02-08",
+            helpfulCount: 12,
+            overallFit: "True to Size",
+            size: "S",
+            color: "Hot Pink"
+          }
+        ];
+        resolve(mockReviews);
+      }, 400);
+    });
+  }
+  
+  try {
+    const response = await apiClient.get(`/products/${productId}/reviews`);
+    return response.data;
+  } catch (error) {
+    console.warn('API request failed for reviews, falling back to mock data:', error);
+    return [];
+  }
+};
+
+export const fetchRecommendedProducts = async (productId: string): Promise<any[]> => {
+  console.log('Fetching recommended products for:', productId, 'usingMockData:', USE_MOCK_DATA);
+  
+  if (USE_MOCK_DATA) {
+    return new Promise((resolve) => {
+      setTimeout(() => {
+        // Return a subset of mock products as recommendations
+        const recommendations = mockProducts
+          .filter(p => p.id.toString() !== productId)
+          .slice(0, 8)
+          .map(product => ({
+            ...product,
+            isRecommended: true
+          }));
+        resolve(recommendations);
+      }, 500);
+    });
+  }
+  
+  try {
+    const response = await apiClient.get(`/products/${productId}/recommended`);
+    return response.data;
+  } catch (error) {
+    console.warn('API request failed for recommendations, falling back to mock data:', error);
+    return mockProducts.slice(0, 8);
+  }
+};
