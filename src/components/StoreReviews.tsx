@@ -130,15 +130,13 @@ export const StoreReviews = ({ storeId, storeName }: StoreReviewsProps) => {
     setIsLoading(true);
     
     try {
-      const reviewData = {
-        user: newReview.userName,
-        rating: newReview.rating,
-        comment: newReview.comment,
-        date: new Date().toISOString(),
-        userImage: "/placeholder.svg"
-      };
+      // Create FormData with review data
+      const formData = new FormData();
+      formData.append('user', newReview.userName);
+      formData.append('rating', newReview.rating.toString());
+      formData.append('comment', newReview.comment);
 
-      const addedReview = await addStoreReview(storeId, reviewData);
+      const addedReview = await addStoreReview(storeId, formData);
       setReviews(prevReviews => [addedReview, ...prevReviews]);
       setNewReview({ rating: 0, comment: '', userName: '' });
       setDialogOpen(false);

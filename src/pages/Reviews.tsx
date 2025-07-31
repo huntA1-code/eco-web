@@ -184,28 +184,20 @@ const Reviews = () => {
     try {
       setIsLoading(true);
       
-      // Convert images to base64 strings
-      const imagePromises = newReview.images.map(file => {
-        return new Promise<string>((resolve) => {
-          const reader = new FileReader();
-          reader.onloadend = () => resolve(reader.result as string);
-          reader.readAsDataURL(file);
+      // Create FormData with review data and images
+      const formData = new FormData();
+      formData.append('user', 'Current User');
+      formData.append('rating', newReview.rating.toString());
+      formData.append('comment', newReview.comment);
+      
+      // Add images to FormData
+      if (newReview.images && newReview.images.length > 0) {
+        newReview.images.forEach((file: File) => {
+          formData.append('images', file);
         });
-      });
-      
-      const imageStrings = await Promise.all(imagePromises);
-      
-      const reviewData = {
-        user: "Current User",
-        rating: newReview.rating,
-        comment: newReview.comment,
-        date: new Date().toISOString(),
-        images: imageStrings,
-        isStoreReview: activeTab === "store",
-        userImage: "/placeholder.svg",
-      };
+      }
 
-      const addedReview = await addReview(productId, reviewData);
+      const addedReview = await addReview(productId, formData);
       setReviews(prev => [addedReview, ...prev]);
       
       setNewReview({

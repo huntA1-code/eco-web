@@ -1,5 +1,6 @@
 import { useQuery } from '@tanstack/react-query';
-import { fetchProductDetails, fetchProductReviews, fetchRecommendedProducts } from '@/api/products';
+import { fetchProductDetails, fetchRecommendedProducts } from '@/api/products';
+import { fetchReviews } from '@/api/reviews';
 
 export interface ProductColor {
   name: string;
@@ -81,7 +82,7 @@ export const useProductDetails = (productId: string) => {
 
   const reviewsQuery = useQuery({
     queryKey: ['product-reviews', productId],
-    queryFn: () => fetchProductReviews(productId),
+    queryFn: () => fetchReviews(productId, { isStoreReview: false }),
     enabled: !!productId,
     staleTime: 10 * 60 * 1000, // 10 minutes
     retry: 2,

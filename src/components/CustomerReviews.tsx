@@ -18,7 +18,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { fetchReviews, addReview, toggleHelpful, uploadImages, getImageUrl, type ReviewData } from '@/api/reviews';
+import { fetchReviews, addReview, toggleHelpful, getImageUrl, type ReviewData } from '@/api/reviews';
 import { useLocation } from 'react-router-dom';
 
 interface Review {
@@ -110,29 +110,23 @@ export const CustomerReviews = ({ reviews: initialReviews, availableSizes, avail
     try {
       setIsLoading(true);
       
-      // رفع الصور أولاً وإرجاع أسماء الملفات
-      let imageNames: string[] = [];
-      if (selectedImages && selectedImages.length > 0) {
-        const uploadResult = await uploadImages(selectedImages);
-        if (uploadResult.success) {
-          imageNames = uploadResult.imageNames;
-        } else {
-          throw new Error(uploadResult.error || 'Failed to upload images');
-        }
-      }
+      // Create FormData with review data and images
+      const formData = new FormData();
+      formData.append('user', 'Current User');
+      formData.append('rating', newReview.rating.toString());
+      formData.append('comment', newReview.comment);
+      formData.append('size', newReview.size);
+      formData.append('color', newReview.color);
+      formData.append('overallFit', newReview.overallFit);
       
-      const reviewData = {
-        user: "Current User",
-        rating: newReview.rating,
-        comment: newReview.comment,
-        date: new Date().toISOString(),
-        size: newReview.size,
-        color: newReview.color,
-        overallFit: newReview.overallFit,
-        images: imageNames, // إرسال أسماء الصور فقط
-      };
+      // Add images to FormData
+      if (selectedImages && selectedImages.length > 0) {
+        Array.from(selectedImages).forEach(image => {
+          formData.append('images', image);
+        });
+      }
 
-      const addedReview = await addReview(productId, reviewData);
+      const addedReview = await addReview(productId, formData);
       setReviews(prev => [...prev, addedReview]);
       
       setNewReview({

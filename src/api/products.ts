@@ -400,60 +400,6 @@ export const fetchProductDetails = async (productId: string): Promise<any> => {
   }
 };
 
-export const fetchProductReviews = async (productId: string): Promise<any[]> => {
-  console.log('Fetching reviews for product:', productId, 'usingMockData:', USE_MOCK_DATA);
-  
-  if (USE_MOCK_DATA) {
-    return new Promise((resolve) => {
-      setTimeout(() => {
-        const mockReviews = [
-          {
-            id: 1,
-            user: "Sarah M.",
-            rating: 5,
-            comment: "Absolutely love this product! The quality is outstanding.",
-            date: "2024-02-15",
-            helpfulCount: 8,
-            overallFit: "True to Size",
-            size: "M",
-            color: "Black"
-          },
-          {
-            id: 2,
-            user: "John D.",
-            rating: 4,
-            comment: "Great fit and comfortable. Would buy again.",
-            date: "2024-02-10",
-            helpfulCount: 3,
-            overallFit: "Runs Small",
-            size: "L",
-            color: "Navy"
-          },
-          {
-            id: 3,
-            user: "Emma W.",
-            rating: 5,
-            comment: "Perfect quality and fast shipping!",
-            date: "2024-02-08",
-            helpfulCount: 12,
-            overallFit: "True to Size",
-            size: "S",
-            color: "Hot Pink"
-          }
-        ];
-        resolve(mockReviews);
-      }, 400);
-    });
-  }
-  
-  try {
-    const response = await apiClient.get(`/products/${productId}/reviews`);
-    return response.data;
-  } catch (error) {
-    console.warn('API request failed for reviews, falling back to mock data:', error);
-    return [];
-  }
-};
 
 export const fetchRecommendedProducts = async (productId: string): Promise<any[]> => {
   console.log('Fetching recommended products for:', productId, 'usingMockData:', USE_MOCK_DATA);
