@@ -1,4 +1,3 @@
-
 import axios from 'axios';
 
 const API_URL = "https://your-api-url.com/api";
@@ -33,27 +32,70 @@ export interface ReviewData {
   userImage?: string;
 }
 
-// Helper function to get reviews from localStorage
-const getStoredReviews = (productId: string): ReviewData[] => {
-  const storedReviews = localStorage.getItem(`reviews_${productId}`);
-  return storedReviews ? JSON.parse(storedReviews) : [];
+// Mock data - similar to products.ts pattern
+const mockProductReviews: Record<string, ReviewData[]> = {
+  '1': [
+    {
+      id: 1,
+      user: "Sarah M.",
+      rating: 5,
+      comment: "Absolutely love this product! The quality is outstanding.",
+      date: "2024-02-15",
+      helpfulCount: 8,
+      overallFit: "True to Size",
+      size: "M",
+      color: "Black",
+      isVerifiedPurchase: true,
+      likes: 5,
+      dislikes: 0
+    },
+    {
+      id: 2,
+      user: "John D.",
+      rating: 4,
+      comment: "Great fit and comfortable. Would buy again.",
+      date: "2024-02-10",
+      helpfulCount: 3,
+      overallFit: "Runs Small",
+      size: "L",
+      color: "Navy",
+      isVerifiedPurchase: true,
+      likes: 2,
+      dislikes: 0
+    }
+  ]
 };
 
-// Helper function to save reviews to localStorage
-const saveReviews = (productId: string, reviews: ReviewData[]) => {
-  localStorage.setItem(`reviews_${productId}`, JSON.stringify(reviews));
+const mockStoreReviews: Record<string, ReviewData[]> = {
+  '1': [
+    {
+      id: 1,
+      user: "Sarah Johnson",
+      rating: 5,
+      comment: "Amazing store! Great selection of products and excellent customer service.",
+      date: "2024-02-15",
+      helpfulCount: 24,
+      isStoreReview: true,
+      userImage: "/placeholder.svg",
+      likes: 12,
+      dislikes: 1
+    },
+    {
+      id: 2,
+      user: "Mike Chen",
+      rating: 4,
+      comment: "Good experience overall. Products are as described and delivery was on time.",
+      date: "2024-02-14",
+      helpfulCount: 18,
+      isStoreReview: true,
+      userImage: "/placeholder.svg",
+      likes: 8,
+      dislikes: 0
+    }
+  ]
 };
 
-// Helper function to get helpful reviews from localStorage
-const getHelpfulReviews = (): Record<number, boolean> => {
-  const stored = localStorage.getItem('helpful_reviews');
-  return stored ? JSON.parse(stored) : {};
-};
-
-// Helper function to save helpful reviews to localStorage
-const saveHelpfulReviews = (helpfulReviews: Record<number, boolean>) => {
-  localStorage.setItem('helpful_reviews', JSON.stringify(helpfulReviews));
-};
+const mockHelpfulReviews: Record<number, boolean> = {};
 
 // API function to fetch reviews
 export const fetchReviews = async (productId: string, options?: { 
@@ -67,58 +109,7 @@ export const fetchReviews = async (productId: string, options?: {
     // Mock data implementation
     await new Promise(resolve => setTimeout(resolve, 500));
     
-    let reviews = getStoredReviews(productId);
-    const helpfulReviews = getHelpfulReviews();
-    
-    // If no stored reviews, add default mock data
-    if (reviews.length === 0 && !options?.isStoreReview) {
-      const defaultReviews: ReviewData[] = [
-        {
-          id: 1,
-          user: "Sarah M.",
-          rating: 5,
-          comment: "Absolutely love this product! The quality is outstanding.",
-          date: "2024-02-15",
-          helpfulCount: 8,
-          overallFit: "True to Size",
-          size: "M",
-          color: "Black",
-          isVerifiedPurchase: true,
-          likes: 0,
-          dislikes: 0
-        },
-        {
-          id: 2,
-          user: "John D.",
-          rating: 4,
-          comment: "Great fit and comfortable. Would buy again.",
-          date: "2024-02-10",
-          helpfulCount: 3,
-          overallFit: "Runs Small",
-          size: "L",
-          color: "Navy",
-          isVerifiedPurchase: true,
-          likes: 0,
-          dislikes: 0
-        },
-        {
-          id: 3,
-          user: "Emma W.",
-          rating: 5,
-          comment: "Perfect quality and fast shipping!",
-          date: "2024-02-08",
-          helpfulCount: 12,
-          overallFit: "True to Size",
-          size: "S",
-          color: "Hot Pink",
-          isVerifiedPurchase: false,
-          likes: 0,
-          dislikes: 0
-        }
-      ];
-      saveReviews(productId, defaultReviews);
-      reviews = defaultReviews;
-    }
+    let reviews = [...(mockProductReviews[productId] || [])];
     
     // Filter by review type
     if (options?.isStoreReview !== undefined) {
@@ -149,7 +140,7 @@ export const fetchReviews = async (productId: string, options?: {
     // Add isHelpful status to each review
     return reviews.map(review => ({
       ...review,
-      isHelpful: helpfulReviews[review.id] || false
+      isHelpful: mockHelpfulReviews[review.id] || false
     }));
   }
   
@@ -175,8 +166,6 @@ export const addReview = async (productId: string, formData: FormData): Promise<
     // Mock implementation
     await new Promise(resolve => setTimeout(resolve, 500));
     
-    const reviews = getStoredReviews(productId);
-    
     // Extract data from FormData for mock
     const comment = formData.get('comment') as string;
     const rating = Number(formData.get('rating'));
@@ -196,13 +185,6 @@ export const addReview = async (productId: string, formData: FormData): Promise<
         const extension = file.name.split('.').pop();
         const imageName = `review_${timestamp}_${randomId}.${extension}`;
         images.push(`/api/images/${imageName}`);
-        
-        // Store image locally for mock
-        const reader = new FileReader();
-        reader.onload = (e) => {
-          localStorage.setItem(`image_${imageName}`, e.target?.result as string);
-        };
-        reader.readAsDataURL(file);
       }
     }
     
@@ -223,8 +205,11 @@ export const addReview = async (productId: string, formData: FormData): Promise<
       isVerifiedPurchase: Math.random() > 0.5
     };
     
-    reviews.push(newReview);
-    saveReviews(productId, reviews);
+    // Add to mock data
+    if (!mockProductReviews[productId]) {
+      mockProductReviews[productId] = [];
+    }
+    mockProductReviews[productId].push(newReview);
     
     return newReview;
   }
@@ -249,38 +234,35 @@ export const toggleHelpful = async (reviewId: number, helpful: boolean): Promise
     // Mock implementation
     await new Promise(resolve => setTimeout(resolve, 500));
     
-    const helpfulReviews = getHelpfulReviews();
-    const wasHelpful = helpfulReviews[reviewId] || false;
+    const wasHelpful = mockHelpfulReviews[reviewId] || false;
     
     if (wasHelpful !== helpful) {
-      helpfulReviews[reviewId] = helpful;
-      saveHelpfulReviews(helpfulReviews);
+      mockHelpfulReviews[reviewId] = helpful;
       
-      const allProductKeys = Object.keys(localStorage).filter(key => key.startsWith('reviews_'));
-      
-      allProductKeys.forEach(key => {
-        const reviews = JSON.parse(localStorage.getItem(key) || '[]');
-        const updatedReviews = reviews.map((review: ReviewData) => {
+      // Update helpfulCount in mock data
+      Object.values(mockProductReviews).forEach(reviews => {
+        reviews.forEach(review => {
           if (review.id === reviewId) {
-            return {
-              ...review,
-              helpfulCount: review.helpfulCount + (helpful ? 1 : -1)
-            };
+            review.helpfulCount += helpful ? 1 : -1;
           }
-          return review;
         });
-        localStorage.setItem(key, JSON.stringify(updatedReviews));
       });
       
-      const allReviews = allProductKeys.flatMap(key => JSON.parse(localStorage.getItem(key) || '[]'));
-      const updatedReview = allReviews.find((r: ReviewData) => r.id === reviewId);
-      
-      return { helpfulCount: updatedReview?.helpfulCount || 0 };
+      Object.values(mockStoreReviews).forEach(reviews => {
+        reviews.forEach(review => {
+          if (review.id === reviewId) {
+            review.helpfulCount += helpful ? 1 : -1;
+          }
+        });
+      });
     }
     
-    const allProductKeys = Object.keys(localStorage).filter(key => key.startsWith('reviews_'));
-    const allReviews = allProductKeys.flatMap(key => JSON.parse(localStorage.getItem(key) || '[]'));
-    const review = allReviews.find((r: ReviewData) => r.id === reviewId);
+    // Find and return the updated review
+    const allReviews = [
+      ...Object.values(mockProductReviews).flat(),
+      ...Object.values(mockStoreReviews).flat()
+    ];
+    const review = allReviews.find(r => r.id === reviewId);
     return { helpfulCount: review?.helpfulCount || 0 };
   }
   
@@ -303,26 +285,33 @@ export const toggleReactionReview = async (
     // Mock implementation
     await new Promise(resolve => setTimeout(resolve, 500));
     
-    const allProductKeys = Object.keys(localStorage).filter(key => key.startsWith('reviews_'));
-    
     let updatedReview: ReviewData | undefined;
     
-    allProductKeys.forEach(key => {
-      const reviews = JSON.parse(localStorage.getItem(key) || '[]');
-      const updatedReviews = reviews.map((review: ReviewData) => {
+    // Update in mock data
+    Object.values(mockProductReviews).forEach(reviews => {
+      reviews.forEach(review => {
         if (review.id === reviewId) {
-          const newReview = { ...review };
           if (reaction === 'like') {
-            newReview.likes = (newReview.likes || 0) + 1;
+            review.likes = (review.likes || 0) + 1;
           } else {
-            newReview.dislikes = (newReview.dislikes || 0) + 1;
+            review.dislikes = (review.dislikes || 0) + 1;
           }
-          updatedReview = newReview;
-          return newReview;
+          updatedReview = review;
         }
-        return review;
       });
-      localStorage.setItem(key, JSON.stringify(updatedReviews));
+    });
+    
+    Object.values(mockStoreReviews).forEach(reviews => {
+      reviews.forEach(review => {
+        if (review.id === reviewId) {
+          if (reaction === 'like') {
+            review.likes = (review.likes || 0) + 1;
+          } else {
+            review.dislikes = (review.dislikes || 0) + 1;
+          }
+          updatedReview = review;
+        }
+      });
     });
     
     return {
@@ -344,9 +333,8 @@ export const toggleReactionReview = async (
 // API function to get image URL by name
 export const getImageUrl = (imageName: string): string => {
   if (USE_MOCK_DATA) {
-    // Mock implementation
-    const storedImage = localStorage.getItem(`image_${imageName.replace('/api/images/', '')}`);
-    return storedImage || '/placeholder.svg';
+    // Mock implementation - return placeholder for now
+    return '/placeholder.svg';
   }
   
   // In real app, this would be the full URL from backend
@@ -362,52 +350,7 @@ export const fetchStoreReviews = async (storeId: string, options?: {
     // Mock implementation
     await new Promise(resolve => setTimeout(resolve, 500));
     
-    let reviews = getStoredReviews(`store_${storeId}`);
-    const helpfulReviews = getHelpfulReviews();
-    
-    // إذا لم تكن هناك مراجعات محفوظة، أضف بيانات تجريبية
-    if (reviews.length === 0) {
-      const defaultStoreReviews: ReviewData[] = [
-        {
-          id: 1,
-          user: "Sarah Johnson",
-          rating: 5,
-          comment: "Amazing store! Great selection of products and excellent customer service. Fast shipping and quality items. Highly recommended!",
-          date: "2024-02-15",
-          helpfulCount: 24,
-          isStoreReview: true,
-          userImage: "/placeholder.svg",
-          likes: 0,
-          dislikes: 0
-        },
-        {
-          id: 2,
-          user: "Mike Chen",
-          rating: 4,
-          comment: "Good experience overall. Products are as described and delivery was on time. Will shop here again.",
-          date: "2024-02-14",
-          helpfulCount: 18,
-          isStoreReview: true,
-          userImage: "/placeholder.svg",
-          likes: 0,
-          dislikes: 0
-        },
-        {
-          id: 3,
-          user: "Emma Davis",
-          rating: 5,
-          comment: "Excellent store with top-notch products. The quality exceeded my expectations and the customer support was very helpful.",
-          date: "2024-02-13",
-          helpfulCount: 31,
-          isStoreReview: true,
-          userImage: "/placeholder.svg",
-          likes: 0,
-          dislikes: 0
-        }
-      ];
-      saveReviews(`store_${storeId}`, defaultStoreReviews);
-      reviews = defaultStoreReviews;
-    }
+    let reviews = [...(mockStoreReviews[storeId] || [])];
     
     // Filter by rating
     if (options?.rating) {
@@ -433,7 +376,7 @@ export const fetchStoreReviews = async (storeId: string, options?: {
     // Add isHelpful status to each review
     return reviews.map(review => ({
       ...review,
-      isHelpful: helpfulReviews[review.id] || false,
+      isHelpful: mockHelpfulReviews[review.id] || false,
       isStoreReview: true
     }));
   }
@@ -457,8 +400,6 @@ export const addStoreReview = async (storeId: string, formData: FormData): Promi
     // Mock implementation
     await new Promise(resolve => setTimeout(resolve, 500));
     
-    const reviews = getStoredReviews(`store_${storeId}`);
-    
     // Extract data from FormData for mock
     const comment = formData.get('comment') as string;
     const rating = Number(formData.get('rating'));
@@ -475,13 +416,6 @@ export const addStoreReview = async (storeId: string, formData: FormData): Promi
         const extension = file.name.split('.').pop();
         const imageName = `store_review_${timestamp}_${randomId}.${extension}`;
         images.push(`/api/images/${imageName}`);
-        
-        // Store image locally for mock
-        const reader = new FileReader();
-        reader.onload = (e) => {
-          localStorage.setItem(`image_${imageName}`, e.target?.result as string);
-        };
-        reader.readAsDataURL(file);
       }
     }
     
@@ -500,8 +434,11 @@ export const addStoreReview = async (storeId: string, formData: FormData): Promi
       isVerifiedPurchase: Math.random() > 0.5
     };
     
-    reviews.push(newReview);
-    saveReviews(`store_${storeId}`, reviews);
+    // Add to mock data
+    if (!mockStoreReviews[storeId]) {
+      mockStoreReviews[storeId] = [];
+    }
+    mockStoreReviews[storeId].push(newReview);
     
     return newReview;
   }
