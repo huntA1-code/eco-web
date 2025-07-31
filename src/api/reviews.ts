@@ -1,12 +1,14 @@
 
 import axios from 'axios';
 
-const USE_MOCK_DATA = process.env.REACT_APP_USE_MOCK === 'true' || !process.env.REACT_APP_API_URL;
+const API_URL = "https://your-api-url.com/api";
+const REQUEST_TIMEOUT = 10000; // 10 seconds
+const USE_MOCK_DATA = true; // Always use mock data for now
 
 // Create axios instance with base configuration
 const apiClient = axios.create({
-  baseURL: process.env.REACT_APP_API_URL || 'http://localhost:3000/api',
-  timeout: 10000,
+  baseURL: API_URL,
+  timeout: REQUEST_TIMEOUT,
   headers: {
     'Content-Type': 'application/json',
   },
