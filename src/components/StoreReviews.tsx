@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from 'react';
+import React, { useState, useCallback, useEffect } from 'react';
 import { Star, ThumbsUp, Upload, MessageSquare, User } from 'lucide-react';
 import { useToast } from "@/hooks/use-toast";
 import { Button } from "@/components/ui/button";
@@ -23,17 +23,8 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Card, CardContent } from "@/components/ui/card";
+import { fetchStoreReviews, addStoreReview, toggleHelpful, type ReviewData } from '@/api/reviews';
 
-interface StoreReview {
-  id: number;
-  user: string;
-  rating: number;
-  comment: string;
-  date: string;
-  helpfulCount: number;
-  isHelpful?: boolean;
-  avatar?: string;
-}
 
 interface StoreReviewsProps {
   storeId: string;
@@ -41,35 +32,8 @@ interface StoreReviewsProps {
 }
 
 export const StoreReviews = ({ storeId, storeName }: StoreReviewsProps) => {
-  const [reviews, setReviews] = useState<StoreReview[]>([
-    {
-      id: 1,
-      user: "Sarah Johnson",
-      rating: 5,
-      comment: "Amazing store! Great selection of products and excellent customer service. Fast shipping and quality items. Highly recommended!",
-      date: "2024-02-15",
-      helpfulCount: 24,
-      avatar: "/placeholder.svg"
-    },
-    {
-      id: 2,
-      user: "Mike Chen",
-      rating: 4,
-      comment: "Good experience overall. Products are as described and delivery was on time. Will shop here again.",
-      date: "2024-02-14",
-      helpfulCount: 18,
-      avatar: "/placeholder.svg"
-    },
-    {
-      id: 3,
-      user: "Emma Davis",
-      rating: 5,
-      comment: "Excellent store with top-notch products. The quality exceeded my expectations and the customer support was very helpful.",
-      date: "2024-02-13",
-      helpfulCount: 31,
-      avatar: "/placeholder.svg"
-    }
-  ]);
+  const [reviews, setReviews] = useState<ReviewData[]>([]);
+  const [initialLoadComplete, setInitialLoadComplete] = useState(false);
 
   const [isLoading, setIsLoading] = useState(false);
   const [selectedRating, setSelectedRating] = useState<string>("all");
@@ -81,6 +45,30 @@ export const StoreReviews = ({ storeId, storeName }: StoreReviewsProps) => {
     comment: '',
     userName: ''
   });
+
+  // Load store reviews on component mount
+  useEffect(() => {
+    const loadReviews = async () => {
+      try {
+        setIsLoading(true);
+        const storeReviews = await fetchStoreReviews(storeId);
+        setReviews(storeReviews);
+      } catch (error) {
+        toast({
+          title: "Error",
+          description: "Failed to load reviews",
+          variant: "destructive",
+        });
+      } finally {
+        setIsLoading(false);
+        setInitialLoadComplete(true);
+      }
+    };
+
+    if (!initialLoadComplete) {
+      loadReviews();
+    }
+  }, [storeId, initialLoadComplete, toast]);
 
   // Calculate overall rating
   const overallRating = reviews.length > 0 
@@ -104,16 +92,12 @@ export const StoreReviews = ({ storeId, storeName }: StoreReviewsProps) => {
 
   const handleHelpfulClick = useCallback(async (reviewId: number, currentIsHelpful: boolean | undefined) => {
     try {
+      const { helpfulCount } = await toggleHelpful(reviewId, !currentIsHelpful);
+      
       setReviews(prevReviews =>
         prevReviews.map(review =>
           review.id === reviewId
-            ? {
-                ...review,
-                helpfulCount: currentIsHelpful 
-                  ? review.helpfulCount - 1 
-                  : review.helpfulCount + 1,
-                isHelpful: !currentIsHelpful
-              }
+            ? { ...review, helpfulCount, isHelpful: !currentIsHelpful }
             : review
         )
       );
@@ -146,17 +130,16 @@ export const StoreReviews = ({ storeId, storeName }: StoreReviewsProps) => {
     setIsLoading(true);
     
     try {
-      const review: StoreReview = {
-        id: Date.now(),
+      const reviewData = {
         user: newReview.userName,
         rating: newReview.rating,
         comment: newReview.comment,
-        date: new Date().toISOString().split('T')[0],
-        helpfulCount: 0,
-        avatar: "/placeholder.svg"
+        date: new Date().toISOString(),
+        userImage: "/placeholder.svg"
       };
 
-      setReviews(prevReviews => [review, ...prevReviews]);
+      const addedReview = await addStoreReview(storeId, reviewData);
+      setReviews(prevReviews => [addedReview, ...prevReviews]);
       setNewReview({ rating: 0, comment: '', userName: '' });
       setDialogOpen(false);
       
@@ -319,7 +302,7 @@ export const StoreReviews = ({ storeId, storeName }: StoreReviewsProps) => {
               <CardContent className="p-4">
                 <div className="flex items-start gap-4">
                   <Avatar className="h-10 w-10">
-                    <AvatarImage src={review.avatar} alt={review.user} />
+                    <AvatarImage src={review.userImage || "/placeholder.svg"} alt={review.user} />
                     <AvatarFallback>
                       <User className="h-5 w-5" />
                     </AvatarFallback>

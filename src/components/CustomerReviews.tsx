@@ -18,7 +18,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { fetchReviews, addReview, toggleHelpful, type ReviewData } from '@/api/reviews';
+import { fetchReviews, addReview, toggleHelpful, uploadImages, getImageUrl, type ReviewData } from '@/api/reviews';
 import { useLocation } from 'react-router-dom';
 
 interface Review {
@@ -110,6 +110,17 @@ export const CustomerReviews = ({ reviews: initialReviews, availableSizes, avail
     try {
       setIsLoading(true);
       
+      // رفع الصور أولاً وإرجاع أسماء الملفات
+      let imageNames: string[] = [];
+      if (selectedImages && selectedImages.length > 0) {
+        const uploadResult = await uploadImages(selectedImages);
+        if (uploadResult.success) {
+          imageNames = uploadResult.imageNames;
+        } else {
+          throw new Error(uploadResult.error || 'Failed to upload images');
+        }
+      }
+      
       const reviewData = {
         user: "Current User",
         rating: newReview.rating,
@@ -118,7 +129,7 @@ export const CustomerReviews = ({ reviews: initialReviews, availableSizes, avail
         size: newReview.size,
         color: newReview.color,
         overallFit: newReview.overallFit,
-        images: selectedImages ? Array.from(selectedImages).map(file => URL.createObjectURL(file)) : [],
+        images: imageNames, // إرسال أسماء الصور فقط
       };
 
       const addedReview = await addReview(productId, reviewData);
@@ -141,7 +152,7 @@ export const CustomerReviews = ({ reviews: initialReviews, availableSizes, avail
     } catch (error) {
       toast({
         title: "Error",
-        description: "Failed to submit review",
+        description: error instanceof Error ? error.message : "Failed to submit review",
         variant: "destructive",
       });
     } finally {
@@ -480,12 +491,16 @@ export const CustomerReviews = ({ reviews: initialReviews, availableSizes, avail
                 
                 {review.images && review.images.length > 0 && (
                   <div className="flex gap-2 overflow-x-auto pb-2">
-                    {review.images.map((image, idx) => (
+                    {review.images.map((imageName, idx) => (
                       <img 
                         key={idx}
-                        src={image} 
+                        src={getImageUrl(imageName)} 
                         alt={`Review ${review.id} image ${idx + 1}`}
-                        className="w-20 h-20 object-cover rounded"
+                        className="w-20 h-20 object-cover rounded cursor-pointer hover:scale-105 transition-transform"
+                        onClick={() => {
+                          // يمكن إضافة modal لعرض الصورة بحجم أكبر
+                          window.open(getImageUrl(imageName), '_blank');
+                        }}
                       />
                     ))}
                   </div>
