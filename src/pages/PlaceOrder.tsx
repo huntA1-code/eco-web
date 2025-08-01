@@ -206,33 +206,38 @@ const PlaceOrder = () => {
   }
 
   return (
-    <div className="container mx-auto px-4 py-8 mt-20">
-      {/* Order Progress with icons */}
-      <div className="mb-6">
-        <div className="flex items-center justify-between mb-2">
+    <div className="container mx-auto px-4 py-8 mt-20 animate-fade-in">
+      {/* Enhanced Order Progress */}
+      <div className="mb-8">
+        <div className="flex items-center justify-between mb-4">
           <div className="flex flex-col items-center">
-            <div className="bg-primary text-white p-2 rounded-full">
-              <ShoppingCart className="h-5 w-5" />
+            <div className="bg-muted text-muted-foreground p-3 rounded-full">
+              <ShoppingCart className="h-6 w-6" />
             </div>
-            <span className="text-sm mt-1">Cart</span>
+            <span className="text-sm mt-2 text-muted-foreground">Cart</span>
           </div>
+          <div className="flex-1 h-0.5 bg-muted mx-4"></div>
           <div className="flex flex-col items-center">
-            <div className="bg-primary text-white p-2 rounded-full">
-              <Package className="h-5 w-5" />
+            <div className="relative">
+              <div className="bg-gradient-primary text-white p-3 rounded-full shadow-lg">
+                <Package className="h-6 w-6" />
+              </div>
             </div>
-            <span className="text-sm mt-1 font-semibold">Place Order</span>
+            <span className="text-sm mt-2 font-semibold text-primary">Place Order</span>
           </div>
+          <div className="flex-1 h-0.5 bg-muted mx-4"></div>
           <div className="flex flex-col items-center">
-            <div className="bg-muted text-muted-foreground p-2 rounded-full">
-              <CreditCard className="h-5 w-5" />
+            <div className="bg-muted text-muted-foreground p-3 rounded-full">
+              <CreditCard className="h-6 w-6" />
             </div>
-            <span className="text-sm mt-1 text-muted-foreground">Pay</span>
+            <span className="text-sm mt-2 text-muted-foreground">Payment</span>
           </div>
+          <div className="flex-1 h-0.5 bg-muted mx-4"></div>
           <div className="flex flex-col items-center">
-            <div className="bg-muted text-muted-foreground p-2 rounded-full">
-              <CheckCircle className="h-5 w-5" />
+            <div className="bg-muted text-muted-foreground p-3 rounded-full">
+              <CheckCircle className="h-6 w-6" />
             </div>
-            <span className="text-sm mt-1 text-muted-foreground">Complete</span>
+            <span className="text-sm mt-2 text-muted-foreground">Complete</span>
           </div>
         </div>
         <Progress value={50} className="h-2" />
