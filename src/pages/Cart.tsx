@@ -189,7 +189,7 @@ const Cart = () => {
                 <ShoppingCart className="h-6 w-6" />
               </div>
               <div className="absolute -top-1 -right-1 bg-accent-new text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">
-                {cartData.itemCount}
+                {cartData?.itemCount || 0}
               </div>
             </div>
             <span className="text-sm mt-2 font-semibold text-primary">Cart</span>
